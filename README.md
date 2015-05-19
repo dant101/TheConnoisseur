@@ -9,7 +9,7 @@ Gradle is the 'build system of choice', it hooks up the dependencies seamlessly 
 1. Create a new directory for the project
 2. Clone the repo
 
-		git clone 										git@gitlab.doc.ic.ac.uk:ts3313TheConnoisseur.git
+		git clone git@gitlab.doc.ic.ac.uk:ts3313TheConnoisseur.git
 
 3. In Android Studio: File -> Import Project
 4. Select the *build.gradle* file in the root of the newly cloned repository
