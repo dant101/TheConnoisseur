@@ -4,5 +4,10 @@
     <string name="app_name">The Connoisseur</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_exercise">Exercise</string>
+
+    <!-- Placeholder values -->
+    <string name="phonetic_spelling_test">MATROSKA</string>
+    <string name="translation_test">Russian Doll</string>
 
 </resources>

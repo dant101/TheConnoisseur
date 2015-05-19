@@ -1,17 +1,28 @@
-package com.theconnoisseur;
+package com.theconnoisseur.Activities;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+
+import com.theconnoisseur.R;
 
 
 public class LoginActivity extends ActionBarActivity {
+    public static final String tag = LoginActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+    }
+
+    public void click (View v) {
+        Log.d(tag, "HELLO!");
+        startActivity(new Intent(LoginActivity.this, Exercise.class));
     }
 
 
