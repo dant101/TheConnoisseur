@@ -1,10 +1,10 @@
-#Getting started on The Connoisseur
+# Getting started on The Connoisseur
 
 When working on the app we use google's bespoke android IDE Android Studio. Download from [here](https://developer.android.com/sdk/index.html) everything you need including the SDK.
 
 Gradle is the 'build system of choice', it hooks up the dependencies seamlessly - you need this too ([here](https://gradle.org))
 
-##With the system set up...
+## With the system set up...
 
 1. Create a new directory for the project
 2. Clone the repo
