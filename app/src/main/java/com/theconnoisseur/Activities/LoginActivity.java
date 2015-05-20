@@ -21,7 +21,6 @@ public class LoginActivity extends ActionBarActivity {
     }
 
     public void click (View v) {
-        Log.d(tag, "HELLO!");
         startActivity(new Intent(LoginActivity.this, Exercise.class));
     }
 

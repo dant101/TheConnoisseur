@@ -28,6 +28,7 @@
 
         <TextView
             android:id="@+id/phonetic_spelling"
+            android:textSize="@dimen/text_medium"
             android:layout_margin="@dimen/text_margin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,6 +36,7 @@
 
         <TextView
             android:id="@+id/translation"
+            android:textSize="@dimen/text_small"
             android:layout_margin="@dimen/text_margin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
