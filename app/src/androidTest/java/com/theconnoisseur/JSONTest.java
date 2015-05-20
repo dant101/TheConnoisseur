@@ -16,6 +16,7 @@ public class JSONTest extends AndroidTestCase {
                 "\t\t\"phonetic\" : \"ʠɠƙʄƈɗƭʃʒʂʐ\",\n" +
                 "\t\t\"image_url\" : \"www.image.com\",\n" +
                 "\t\t\"sound_recording\" : \"www.recording.com\",\n" +
+                "\t\t\"word_description\" : \"The first Russian nested doll set was made in 1890 by Vasily Zvyozdochkin from a design by Sergey Malyutin, who was a folk crafts painter at Abramtsevo\",\n" +
                 "\t\t\"language_id\": 3,\n" +
                 "\t\t\"language\" : \"Russian\"\n" +
                 "\t}";
@@ -25,7 +26,6 @@ public class JSONTest extends AndroidTestCase {
         assertEquals(1, e.getWord_id());
         assertEquals("ma-try-osh-ka", e.getWord());
         assertEquals("ʠɠƙʄƈɗƭʃʒʂʐ", e.getPhonetic());
-
         assertEquals("www.image.com", e.getImage_url());
         assertEquals("www.recording.com", e.getSound_recording_url());
         assertEquals(3, e.getLanguage_id());

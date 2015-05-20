@@ -3,11 +3,11 @@ package com.theconnoisseur.Activities;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.theconnoisseur.Activities.Exercise.ExerciseActivity;
 import com.theconnoisseur.R;
 
 
@@ -21,7 +21,7 @@ public class LoginActivity extends ActionBarActivity {
     }
 
     public void click (View v) {
-        startActivity(new Intent(LoginActivity.this, Exercise.class));
+        startActivity(new Intent(LoginActivity.this, ExerciseActivity.class));
     }
 
 

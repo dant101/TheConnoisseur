@@ -10,7 +10,7 @@
     <dimen name="normal_padding">10dp</dimen>
     <dimen name="normal_margin">10dp</dimen>
 
-    <!-- Exercise Activity -->
+    <!-- ExerciseActivity Activity -->
     <dimen name="language_width">40dp</dimen>
     <dimen name="language_height">40dp</dimen>
     <dimen name="illustration_width">300dp</dimen>

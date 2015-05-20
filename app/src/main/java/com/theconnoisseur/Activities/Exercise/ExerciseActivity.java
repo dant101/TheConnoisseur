@@ -1,8 +1,8 @@
-package com.theconnoisseur.Activities;
+package com.theconnoisseur.Activities.Exercise;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
+import android.net.Uri;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,24 +10,23 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
-import android.widget.ImageView;
-import android.widget.TextView;
 
+import com.theconnoisseur.Activities.LoginActivity;
 import com.theconnoisseur.R;
 
-public class Exercise extends ActionBarActivity {
+public class ExerciseActivity extends FragmentActivity implements ExerciseFragment.OnFragmentInteractionListener {
+
+    private static final String TAG_EXERCISE_FRAGMENT = "exercise_fragment";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exercise);
+
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
-                    .commit();
+                    .add(R.id.container, ExerciseFragment.newInstance(), TAG_EXERCISE_FRAGMENT).commit();
         }
-
 
     }
 
@@ -61,9 +60,8 @@ public class Exercise extends ActionBarActivity {
     }
 
     public void goBack(View v) {
-        startActivity(new Intent(Exercise.this, LoginActivity.class));
+        startActivity(new Intent(ExerciseActivity.this, LoginActivity.class));
     }
-
 
 
     /**
