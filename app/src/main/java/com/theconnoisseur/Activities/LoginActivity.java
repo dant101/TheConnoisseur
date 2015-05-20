@@ -1,6 +1,7 @@
 package com.theconnoisseur.Activities;
 
 import android.content.Intent;
+import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,14 +11,26 @@ import android.view.View;
 
 import com.theconnoisseur.R;
 
+import Database.Database;
+
 
 public class LoginActivity extends ActionBarActivity {
     public static final String tag = LoginActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        /*Database test*/
+
+        Database database = new Database();
+        database.connect();
+
     }
 
     public void click (View v) {
