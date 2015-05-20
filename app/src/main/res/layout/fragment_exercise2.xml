@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/normal_padding">
+
+    <ImageButton
+        android:layout_width="@dimen/home_icon_width"
+        android:layout_height="@dimen/home_icon_width"
+        android:src="@drawable/hamburger2"
+        android:background="@android:color/transparent"
+        android:onClick="goBack"/>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="8"
+        android:orientation="vertical"
+        android:layout_marginLeft="-20dp"
+        android:layout_marginRight="-20dp"
+        android:gravity="center|top">
+
+        <ImageView
+            android:layout_width="@dimen/language_width"
+            android:layout_height="@dimen/language_height"
+            android:src="@drawable/russia"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/language"
+                android:text="@string/russia"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/progess"
+                android:text="@string/progress_sample"/>
+
+            </LinearLayout>
+
+        <ImageView
+            android:id="@+id/word_illustration"
+            android:layout_width="@dimen/illustration_width"
+            android:layout_height="@dimen/illustration_height"
+            android:layout_margin="10dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/russiandoll"/>
+
+        <TextView
+            android:id="@+id/word"
+            android:layout_margin="@dimen/normal_margin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/word_sample"/>
+
+        <TextView
+            android:id="@+id/phonetic_spelling"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/phonetic_spelling_test"/>
+
+        <TextView
+            android:id="@+id/word_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/normal_margin"
+            android:gravity="center"
+            android:text="@string/description_sample"/>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_margin="@dimen/normal_margin"
+                android:id="@+id/listen_icon"
+                android:layout_width="@dimen/microphone_width"
+                android:layout_height="@dimen/microphone_width"
+                android:src="@drawable/microphone_icon"/>
+
+            <ImageView
+                android:id="@+id/record_icon"
+                android:layout_margin="@dimen/normal_margin"
+                android:layout_width="@dimen/microphone_width"
+                android:layout_height="@dimen/microphone_width"
+                android:src="@drawable/microphone_icon"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginTop="30dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/the"/>
+
+        <ImageView
+            android:id="@+id/connoisseur_side"
+            android:layout_width="30dp"
+            android:layout_height="150dp" />
+
+
+        </LinearLayout>
+
+
+</LinearLayout>

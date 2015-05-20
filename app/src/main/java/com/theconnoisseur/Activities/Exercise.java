@@ -1,5 +1,6 @@
 package com.theconnoisseur.Activities;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.theconnoisseur.R;
 
@@ -25,14 +28,20 @@ public class Exercise extends ActionBarActivity {
                     .commit();
         }
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_exercise, menu);
+        //getMenuInflater().inflate(R.menu.menu_exercise, menu);
         return true;
     }
 
@@ -51,6 +60,12 @@ public class Exercise extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void goBack(View v) {
+        startActivity(new Intent(Exercise.this, LoginActivity.class));
+    }
+
+
+
     /**
      * A placeholder fragment containing a simple view.
      */
@@ -62,8 +77,10 @@ public class Exercise extends ActionBarActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_exercise, container, false);
+            View rootView = inflater.inflate(R.layout.fragment_exercise2, container, false);
             return rootView;
         }
+
+
     }
 }
