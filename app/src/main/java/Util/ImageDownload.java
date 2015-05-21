@@ -13,6 +13,13 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+
+/**
+ * This helper class can be used twofold.
+ * 1: Download an image on the calling thread with getBitmapFromUrl(), returns a bitmap
+ * 2: Create an instance of this class and call 'execute()' to initiate the async task which
+ * calls the onImageDownloaded(Bitmap b) method which the calling Activity must implement
+ */
 public class ImageDownload extends AsyncTask<Void, Integer, Void> {
 
     private static final String TAG = ImageDownload.class.getSimpleName();

@@ -14,14 +14,14 @@ public class ExerciseContent {
 
     private static final String TAG = ExerciseActivity.class.getSimpleName();
 
-    private static final String WORD_ID = "word_id";
-    private static final String WORD = "word";
-    private static final String PHONETIC = "phonetic";
-    private static final String IMAGE_URL = "image_url";
-    private static final String SOUND_RECORDING = "sound_recording";
-    private static final String WORD_DESCRIPTION = "word_description";
-    private static final String LANGUAGE_ID = "language_id";
-    private static final String LANGUAGE = "language";
+    public static final String WORD_ID = "word_id";
+    public static final String WORD = "word";
+    public static final String PHONETIC = "phonetic";
+    public static final String IMAGE_URL = "image_url";
+    public static final String SOUND_RECORDING = "sound_recording";
+    public static final String WORD_DESCRIPTION = "word_description";
+    public static final String LANGUAGE_ID = "language_id";
+    public static final String LANGUAGE = "language";
 
     private int word_id;
     private String word;
