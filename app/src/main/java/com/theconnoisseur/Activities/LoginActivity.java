@@ -25,12 +25,6 @@ public class LoginActivity extends ActionBarActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        /*Database test*/
-
-        Database database = new Database();
-        database.connect();
-
     }
 
     public void click (View v) {
