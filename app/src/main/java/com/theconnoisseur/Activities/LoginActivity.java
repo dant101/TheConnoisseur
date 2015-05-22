@@ -12,6 +12,9 @@ import android.view.View;
 import android.widget.ImageView;
 import com.theconnoisseur.Activities.Exercise.ExerciseActivity;
 import com.theconnoisseur.R;
+
+import Database.Database;
+import Database.Postgresql;
 import Util.ImageDownload;
 
 
@@ -28,6 +31,11 @@ public class LoginActivity extends ActionBarActivity implements ImageDownload.Im
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        Postgresql db = new Postgresql("db.doc.ic.ac.uk/g1427115_u","g1427115_u","IOiuiPSi66");
+        db.connect();
+        db.query("Bullshit");
+        db.disconnect();
     }
 
     public void click (View v) {
