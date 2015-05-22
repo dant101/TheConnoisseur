@@ -20,7 +20,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activities.Exercise"
+            android:name=".Activities.Exercise.ExerciseActivity"
             android:launchMode="singleTask"
             android:label="@string/title_activity_exercise"
             android:parentActivityName="com.theconnoisseur.Activities.LoginActivity" >

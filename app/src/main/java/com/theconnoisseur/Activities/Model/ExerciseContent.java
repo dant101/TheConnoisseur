@@ -2,7 +2,7 @@ package com.theconnoisseur.Activities.Model;
 
 import android.util.Log;
 
-import com.theconnoisseur.Activities.Exercise;
+import com.theconnoisseur.Activities.Exercise.ExerciseActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,21 +12,23 @@ import org.json.JSONObject;
  */
 public class ExerciseContent {
 
-    private static final String TAG = Exercise.class.getSimpleName();
+    private static final String TAG = ExerciseActivity.class.getSimpleName();
 
-    private static final String WORD_ID = "word_id";
-    private static final String WORD = "word";
-    private static final String PHONETIC = "phonetic";
-    private static final String IMAGE_URL = "image_url";
-    private static final String SOUND_RECORDING = "sound_recording";
-    private static final String LANGUAGE_ID = "language_id";
-    private static final String LANGUAGE = "language";
+    public static final String WORD_ID = "word_id";
+    public static final String WORD = "word";
+    public static final String PHONETIC = "phonetic";
+    public static final String IMAGE_URL = "image_url";
+    public static final String SOUND_RECORDING = "sound_recording";
+    public static final String WORD_DESCRIPTION = "word_description";
+    public static final String LANGUAGE_ID = "language_id";
+    public static final String LANGUAGE = "language";
 
     private int word_id;
     private String word;
     private String phonetic;
     private String image_url;
     private String sound_recording;
+    private String word_description;
     private int language_id;
     private String language;
 
@@ -54,11 +56,13 @@ public class ExerciseContent {
         return language;
     }
 
+    public String getDescription() {
+        return word_description;
+    }
 
     public String getPhonetic() {
         return phonetic;
     }
-
 
     public int getWord_id() {
         return word_id;
@@ -66,7 +70,7 @@ public class ExerciseContent {
 
 
     /**
-     * Parses an 'Exercise' JSON object and populates the fields.
+     * Parses an 'ExerciseActivity' JSON object and populates the fields.
      * @param json a correctly parsed JSON object (use JSONHelper)
      */
     public ExerciseContent(JSONObject json) {
@@ -76,6 +80,7 @@ public class ExerciseContent {
             phonetic = json.getString(PHONETIC);
             image_url = json.getString(IMAGE_URL);
             sound_recording = json.getString(SOUND_RECORDING);
+            word_description = json.getString(WORD_DESCRIPTION);
             language_id = json.getInt(LANGUAGE_ID);
             language = json.getString(LANGUAGE);
 

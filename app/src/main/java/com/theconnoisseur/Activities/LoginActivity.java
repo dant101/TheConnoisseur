@@ -2,20 +2,23 @@ package com.theconnoisseur.Activities;
 
 import android.content.Intent;
 import android.os.StrictMode;
+import android.graphics.Bitmap;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
+import android.widget.ImageView;
+import com.theconnoisseur.Activities.Exercise.ExerciseActivity;
 import com.theconnoisseur.R;
+import Util.ImageDownload;
 
-import Database.Database;
 
+public class LoginActivity extends ActionBarActivity implements ImageDownload.ImageLoaderListener {
+    public static final String TAG = LoginActivity.class.getSimpleName();
 
-public class LoginActivity extends ActionBarActivity {
-    public static final String tag = LoginActivity.class.getSimpleName();
+    private static Bitmap mBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +31,21 @@ public class LoginActivity extends ActionBarActivity {
     }
 
     public void click (View v) {
-        startActivity(new Intent(LoginActivity.this, Exercise.class));
+        startActivity(new Intent(LoginActivity.this, ExerciseActivity.class));
+    }
+
+    public void downloadTest(View v) {
+        String magic = "http://www.see-and-do-france.com/images/French_flag_design.jpg";
+        ImageDownload mDownloader = new ImageDownload(magic, LoginActivity.this, mBitmap, this);
+        mDownloader.execute();
+
+
+    }
+
+    public void onImageDownloaded(Bitmap bmp) {
+        Log.d(TAG, "LoginActivity: onImageDownloaded call back");
+        ImageView image = (ImageView) findViewById(R.id.test_image);
+        image.setImageBitmap(bmp);
     }
 
 
