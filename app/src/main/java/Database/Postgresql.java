@@ -1,14 +1,15 @@
 package Database;
 
-import org.json.JSONObject;
-
+import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import Util.JSONHelper;
 
 /**
  * Created by Alexandre on 22/05/2015.
@@ -39,7 +40,9 @@ public class Postgresql implements Database {
 
         try {
             connection = DriverManager.getConnection(
-                    "jdbc:postgresql://"+host+"?ssl=false", username,
+                    "jdbc:postgresql://"+host+"?&ssl=true" +
+                    "&sslfactory=org.postgresql.ssl.NonValidatingFactory",
+                    username,
                     password);
         } catch (SQLException e) {
             System.out.println("Connection Failed! Check output console");
@@ -68,24 +71,23 @@ public class Postgresql implements Database {
     }
 
     /*Execute an SQL query
-    * Get the result back in a ResultSet
-    * Convert it to JSON afterwards*/
-    public JSONObject query(String query) {
-        JSONObject result = null;
+    * Get the result back as a list of rows where each row is a list of objects (int, string, date...)
+    * sqlQuery is an SQL query example: "SELECT name, surname FROM test"
+    * arguments is what we want back example: "name, surname, city"*/
+    public List<List<String>> query(String sqlQuery, List<String> arguments) {
+        List<List<String>> result = new ArrayList<>();
 
         try {
             Statement stmt = connection.createStatement();
-            String sql;
-            // For testing purposes
-            sql = "SELECT name, surname FROM test";
-
-            ResultSet rs = stmt.executeQuery(sql);
-            //result = JSONHelper.getInstance().getJSON("What goes in here?");
+            ResultSet rs = stmt.executeQuery(sqlQuery);
+            //Loop over all the rows
             while (rs.next()) {
-                //for testing purposes
-                String first = rs.getString("name");
-                String last = rs.getString("surname");
-
+                //For each row get the different values needed
+                List<String> row = new ArrayList<>();
+                for(String arg : arguments) {
+                    row.add(rs.getString(arg));
+                }
+                result.add(row);
             }
             rs.close();
             stmt.close();
@@ -95,6 +97,4 @@ public class Postgresql implements Database {
             return result;
         }
     }
-
-
 }

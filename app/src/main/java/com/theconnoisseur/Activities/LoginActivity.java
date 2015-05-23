@@ -13,8 +13,10 @@ import android.widget.ImageView;
 import com.theconnoisseur.Activities.Exercise.ExerciseActivity;
 import com.theconnoisseur.R;
 
-import Database.Database;
-import Database.Postgresql;
+import java.util.Iterator;
+import java.util.List;
+
+import Database.*;
 import Util.ImageDownload;
 
 
@@ -32,10 +34,19 @@ public class LoginActivity extends ActionBarActivity implements ImageDownload.Im
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        /*USAGE EXAMPLE for Database
+
         Postgresql db = new Postgresql("db.doc.ic.ac.uk/g1427115_u","g1427115_u","IOiuiPSi66");
         db.connect();
-        db.query("Bullshit");
+        ExerciseOnlineDBReader r = new ExerciseOnlineDBReader(db);
+
+        List<ExerciseOnlineDBFormat> l = r.getFrench();
+
+        for(ExerciseOnlineDBFormat f : l) {
+            System.out.println(f.getWord());
+        }
         db.disconnect();
+        */
     }
 
     public void click (View v) {
