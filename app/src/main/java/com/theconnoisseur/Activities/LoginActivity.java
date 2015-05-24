@@ -53,6 +53,10 @@ public class LoginActivity extends ActionBarActivity implements ImageDownload.Im
         startActivity(new Intent(LoginActivity.this, ExerciseActivity.class));
     }
 
+    public void main_menu_click(View v) {
+        startActivity(new Intent(LoginActivity.this, MainMenuActivity.class));
+    }
+
     public void downloadTest(View v) {
         String magic = "http://www.see-and-do-france.com/images/French_flag_design.jpg";
         ImageDownload mDownloader = new ImageDownload(magic, LoginActivity.this, mBitmap, this);

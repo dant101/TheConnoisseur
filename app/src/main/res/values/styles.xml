@@ -5,8 +5,12 @@
 
     </style>
 
+    <color name ="white">#FFFFFF</color>
     <color name = "app_background">#FFFFD6</color>
     <color name = "app_background_dark">#FFFF99</color>
     <color name = "app_background_light">#FFFFEA</color>
+
+    <color name = "orange">#FF9933</color>
+    <color name = "green">#19D175</color>
 
 </resources>
