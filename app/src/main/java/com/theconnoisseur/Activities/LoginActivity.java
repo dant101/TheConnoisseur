@@ -1,6 +1,7 @@
 package com.theconnoisseur.Activities;
 
 import android.content.Intent;
+import android.os.StrictMode;
 import android.graphics.Bitmap;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -9,10 +10,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-
 import com.theconnoisseur.Activities.Exercise.ExerciseActivity;
 import com.theconnoisseur.R;
 
+import java.util.Iterator;
+import java.util.List;
+
+import Database.*;
 import Util.ImageDownload;
 
 
@@ -23,8 +27,26 @@ public class LoginActivity extends ActionBarActivity implements ImageDownload.Im
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        /*USAGE EXAMPLE for Database
+
+        Postgresql db = new Postgresql("db.doc.ic.ac.uk/g1427115_u","g1427115_u","IOiuiPSi66");
+        db.connect();
+        ExerciseOnlineDBReader r = new ExerciseOnlineDBReader(db);
+
+        List<ExerciseOnlineDBFormat> l = r.getFrench();
+
+        for(ExerciseOnlineDBFormat f : l) {
+            System.out.println(f.getWord());
+        }
+        db.disconnect();
+        */
     }
 
     public void click (View v) {
