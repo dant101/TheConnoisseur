@@ -26,9 +26,11 @@
 
     <!-- Main_Menu Activity -->
     <dimen name="arrow_width">20dp</dimen>
-
-
     <dimen name="text_margin">7dp</dimen>
     <dimen name="image_margin">10dp</dimen>
+
+    <!-- LanguageSelection Activity -->
+    <dimen name="flag_width">50dp</dimen>
+    <dimen name="flag_height">30dp</dimen>
 
 </resources>

@@ -1,15 +1,20 @@
 package com.theconnoisseur.Activities;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.theconnoisseur.R;
 
 public class MainMenuActivity extends ActionBarActivity {
+    public static final String TAG = MainMenuActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,9 +33,9 @@ public class MainMenuActivity extends ActionBarActivity {
         TextView connoisseur_collection_desc = (TextView) findViewById(R.id.connoisseur_collection_desc);
 
         language_selection_title.setTypeface(font_bold);
-        connoisseur_collection_title.setTypeface(font_bold);
+        //connoisseur_collection_title.setTypeface(font_bold);
         language_selection_desc.setTypeface(font_normal);
-        connoisseur_collection_desc.setTypeface(font_normal);
+        //connoisseur_collection_desc.setTypeface(font_normal);
 
         super.onStart();
     }
@@ -55,5 +60,22 @@ public class MainMenuActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void goBack(View v) {
+        startActivity(new Intent(MainMenuActivity.this, LoginActivity.class));
+    }
+
+    public void onSelection(View v) {
+        Log.d(TAG, "onSelection Button click registered");
+        switch(v.getId()) {
+
+            case R.id.language_selection_button:
+                startActivity(new Intent(MainMenuActivity.this, LanguageSelectionActivity.class));
+                break;
+            case R.id.connoisseur_collection_button:
+
+                Toast.makeText(this, "Button selection not currently supported", Toast.LENGTH_SHORT).show();
+        }
     }
 }

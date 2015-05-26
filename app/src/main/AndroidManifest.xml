@@ -28,7 +28,15 @@
         </activity>
         <activity
             android:name=".Activities.MainMenuActivity"
-            android:label="@string/title_activity_main_menu" >
+            android:label="@string/title_activity_main_menu"
+            android:launchMode="singleTask"
+            android:parentActivityName=".Activities.LoginActivity">
+        </activity>
+        <activity
+            android:name=".Activities.LanguageSelectionActivity"
+            android:label="@string/title_activity_language_selection"
+            android:launchMode="singleTask"
+            android:parentActivityName=".Activities.MainMenuActivity">
         </activity>
     </application>
 

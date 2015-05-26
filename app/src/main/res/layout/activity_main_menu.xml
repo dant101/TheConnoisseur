@@ -22,7 +22,8 @@
             android:layout_height="@dimen/home_icon_width"
             android:layout_marginTop="-30dp"
             android:layout_marginLeft="20dp"
-            android:src="@drawable/ui_burger"/>
+            android:onClick="goBack"
+            android:src="@drawable/ui_back"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -49,15 +50,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/language_selection"
-                    android:textSize="@dimen/text_small"
+                    android:textSize="@dimen/text_medium"
                     android:textStyle="bold"
                     android:textColor="@color/white"/>
 
                 <ImageView
+                    android:id="@+id/language_selection_button"
                     android:layout_width="@dimen/arrow_width"
                     android:layout_height="@dimen/arrow_width"
                     android:src="@drawable/ui_burger"
                     android:layout_gravity="right"
+                    android:onClick="onSelection"
                     android:layout_alignParentRight="true"/>
 
                 </RelativeLayout>
@@ -93,13 +96,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/connoisseur_collection"
-                    android:textSize="@dimen/text_small"
+                    android:textSize="@dimen/text_medium"
                     android:textStyle="bold"
                     android:textColor="@color/white"/>
 
                 <ImageView
+                    android:id="@+id/connoisseur_collection_button"
                     android:layout_width="@dimen/arrow_width"
                     android:layout_height="@dimen/arrow_width"
+                    android:onClick="onSelection"
                     android:src="@drawable/ui_burger"
                     android:layout_gravity="right"
                     android:layout_alignParentRight="true"/>
