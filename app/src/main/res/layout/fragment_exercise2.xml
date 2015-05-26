@@ -86,7 +86,8 @@
                 android:id="@+id/listen_icon"
                 android:layout_width="@dimen/microphone_width"
                 android:layout_height="@dimen/microphone_width"
-                android:src="@drawable/ui_listen"/>
+                android:src="@drawable/ui_listen"
+                android:onClick="voiceClick"/>
 
             <ImageView
                 android:id="@+id/record_icon"

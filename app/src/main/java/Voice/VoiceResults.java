@@ -1,5 +1,7 @@
 package Voice;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 /**
@@ -26,8 +28,15 @@ public class VoiceResults {
         int i = 0;
         int max = results.size();
 
+        int j = 0;
         for (String s : results) {
-            if (target == s) {
+            Log.d("Voices recognised", s);
+            Log.d("Voices score", ""+scores[j]);
+            j++;
+        }
+
+        for (String s : results) {
+            if (target.equals(s)) {
                 break;
             }
             i++;

@@ -4,6 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.util.Log;
+import android.view.View;
+
+import com.theconnoisseur.Activities.Exercise.ExerciseActivity;
+
+import static java.security.AccessController.getContext;
 
 /**
  * Created by dan on 24/05/15.
@@ -15,22 +21,29 @@ public class VoiceRecogniser {
     private Intent i;
     private VoiceListener listener;
 
+    public boolean clicked;
+
     private final int max_results = 10;
 
     /*
      * Called with the string we are searching for, language and the application context
+     * String must be lowercase
+     * Lang must be in format en-US
      */
-    VoiceRecogniser(Context c, String targetString, String lang) {
+    public VoiceRecogniser(Context c, String targetString, String lang) {
         this.targetString = targetString;
-
-        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(c);
 
         i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         i.putExtra(RecognizerIntent.EXTRA_LANGUAGE, lang);
         i.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, max_results);
+        i.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
 
         listener = new VoiceListener(targetString);
+
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(c);
+
         speechRecognizer.setRecognitionListener(listener);
+
     }
 
     /*
@@ -46,7 +59,9 @@ public class VoiceRecogniser {
      */
     public float stopListening() {
         speechRecognizer.stopListening();
-        return listener.result();
+        float r = listener.result();// <--- Crash
+        return r;
     }
+
 
 }
