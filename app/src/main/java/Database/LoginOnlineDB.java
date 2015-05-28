@@ -20,16 +20,16 @@ public class LoginOnlineDB extends OnlineDB {
     }
 
     /* Tries to login returning true if success*/
-    public boolean login(String username, String password) {
+    public boolean login(String username, String password) throws Exception {
         boolean result = false;
 
-        //using a different query format here to prevent SQLInjections
+        //using a different selectQuery format here to prevent SQLInjections
         String query = "SELECT * " +
                 "FROM login " +
                 "WHERE username = ?";
         List<List<String>> queryResult = database.loginQuery(query, this.allArguments, username);
         if(queryResult.size() == 1) {;
-            LoginOnlineDBFormat formatLogin = format(queryResult).get(0);
+            LoginOnlineDBFormat formatLogin = format(queryResult,LoginOnlineDBFormat.class).get(0);
             result = PasswordEncryption.isExpectedPassword(password, formatLogin.getSalt(), formatLogin.getPassword());
         }
 
@@ -81,12 +81,18 @@ public class LoginOnlineDB extends OnlineDB {
         return queryResultUsername.size() == 0;
     }
 
-    private List<LoginOnlineDBFormat> format(List<List<String>> queryResult) {
+    @Override
+    <LoginOnlineDBFormat> List<LoginOnlineDBFormat> format(List<List<String>> queryResult,
+                                                           Class<LoginOnlineDBFormat> cls) {
         List<LoginOnlineDBFormat> result = new ArrayList<>();
 
         for(List<String> strings : queryResult) {
-            LoginOnlineDBFormat current = new LoginOnlineDBFormat(strings);
-            result.add(current);
+            try {
+                LoginOnlineDBFormat current = cls.getDeclaredConstructor(List.class).newInstance(strings);
+                result.add(current);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return result;
     }

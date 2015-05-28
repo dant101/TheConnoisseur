@@ -6,24 +6,21 @@ package Database;
 public interface Database {
             /*USAGE EXAMPLE for Database*/
 /*
+
         Postgresql db = new Postgresql("db.doc.ic.ac.uk/g1427115_u","g1427115_u","IOiuiPSi66");
         db.connect();
 
-        ExerciseOnlineDB r = new ExerciseOnlineDB(db);
-        List<ExerciseOnlineDBFormat> l = r.getFrench();
 
-        for(ExerciseOnlineDBFormat f : l) {
-            System.out.print(f.getWord());
-            System.out.print(f.getLanguage());
-            System.out.print(f.getImage_url());
+        LanguageOnlineDB langDB = new LanguageOnlineDB(db);
+        List<LanguageOnlineDBFormat> langList = langDB.getAllLanguages();
+
+        for(LanguageOnlineDBFormat l : langList) {
+            System.out.println("ID: " + l.getLanguage_id());
+            System.out.println("NAME: " + l.getLanguage_name());
+            System.out.println("HEX: " + l.getLanguage_hex());
+            System.out.println("IMAGE_URL: " + l.getLanguage_image_url());
             System.out.println();
         }
-
-
-        LoginOnlineDB loginDB = new LoginOnlineDB(db);
-        System.out.println("CREATION:" + loginDB.create("alex", "lol", "alex@cool.com"));
-        System.out.println("LOGIN:" + loginDB.login("alex", "loll"));
-
         db.disconnect();
 
         */

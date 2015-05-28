@@ -2,7 +2,6 @@ package Database;
 
 import java.util.ArrayList;
 import java.util.List;
-import Resources.LANGUAGE_ID;
 
 /**
  * Created by Alexandre on 22/05/2015.
@@ -21,21 +20,29 @@ public class ExerciseOnlineDB extends OnlineDB {
         allArguments.add("language");
     }
 
-    public List<ExerciseOnlineDBFormat> getFrench() {
+    public List<ExerciseOnlineDBFormat> getLanguageByID(int id) {
         String query = "SELECT * " +
                         "FROM exercise " +
-                        "WHERE language_id = " + LANGUAGE_ID.FRENCH.getNumVal();
-        List<List<String>> queryResult = database.query(query, this.allArguments);
-        return format(queryResult);
+                        "WHERE language_id = " + id;
+        List<List<String>> queryResult = database.selectQuery(query, this.allArguments);
+        return format(queryResult, ExerciseOnlineDBFormat.class);
     }
 
+    @Override
+    <ExerciseOnlineDBFormat> List<ExerciseOnlineDBFormat> format(
+            List<List<String>> queryResult,
+            Class<ExerciseOnlineDBFormat> cls) {
 
-    private List<ExerciseOnlineDBFormat> format(List<List<String>> queryResult) {
         List<ExerciseOnlineDBFormat> result = new ArrayList<>();
 
         for(List<String> strings : queryResult) {
-            ExerciseOnlineDBFormat current = new ExerciseOnlineDBFormat(strings);
-            result.add(current);
+            try {
+                ExerciseOnlineDBFormat current = cls.getDeclaredConstructor(List.class).newInstance(strings);
+                result.add(current);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
         return result;
     }

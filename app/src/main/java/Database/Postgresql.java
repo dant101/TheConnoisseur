@@ -71,11 +71,11 @@ public class Postgresql implements Database {
         }
     }
 
-    /*Execute an SQL query
+    /*Execute an SQL selectQuery
     * Get the result back as a list of rows where each row is a list of objects (int, string, date...)
-    * sqlQuery is an SQL query example: "SELECT name, surname FROM test"
+    * sqlQuery is an SQL selectQuery example: "SELECT name, surname FROM test"
     * arguments is what we want back example: "name, surname, city"*/
-    public List<List<String>> query(String sqlQuery, List<String> arguments) {
+    public List<List<String>> selectQuery(String sqlQuery, List<String> arguments) {
         List<List<String>> result = new ArrayList<>();
 
         try {
@@ -96,6 +96,19 @@ public class Postgresql implements Database {
             e.printStackTrace();
         } finally {
             return result;
+        }
+    }
+
+    /*Does an insert into the database
+    Format example: "INSERT INTO exercise VALUES (100, 'Zara', 'Ali', 18)"
+     */
+    public void insertQuery(String sqlQuery) {
+        try {
+            Statement stmt = connection.createStatement();
+            stmt.executeUpdate(sqlQuery);
+            stmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
