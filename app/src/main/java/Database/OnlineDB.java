@@ -14,4 +14,6 @@ public abstract class OnlineDB {
     public OnlineDB(Postgresql database) {
         this.database = database;
     }
+
+    abstract <T> List<T> format(List<List<String>> queryResult, Class<T> cls) throws Exception;
 }
