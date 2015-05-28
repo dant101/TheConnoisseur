@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.theconnoisseur.Activities.Model.ExerciseContent;
+import com.theconnoisseur.Activities.Model.LanguageSelection;
 
 //TODO: create test case to test setting up of database, test cursors
 
@@ -31,7 +32,7 @@ public class ExerciseContentDBHelper extends SQLiteOpenHelper {
     }
 
     //Names of all the columns in the EXERCISES database are all referenced from the ExerciseContent model class
-    private static String  WORD_ID = ExerciseContent.WORD_ID;
+    private static String WORD_ID = ExerciseContent.WORD_ID;
     private static String WORD = ExerciseContent.WORD;
     private static String PHONETIC = ExerciseContent.PHONETIC;
     private static String IMAGE_URL = ExerciseContent.IMAGE_URL;
@@ -44,9 +45,21 @@ public class ExerciseContentDBHelper extends SQLiteOpenHelper {
             "CREATE TABLE EXERCISES(\"_id\" INTEGER PRIMARY KEY, \"word_id\" INTEGER, \"word\" TEXT, \"phonetic\" TEXT, \"image_url\" TEXT, \"sound_recording\" TEXT, \"word_description\" TEXT, \"language_id\" INTEGER, \"language\" TEXT)";
 
 
+    //Names of all the columns in the LANGUAGES database - references from LanguageSelection model class
+    private static String LANGUAGE_NAME = LanguageSelection.LANGUAGE_NAME;
+    private static String LANGUAGE_HEX = LanguageSelection.LANGUAGE_HEX;
+    private static String LANGUAGE_IMAGE_URL = LanguageSelection.LANGUAGE_IMAGE_URL;
+    private static String LANGUAGE_IMAGE = LanguageSelection.LANGUAGE_IMAGE;
+
+    private static String LANGUAGES_TABLE_CREATE =
+              "CREATE TABLE LANGUAGES(_id INTEGER PRIMARY KEY AUTOINCREMENT, language_name TEXT, language_hex TEXT, language_image_url TEXT, language_image BLOB NOT NULL)";
+
+
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(EXERCISES_TABLE_CREATE);
+        db.execSQL(LANGUAGES_TABLE_CREATE);
     }
 
     @Override

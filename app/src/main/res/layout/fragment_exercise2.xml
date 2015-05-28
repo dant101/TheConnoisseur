@@ -3,7 +3,7 @@
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/normal_padding"
-    android:background="@color/app_background">
+    android:background="@drawable/gradient_selector">
 
     <ImageButton
         android:layout_width="@dimen/home_icon_width"

@@ -2,9 +2,6 @@ package Database;
 
 import java.util.List;
 
-/**
- * Created by Alexandre on 22/05/2015.
- */
 public class ExerciseOnlineDBFormat {
     private int word_id;
     private String word;

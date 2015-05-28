@@ -10,8 +10,17 @@
     <color name = "app_background_dark">#FFFF99</color>
     <color name = "app_background_light">#FFFFEA</color>
 
-    <color name = "orange">#FF9933</color>
-    <color name = "green">#19D175</color>
+    <color name = "app_start_color">#F0EEC4</color>
+    <color name = "app_end_color">#F0EEDE</color>
+
+    <color name = "orange">#E55611</color>
+    <color name = "green">#59B16F</color>
     <color name = "grey">#DBDADA</color>
+
+    <!-- Country colours -->
+    <color name = "flag_blue">#002395</color>
+    <color name = "flag_green">#009246</color>
+    <color name = "flag_red">#CF142B</color>
+    <color name = "flag_german">#FFCE00</color>
 
 </resources>

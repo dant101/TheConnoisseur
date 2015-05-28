@@ -20,6 +20,7 @@
         android:gravity="center"/>
 
     <ImageView
+        android:id="@+id/language_image"
         android:layout_width="@dimen/flag_width"
         android:layout_height="@dimen/flag_height"
         android:src="@drawable/flag_random"
