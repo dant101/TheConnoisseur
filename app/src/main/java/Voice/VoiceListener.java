@@ -1,12 +1,12 @@
 package Voice;
 
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.speech.RecognitionListener;
 import android.speech.SpeechRecognizer;
+import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.concurrent.Semaphore;
+import java.util.Locale;
 
 /**
  * Created by dan on 24/05/15.
@@ -14,18 +14,19 @@ import java.util.concurrent.Semaphore;
 public class VoiceListener implements RecognitionListener {
 
     private String target;
-    private VoiceResults vr;
-    private boolean resultsComputed;
+    private VoiceScore score;
+    private Locale locale;
 
-    Semaphore semaphore;
-
-    VoiceListener(String target) {
+    VoiceListener(String target, VoiceScore score, String lang) {
 
         this.target = target;
-        resultsComputed = false;
-        semaphore = new Semaphore(0);
+        this.score = score;
+
+        locale = new Locale(lang);
 
     }
+
+
 
     @Override
     public void onReadyForSpeech(Bundle bundle) {
@@ -62,11 +63,42 @@ public class VoiceListener implements RecognitionListener {
      */
     @Override
     public void onResults(Bundle bundle) {
+
         ArrayList<String> results = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
         float[] scores = bundle.getFloatArray(SpeechRecognizer.CONFIDENCE_SCORES);
-        vr = new VoiceResults(results, scores, target);
-        resultsComputed = true;
 
+        logResults(results, scores);
+        getScore(results, scores);
+    }
+
+    // Returns corresponding score, if there is one
+    private void getScore(ArrayList<String> results, float[] scores) {
+        int i = 0;
+        int max = results.size();
+
+        for (String s : results) {
+            if (target.toLowerCase(locale).equals(s.toLowerCase(locale))) {
+                break;
+            }
+            i++;
+        }
+
+        if (i == max) {
+            score.setResult(VoiceScore.FAIL);
+        } else {
+            score.setResult(scores[i]);
+        }
+    }
+
+    // For Testing
+    private void logResults(ArrayList<String> results, float[] scores) {
+
+        int j = 0;
+        for (String s : results) {
+            Log.d("Voices recognised", s);
+            Log.d("Voices score", ""+scores[j]);
+            j++;
+        }
     }
 
     @Override
@@ -77,17 +109,5 @@ public class VoiceListener implements RecognitionListener {
     @Override
     public void onEvent(int i, Bundle bundle) {
 
-    }
-
-    /*
-     * Fetch results through VoiceResults
-     */
-    public float result() {
-
-        // Will crash if called before on results has finished
-        // Listener runs on main thread
-        // Voice Recogniser will have to run on a new thread and use semaphores to ensure order
-
-        return vr.result();
     }
 }

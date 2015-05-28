@@ -1,8 +1,6 @@
 package com.theconnoisseur.Activities.Exercise;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -16,7 +14,10 @@ import android.view.ViewGroup;
 import com.theconnoisseur.Activities.LoginActivity;
 import com.theconnoisseur.R;
 
+import java.util.concurrent.ExecutionException;
+
 import Voice.VoiceRecogniser;
+import Voice.VoiceScore;
 
 public class ExerciseActivity extends FragmentActivity implements ExerciseFragment.OnFragmentInteractionListener {
 
@@ -34,7 +35,9 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
                     .add(R.id.container, ExerciseFragment.newInstance(), TAG_EXERCISE_FRAGMENT).commit();
         }
 
-        vr = new VoiceRecogniser(this, "матрешка", "ru-RU");
+        VoiceScore voiceScore = new VoiceScore();
+
+        vr = new VoiceRecogniser(this, "МЕНЯ", "ru-RU", voiceScore);
         vr.clicked = false;
 
     }
@@ -100,10 +103,15 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
             Log.d("voiceClick","Start Listening");
             vr.startListening();
         } else {
-            Log.d("voiceClick","Stop Listening");
-            float f = vr.stopListening();
-            Log.d("voiceClick", ("Score - "+f));
+            Log.d("voiceClick", "Stop Listening");
+            vr.stopListening();
+            VoiceScore r = vr.getVoiceScore();
+            Log.d("voiceClick", ("Score - "+r.getResult()));
         }
 
+    }
+
+    public void logScoreButton(View v) {
+        Log.d("voiceClick", ("Score - "+vr.getVoiceScore().getResult()));
     }
 }

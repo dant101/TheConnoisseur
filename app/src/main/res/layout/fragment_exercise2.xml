@@ -94,7 +94,8 @@
                 android:layout_margin="@dimen/normal_margin"
                 android:layout_width="@dimen/microphone_width"
                 android:layout_height="@dimen/microphone_width"
-                android:src="@drawable/ui_record"/>
+                android:src="@drawable/ui_record"
+                android:onClick="logScoreButton"/>
 
             </LinearLayout>
 
