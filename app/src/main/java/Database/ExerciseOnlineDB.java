@@ -1,21 +1,16 @@
 package Database;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import Resources.LANGUAGE_ID;
 
 /**
  * Created by Alexandre on 22/05/2015.
  */
-public class ExerciseOnlineDBReader {
-    private List<ExerciseOnlineDBFormat> list = new ArrayList<>();
-    private Postgresql database;
-    private List<String> allArguments = new ArrayList<>();
+public class ExerciseOnlineDB extends OnlineDB {
 
-    public ExerciseOnlineDBReader(Postgresql database) {
-        this.database = database;
+    public ExerciseOnlineDB(Postgresql database) {
+        super(database);
         allArguments.add("word_id");
         allArguments.add("word");
         allArguments.add("phonetic");
@@ -33,6 +28,7 @@ public class ExerciseOnlineDBReader {
         List<List<String>> queryResult = database.query(query, this.allArguments);
         return format(queryResult);
     }
+
 
     private List<ExerciseOnlineDBFormat> format(List<List<String>> queryResult) {
         List<ExerciseOnlineDBFormat> result = new ArrayList<>();
