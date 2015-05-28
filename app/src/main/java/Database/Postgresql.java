@@ -3,6 +3,7 @@ package Database;
 import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -96,5 +97,51 @@ public class Postgresql implements Database {
         } finally {
             return result;
         }
+    }
+
+    /*We need a special loginQuery to prevent user from doing SQLInjection*/
+    public List<List<String>> loginQuery(String sqlQuery, List<String> arguments, String value) {
+        List<List<String>> result = new ArrayList<>();
+
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sqlQuery);
+            stmt.setString(1,value);
+            ResultSet rs = stmt.executeQuery();
+            //Loop over all the rows
+            while (rs.next()) {
+                //For each row get the different values needed
+                List<String> row = new ArrayList<>();
+                for(String arg : arguments) {
+                    row.add(rs.getString(arg));
+                }
+                result.add(row);
+            }
+            rs.close();
+            stmt.close();
+        } catch (Exception e){
+            e.printStackTrace();
+        } finally {
+            return result;
+        }
+    }
+
+    /*We need a special createLoginQuery to prevent user from doing SQLInjection*/
+    public boolean createLoginQuery(String sqlQuery,
+                                 String username, String password,
+                                 String email, int salt) {
+
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sqlQuery);
+            stmt.setString(1, username);
+            stmt.setString(2, password);
+            stmt.setString(3, email);
+            stmt.setInt(4, salt);
+            stmt.executeUpdate();
+            stmt.close();
+            return true;
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
     }
 }
