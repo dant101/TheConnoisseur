@@ -29,8 +29,8 @@
     <string name="description_sample">The first Russian nested doll set was made in 1890 by Vasily Zvyozdochkin from a design by Sergey Malyutin, who was a folk crafts painter at Abramtsevo</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="download_test">Download Image</string>
-
     <string name="title_activity_main_menu">MainMenuActivity</string>
     <string name="title_activity_language_selection">LanguageSelectionActivity</string>
+    <string name="title_activity_splash_screen">SplashScreenActivity</string>
 
 </resources>

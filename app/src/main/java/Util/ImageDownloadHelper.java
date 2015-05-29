@@ -25,6 +25,15 @@ import java.net.URL;
  * 2: Create an instance of this class and call 'execute()' to initiate the async task which
  * calls the onImageDownloaded(Bitmap b) method which the calling Activity must implement
  */
+
+/**
+ * To decode an image stored at 'path':
+ *
+ //                FileInputStream f = context.openFileInput(urlString);
+ //                mBitmap = BitmapFactory.decodeStream(f);
+ //                f.close();
+ */
+
 public class ImageDownloadHelper extends AsyncTask<Boolean, Integer, Void> {
 
     private static final String TAG = ImageDownloadHelper.class.getSimpleName();
@@ -119,12 +128,7 @@ public class ImageDownloadHelper extends AsyncTask<Boolean, Integer, Void> {
                     Log.d(TAG, "Failed to write to output stream");
                     e.printStackTrace();
                 }
-
-                FileInputStream f = context.openFileInput(urlString);
-                mBitmap = BitmapFactory.decodeStream(f);
-                f.close();
             }
-
             return mBitmap;
 
         } catch (MalformedURLException e) {

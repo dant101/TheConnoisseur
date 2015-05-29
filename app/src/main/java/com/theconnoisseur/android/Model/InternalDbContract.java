@@ -1,9 +1,6 @@
 package com.theconnoisseur.android.Model;
 
-
 import android.net.Uri;
-
-import com.theconnoisseur.android.Provider.InternalDbProvider;
 
 public class InternalDbContract {
 
