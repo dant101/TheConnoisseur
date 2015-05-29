@@ -1,4 +1,4 @@
-package com.theconnoisseur.Activities;
+package com.theconnoisseur.android.Activities;
 
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
@@ -6,11 +6,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
-import com.theconnoisseur.Activities.Model.LanguageSelectionListItem;
+import com.theconnoisseur.android.Model.LanguageSelectionListItem;
 import com.theconnoisseur.R;
 
 import java.util.ArrayList;

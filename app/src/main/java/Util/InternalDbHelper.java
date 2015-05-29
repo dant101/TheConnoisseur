@@ -6,8 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.theconnoisseur.Activities.Model.ExerciseContent;
-import com.theconnoisseur.Activities.Model.LanguageSelection;
+import com.theconnoisseur.android.Model.ExerciseContent;
+import com.theconnoisseur.android.Model.InternalDbContract;
+import com.theconnoisseur.android.Model.LanguageSelection;
 
 //TODO: create test case to test setting up of database, test cursors
 
@@ -15,23 +16,14 @@ import com.theconnoisseur.Activities.Model.LanguageSelection;
  * Helper class that creates database to store newly downloaded exercises.
  * Provides methods returning custom cursors over the database of exercises
  */
-public class InternalDBHelper extends SQLiteOpenHelper {
+public class InternalDbHelper extends SQLiteOpenHelper {
 
-    private static InternalDBHelper sHelper;
     private SQLiteDatabase mDatabase;
 
-    public static InternalDBHelper getInstance(Context context) {
-        if (sHelper == null) {
-            sHelper = new InternalDBHelper(context);
-        }
-        return sHelper;
-    }
-
-    private final static String DATABASE_NAME = "exercises";
     private final static int DATABASE_VERSION = 1;
 
-    private InternalDBHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    public InternalDbHelper(Context context) {
+        super(context, InternalDbContract.DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     //Names of all the columns in the EXERCISES database are all referenced from the ExerciseContent model class
@@ -52,7 +44,6 @@ public class InternalDBHelper extends SQLiteOpenHelper {
     private static String LANGUAGE_NAME = LanguageSelection.LANGUAGE_NAME;
     private static String LANGUAGE_HEX = LanguageSelection.LANGUAGE_HEX;
     private static String LANGUAGE_IMAGE_URL = LanguageSelection.LANGUAGE_IMAGE_URL;
-    private static String LANGUAGE_IMAGE = LanguageSelection.LANGUAGE_IMAGE;
 
     private static String LANGUAGES_TABLE_CREATE =
               "CREATE TABLE LANGUAGES(_id INTEGER PRIMARY KEY AUTOINCREMENT, language_name TEXT, language_hex TEXT, language_image_url TEXT)";
@@ -70,6 +61,11 @@ public class InternalDBHelper extends SQLiteOpenHelper {
 
     //TODO: create methods to return custom cursors over the data for exercises
     //i.e., public Cursor getExerciseByLanguageId(Integer id){}
+
+    public String getDatabasePath() {
+            mDatabase = getWritableDatabase();
+        return mDatabase.getPath();
+    }
 
     public Cursor getLanguages() {
         mDatabase = getReadableDatabase();

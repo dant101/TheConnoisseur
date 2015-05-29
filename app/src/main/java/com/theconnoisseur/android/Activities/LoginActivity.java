@@ -1,5 +1,6 @@
-package com.theconnoisseur.Activities;
+package com.theconnoisseur.android.Activities;
 
+import android.content.ContentProvider;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -12,13 +13,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import com.theconnoisseur.Activities.Exercise.ExerciseActivity;
-import com.theconnoisseur.Activities.Model.LanguageSelection;
+
+import com.theconnoisseur.android.Model.ExerciseContent;
+import com.theconnoisseur.android.Model.InternalDbContract;
+import com.theconnoisseur.android.Model.LanguageSelection;
 import com.theconnoisseur.R;
+import com.theconnoisseur.android.Provider.InternalDbProvider;
 
 import Util.CursorHelper;
 import Util.ImageDownloadHelper;
-import Util.InternalDBHelper;
+import Util.InternalDbHelper;
 
 
 public class LoginActivity extends ActionBarActivity implements ImageDownloadHelper.ImageLoaderListener {
@@ -50,21 +54,6 @@ public class LoginActivity extends ActionBarActivity implements ImageDownloadHel
         ImageDownloadHelper mDownloader = new ImageDownloadHelper(magic, LoginActivity.this, mBitmap, this);
         mDownloader.execute(true);
 
-    }
-
-    public void dbTest(View v) {
-        InternalDBHelper mDbHelper = InternalDBHelper.getInstance(this);
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
-        long rowId1 = db.insert(LanguageSelection.LANGUAGE_TABLE_NAME, null, LanguageSelection.getTestValues1());
-        long rowId2 = db.insert(LanguageSelection.LANGUAGE_TABLE_NAME, null, LanguageSelection.getTestValues2());
-
-        String[] projection = {LanguageSelection.LANGUAGE_ID, LanguageSelection.LANGUAGE_NAME, LanguageSelection.LANGUAGE_HEX, LanguageSelection.LANGUAGE_IMAGE_URL};
-
-        Cursor c = db.query(LanguageSelection.LANGUAGE_TABLE_NAME, projection, null, null, null, null, null, null);
-        c.moveToFirst();
-
-        CursorHelper.toString(c);
     }
 
     public void onImageDownloaded(Bitmap bmp) {

@@ -1,4 +1,4 @@
-package com.theconnoisseur.Activities;
+package com.theconnoisseur.android.Activities;
 
 
 import android.app.Activity;

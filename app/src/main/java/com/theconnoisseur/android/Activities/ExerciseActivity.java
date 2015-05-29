@@ -1,7 +1,6 @@
-package com.theconnoisseur.Activities.Exercise;
+package com.theconnoisseur.android.Activities;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -11,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.theconnoisseur.Activities.LoginActivity;
 import com.theconnoisseur.R;
 
 public class ExerciseActivity extends FragmentActivity implements ExerciseFragment.OnFragmentInteractionListener {

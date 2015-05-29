@@ -1,9 +1,6 @@
-package com.theconnoisseur.Activities.Model;
+package com.theconnoisseur.android.Model;
 
 import android.util.Log;
-
-import com.theconnoisseur.Activities.Exercise.ExerciseActivity;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -12,7 +9,9 @@ import org.json.JSONObject;
  */
 public class ExerciseContent {
 
-    private static final String TAG = ExerciseActivity.class.getSimpleName();
+    private static final String TAG = ExerciseContent.class.getSimpleName();
+
+    public static final String EXERICISE_TABLE_NAME = "EXERCISES";
 
     public static final String WORD_ID = "word_id";
     public static final String WORD = "word";

@@ -1,6 +1,4 @@
-package com.theconnoisseur.Activities.Model;
-
-import android.widget.ImageView;
+package com.theconnoisseur.android.Model;
 
 import java.util.HashMap;
 

@@ -1,4 +1,4 @@
-package com.theconnoisseur.Activities.Exercise;
+package com.theconnoisseur.android.Activities;
 
 import android.app.Activity;
 import android.net.Uri;
