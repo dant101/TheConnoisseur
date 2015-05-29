@@ -1,6 +1,8 @@
 package com.theconnoisseur.Activities;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.StrictMode;
 import android.graphics.Bitmap;
 import android.support.v7.app.ActionBarActivity;
@@ -11,15 +13,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import com.theconnoisseur.Activities.Exercise.ExerciseActivity;
+import com.theconnoisseur.Activities.Model.LanguageSelection;
 import com.theconnoisseur.R;
 
-import java.util.List;
+import Util.CursorHelper;
+import Util.ImageDownloadHelper;
+import Util.InternalDBHelper;
 
-import Database.*;
-import Util.ImageDownload;
 
-
-public class LoginActivity extends ActionBarActivity implements ImageDownload.ImageLoaderListener {
+public class LoginActivity extends ActionBarActivity implements ImageDownloadHelper.ImageLoaderListener {
     public static final String TAG = LoginActivity.class.getSimpleName();
 
     private static Bitmap mBitmap;
@@ -43,11 +45,26 @@ public class LoginActivity extends ActionBarActivity implements ImageDownload.Im
     }
 
     public void downloadTest(View v) {
-        String magic = "http://www.see-and-do-france.com/images/French_flag_design.jpg";
-        ImageDownload mDownloader = new ImageDownload(magic, LoginActivity.this, mBitmap, this);
-        mDownloader.execute();
+        //String magic = "http://www.see-and-do-france.com/images/French_flag_design.jpg";
+        String magic = "http://www.doc.ic.ac.uk/project/2014/271/g1427115/images/flags/4-russian.png";
+        ImageDownloadHelper mDownloader = new ImageDownloadHelper(magic, LoginActivity.this, mBitmap, this);
+        mDownloader.execute(true);
 
+    }
 
+    public void dbTest(View v) {
+        InternalDBHelper mDbHelper = InternalDBHelper.getInstance(this);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        long rowId1 = db.insert(LanguageSelection.LANGUAGE_TABLE_NAME, null, LanguageSelection.getTestValues1());
+        long rowId2 = db.insert(LanguageSelection.LANGUAGE_TABLE_NAME, null, LanguageSelection.getTestValues2());
+
+        String[] projection = {LanguageSelection.LANGUAGE_ID, LanguageSelection.LANGUAGE_NAME, LanguageSelection.LANGUAGE_HEX, LanguageSelection.LANGUAGE_IMAGE_URL};
+
+        Cursor c = db.query(LanguageSelection.LANGUAGE_TABLE_NAME, projection, null, null, null, null, null, null);
+        c.moveToFirst();
+
+        CursorHelper.toString(c);
     }
 
     public void onImageDownloaded(Bitmap bmp) {

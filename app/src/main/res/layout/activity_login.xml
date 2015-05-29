@@ -22,7 +22,8 @@
         android:layout_height="wrap_content"
         android:text="@string/download_test"
         android:layout_margin="10dp"
-        android:layout_toRightOf="@+id/button"/>
+        android:layout_toRightOf="@+id/button"
+        android:id="@+id/button2" />
 
     <Button
         android:id="@+id/main_menu"
@@ -40,5 +41,16 @@
         android:layout_margin="10dp"
         android:layout_below="@+id/main_menu"
         android:src="@drawable/russia"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DB test"
+        android:onClick="dbTest"
+        android:id="@+id/button3"
+        android:layout_above="@+id/test_image"
+        android:layout_alignLeft="@+id/button2"
+        android:layout_toRightOf="@+id/main_menu"
+        android:layout_alignRight="@+id/button2" />
 
 </RelativeLayout>
