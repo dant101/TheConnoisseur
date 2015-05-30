@@ -1,9 +1,10 @@
 package com.theconnoisseur.android.Activities;
 
 import android.app.Activity;
-import android.net.Uri;
+import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.theconnoisseur.R;
+import com.theconnoisseur.android.Model.ExerciseContent;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,6 +23,7 @@ import com.theconnoisseur.R;
  * create an instance of this fragment.
  */
 public class ExerciseFragment extends Fragment {
+    private static final String TAG = ExerciseFragment.class.getSimpleName();
 
     private ImageView mLanguageImage;
     private TextView mLanguage;
@@ -29,6 +32,11 @@ public class ExerciseFragment extends Fragment {
     private TextView mWord;
     private TextView mPhoneticSpelling;
     private TextView mWordDescription;
+
+    private ImageView mRecord;
+    private ImageView mListen;
+
+    private int mCursorPosition = -1;
 
     private OnFragmentInteractionListener mListener;
 
@@ -59,14 +67,21 @@ public class ExerciseFragment extends Fragment {
         mPhoneticSpelling = (TextView) view.findViewById(R.id.phonetic_spelling);
         mWordDescription = (TextView) view.findViewById(R.id.word_description);
 
+        mRecord = (ImageView) view.findViewById(R.id.record_icon);
+        mListen = (ImageView) view.findViewById(R.id.listen_icon);
+
+        setListeners();
+
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            //mListener.onFragmentInteraction(uri);
-        }
+    private void setListeners() {
+        mListen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.nextExercise(false);
+            }
+        });
     }
 
     @Override
@@ -86,6 +101,23 @@ public class ExerciseFragment extends Fragment {
         mListener = null;
     }
 
+    public void nextExercise(Cursor c) {
+        mCursorPosition += 1;
+
+        //CursorHelper.toString(c); //Testing
+
+        Log.d(TAG, "Exercise cursor position: " + String.valueOf(mCursorPosition));
+
+        c.moveToPosition(mCursorPosition);
+
+        if(c.isAfterLast()) { return; }
+
+        mLanguage.setText(c.getString(c.getColumnIndex(ExerciseContent.LANGUAGE)));
+        mWord.setText(c.getString(c.getColumnIndex(ExerciseContent.WORD)));
+        mWordDescription.setText(c.getString(c.getColumnIndex(ExerciseContent.WORD_DESCRIPTION)));
+        mPhoneticSpelling.setText(c.getString(c.getColumnIndex(ExerciseContent.PHONETIC)));
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -93,8 +125,7 @@ public class ExerciseFragment extends Fragment {
      * activity.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        //public void onFragmentInteraction(Uri uri);
+        public void nextExercise(boolean firstExercise);
     }
 
 }

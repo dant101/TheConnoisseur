@@ -47,6 +47,7 @@
         android:layout_height="wrap_content"
         android:text="Miscellaneous"
         android:id="@+id/button3"
+        android:onClick="dbTest"
         android:layout_above="@+id/test_image"
         android:layout_alignLeft="@+id/button2"
         android:layout_toRightOf="@+id/main_menu"

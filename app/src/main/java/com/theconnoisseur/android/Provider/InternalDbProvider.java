@@ -27,7 +27,8 @@ public class InternalDbProvider extends ContentProvider {
     private static final String TABLE_EXERCISES = ExerciseContent.EXERICISE_TABLE_NAME;
 
     private static final int LANGUAGES = 0;
-    private static final int EXERCISES = 1;
+    private static final int EXERCISES_ALL = 1;
+    private static final int EXERCISES = 2;
 
     private static final UriMatcher URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
 
@@ -37,7 +38,8 @@ public class InternalDbProvider extends ContentProvider {
 
     static {
         URI_MATCHER.addURI(InternalDbContract.CONTENT_AUTHORITY, TABLE_LANGUAGES, LANGUAGES);
-        URI_MATCHER.addURI(InternalDbContract.CONTENT_AUTHORITY, TABLE_EXERCISES, EXERCISES);
+        URI_MATCHER.addURI(InternalDbContract.CONTENT_AUTHORITY, TABLE_EXERCISES, EXERCISES_ALL);
+        URI_MATCHER.addURI(InternalDbContract.CONTENT_AUTHORITY, TABLE_EXERCISES + "/*", EXERCISES);
     }
 
     public InternalDbProvider(Context context) {
@@ -81,8 +83,17 @@ public class InternalDbProvider extends ContentProvider {
                 break;
 
             case EXERCISES:
+                Log.d(TAG, "querying EXERCISES");
+                String query = InternalDbContract.getId(uri);
+                String[] args = {query};
+
                 cursor = getDatabase(false).query(
-                        TABLE_EXERCISES, null, selection, null, null, null, sortOrder);
+                        TABLE_EXERCISES, InternalDbContract.PROJECTION_EXERCISES, ExerciseContent.LANGUAGE_ID + "=?", args, null, null, sortOrder);
+                break;
+
+            case EXERCISES_ALL:
+                cursor = getDatabase(false).query(
+                TABLE_EXERCISES, InternalDbContract.PROJECTION_EXERCISES, selection, null, null, null, sortOrder);
                 break;
         }
 
@@ -97,14 +108,16 @@ public class InternalDbProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
+        Log.d(TAG, "attempting insert operation...");
         switch (URI_MATCHER.match(uri)) {
             case LANGUAGES:
                 Log.d(TAG, "inserting into Languages...");
                 getDatabase(true).insert(TABLE_LANGUAGES, null, values);
                 break;
-            case EXERCISES:
+            case EXERCISES_ALL:
                 Log.d(TAG, "inserting into Exerises...");
                 getDatabase(true).insert(TABLE_EXERCISES, null, values);
+                break;
         }
         return null;
     }

@@ -16,6 +16,17 @@ public class InternalDbContract {
             LanguageSelection.LANGUAGE_HEX,
             LanguageSelection.LANGUAGE_IMAGE_URL};
 
+    public static final String[] PROJECTION_EXERCISES = {
+            ExerciseContent.WORD_ID,
+            ExerciseContent.WORD,
+            ExerciseContent.PHONETIC,
+            ExerciseContent.IMAGE_URL,
+            ExerciseContent.SOUND_RECORDING,
+            ExerciseContent.WORD_DESCRIPTION,
+            ExerciseContent.LANGUAGE_ID,
+            ExerciseContent.LANGUAGE
+    };
+
     public static Uri queryForLanguages() {
         return CONTENT_URI.buildUpon().appendPath(LanguageSelection.LANGUAGE_TABLE_NAME).build();
     }
@@ -24,9 +35,16 @@ public class InternalDbContract {
         return CONTENT_URI.buildUpon().appendPath(LanguageSelection.LANGUAGE_TABLE_NAME).build();
     }
 
-    public static Uri queryForWords(String id) {
-        //TODO: query for words on language id
+    public static Uri insertExercisesUri() {
         return CONTENT_URI.buildUpon().appendPath(ExerciseContent.EXERICISE_TABLE_NAME).build();
+    }
+
+    public static Uri queryForWords(int id) {
+        return CONTENT_URI.buildUpon().appendPath(ExerciseContent.EXERICISE_TABLE_NAME).appendPath(String.valueOf(id)).build();
+    }
+
+    public static String getId(Uri uri) {
+        return uri.getLastPathSegment();
     }
 
 }

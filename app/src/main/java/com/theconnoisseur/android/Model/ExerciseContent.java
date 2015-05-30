@@ -13,7 +13,7 @@ public class ExerciseContent {
 
     public static final String EXERICISE_TABLE_NAME = "EXERCISES";
 
-    public static final String WORD_ID = "word_id";
+    public static final String WORD_ID = "_id";
     public static final String WORD = "word";
     public static final String PHONETIC = "phonetic";
     public static final String IMAGE_URL = "image_url";

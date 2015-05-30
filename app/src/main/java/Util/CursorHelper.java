@@ -15,6 +15,8 @@ public class CursorHelper {
 
         c.moveToFirst();
 
+        Log.d(TAG, "Printing Value of Cursor... \n");
+
         for (int i = 0; i < entries; i++) {
             for (int j = 0; j < columns; j++) {
                 Log.d(TAG, "Entry: " + String.valueOf(i) + ". Column: " + c.getColumnName(j) + ", value: " + c.getString(j) + "\n");

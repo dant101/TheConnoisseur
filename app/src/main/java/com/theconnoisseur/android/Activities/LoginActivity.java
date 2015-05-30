@@ -1,6 +1,7 @@
 package com.theconnoisseur.android.Activities;
 
 import android.content.ContentProvider;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -60,6 +61,10 @@ public class LoginActivity extends ActionBarActivity implements ImageDownloadHel
         Log.d(TAG, "LoginActivity: onImageDownloaded call back");
         ImageView image = (ImageView) findViewById(R.id.test_image);
         image.setImageBitmap(bmp);
+    }
+
+    public void dbTest(View v) {
+    //EMPTY for temp use
     }
 
 

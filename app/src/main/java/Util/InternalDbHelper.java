@@ -37,7 +37,7 @@ public class InternalDbHelper extends SQLiteOpenHelper {
     private static String LANGUAGE = ExerciseContent.LANGUAGE;
 
     private static String EXERCISES_TABLE_CREATE =
-            "CREATE TABLE EXERCISES(\"_id\" INTEGER PRIMARY KEY, \"word_id\" INTEGER, \"word\" TEXT, \"phonetic\" TEXT, \"image_url\" TEXT, \"sound_recording\" TEXT, \"word_description\" TEXT, \"language_id\" INTEGER, \"language\" TEXT)";
+            "CREATE TABLE EXERCISES(_id INTEGER PRIMARY KEY AUTOINCREMENT, word TEXT, phonetic TEXT, image_url TEXT, sound_recording TEXT, word_description TEXT, language_id INTEGER, language TEXT)";
 
 
     //Names of all the columns in the LANGUAGES database - references from LanguageSelection model class
