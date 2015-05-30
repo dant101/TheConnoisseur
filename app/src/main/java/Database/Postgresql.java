@@ -76,6 +76,7 @@ public class Postgresql implements Database {
     * sqlQuery is an SQL selectQuery example: "SELECT name, surname FROM test"
     * arguments is what we want back example: "name, surname, city"*/
     public List<List<String>> selectQuery(String sqlQuery, List<String> arguments) {
+        this.connect();
         List<List<String>> result = new ArrayList<>();
 
         try {
@@ -95,6 +96,7 @@ public class Postgresql implements Database {
         } catch (Exception e){
             e.printStackTrace();
         } finally {
+            this.disconnect();
             return result;
         }
     }
@@ -103,17 +105,21 @@ public class Postgresql implements Database {
     Format example: "INSERT INTO exercise VALUES (100, 'Zara', 'Ali', 18)"
      */
     public void insertQuery(String sqlQuery) {
+        this.connect();
         try {
             Statement stmt = connection.createStatement();
             stmt.executeUpdate(sqlQuery);
             stmt.close();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            this.disconnect();
         }
     }
 
     /*We need a special loginQuery to prevent user from doing SQLInjection*/
     public List<List<String>> loginQuery(String sqlQuery, List<String> arguments, String value) {
+        this.connect();
         List<List<String>> result = new ArrayList<>();
 
         try {
@@ -134,6 +140,7 @@ public class Postgresql implements Database {
         } catch (Exception e){
             e.printStackTrace();
         } finally {
+            this.disconnect();
             return result;
         }
     }
@@ -142,7 +149,8 @@ public class Postgresql implements Database {
     public boolean createLoginQuery(String sqlQuery,
                                  String username, String password,
                                  String email, int salt) {
-
+        this.connect();
+        boolean result = false;
         try {
             PreparedStatement stmt = connection.prepareStatement(sqlQuery);
             stmt.setString(1, username);
@@ -151,10 +159,12 @@ public class Postgresql implements Database {
             stmt.setInt(4, salt);
             stmt.executeUpdate();
             stmt.close();
-            return true;
+            result = true;
         } catch (Exception e){
             e.printStackTrace();
+        } finally {
+            this.disconnect();
+            return result;
         }
-        return false;
     }
 }
