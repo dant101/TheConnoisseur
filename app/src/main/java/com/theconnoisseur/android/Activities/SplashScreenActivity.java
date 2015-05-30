@@ -1,17 +1,13 @@
 package com.theconnoisseur.android.Activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Handler;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 
 import com.theconnoisseur.R;
 
-public class SplashScreenActivity extends Activity {
+public class SplashScreenActivity extends BaseActivity {
 
     private static final int SPLASH_TIME = 1500;
 

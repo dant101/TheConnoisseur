@@ -45,10 +45,6 @@ public class LanguageSelectionActivity extends ActionBarActivity implements Curs
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_language_selection);
 
-
-        //For testing, download all images each time we open this activity - should be done elsewhere
-        ResourceDownloader.downloadLanguages(this);
-
         // Loads the cursor with languages information
         new CursorPreparationTask(this).execute();
     }

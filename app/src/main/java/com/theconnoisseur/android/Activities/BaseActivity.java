@@ -3,14 +3,27 @@ package com.theconnoisseur.android.Activities;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
+
+import com.theconnoisseur.android.Controller.ContentDownloadController;
 
 /**
  * Base Activity class that all other activities will extend
  */
 public class BaseActivity extends Activity {
+    public static final String TAG = BaseActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void onStart() {
+        Log.d(TAG, "BaseActivity onStart");
+        ContentDownloadController.getInstance().execute(this);
+
+        super.onStart();
     }
 
     @Override
