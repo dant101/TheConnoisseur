@@ -1,7 +1,13 @@
 package Database;
 
 /**
- * Created by Alexandre on 30/05/2015.
+ * API presented to app for querying online postgresql database
+ * e.g.
+ *  List<ExerciseOnlineDBFormat> rows = ConnoisseurDatabase.getInstance().getExerciseTable().getLanguageByID(1);
+ *
+ *      for (ExerciseOnlineDBFormat row : rows) {
+ *          System.out.println(row.getWord() + " " + row.getImage_url());
+ *      }
  */
 public class ConnoisseurDatabase {
     private final String username = "g1427115_u";

@@ -78,6 +78,9 @@ public class LanguageSelectionActivity extends ActionBarActivity implements Curs
 
     @Override
     public void CursorLoaded(Cursor c) {
+
+        //TODO: Cache loaded images!
+
         CursorHelper.toString(c);
 
         ListView languages = (ListView) findViewById(R.id.languages_list);
