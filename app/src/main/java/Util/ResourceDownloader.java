@@ -3,6 +3,7 @@ package Util;
 import android.content.ContentValues;
 import android.content.Context;
 
+import com.theconnoisseur.android.Activities.ExerciseActivity;
 import com.theconnoisseur.android.Model.InternalDbContract;
 import com.theconnoisseur.android.Model.LanguageSelection;
 
@@ -30,7 +31,7 @@ public class ResourceDownloader {
         values1.put(LanguageSelection.LANGUAGE_IMAGE_URL, url1);
 
         ContentValues values2 = new ContentValues();
-        values2.put(LanguageSelection.LANGUAGE_ID, 6);
+        values2.put(LanguageSelection.LANGUAGE_ID, 3);
         values2.put(LanguageSelection.LANGUAGE_NAME, "ITALIAN");
         values2.put(LanguageSelection.LANGUAGE_HEX, "009246");
         values2.put(LanguageSelection.LANGUAGE_IMAGE_URL, url2);

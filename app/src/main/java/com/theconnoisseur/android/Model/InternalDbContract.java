@@ -31,6 +31,10 @@ public class InternalDbContract {
         return CONTENT_URI.buildUpon().appendPath(LanguageSelection.LANGUAGE_TABLE_NAME).build();
     }
 
+    public static Uri queryForLanguages(int id) {
+        return CONTENT_URI.buildUpon().appendPath(LanguageSelection.LANGUAGE_TABLE_NAME).appendPath(String.valueOf(id)).build();
+    }
+
     public static Uri insertLanguagesUri() {
         return CONTENT_URI.buildUpon().appendPath(LanguageSelection.LANGUAGE_TABLE_NAME).build();
     }
@@ -44,6 +48,10 @@ public class InternalDbContract {
     }
 
     public static String getId(Uri uri) {
+        return uri.getLastPathSegment();
+    }
+
+    public static String getLanguageId(Uri uri) {
         return uri.getLastPathSegment();
     }
 

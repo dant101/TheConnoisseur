@@ -27,8 +27,9 @@ public class InternalDbProvider extends ContentProvider {
     private static final String TABLE_EXERCISES = ExerciseContent.EXERICISE_TABLE_NAME;
 
     private static final int LANGUAGES = 0;
-    private static final int EXERCISES_ALL = 1;
-    private static final int EXERCISES = 2;
+    private static final int LANGUAGES_ID = 1;
+    private static final int EXERCISES_ALL = 2;
+    private static final int EXERCISES = 3;
 
     private static final UriMatcher URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
 
@@ -38,6 +39,7 @@ public class InternalDbProvider extends ContentProvider {
 
     static {
         URI_MATCHER.addURI(InternalDbContract.CONTENT_AUTHORITY, TABLE_LANGUAGES, LANGUAGES);
+        URI_MATCHER.addURI(InternalDbContract.CONTENT_AUTHORITY, TABLE_LANGUAGES + "/*", LANGUAGES_ID);
         URI_MATCHER.addURI(InternalDbContract.CONTENT_AUTHORITY, TABLE_EXERCISES, EXERCISES_ALL);
         URI_MATCHER.addURI(InternalDbContract.CONTENT_AUTHORITY, TABLE_EXERCISES + "/*", EXERCISES);
     }
@@ -82,13 +84,21 @@ public class InternalDbProvider extends ContentProvider {
                         TABLE_LANGUAGES, InternalDbContract.PROJECTION_LANGUAGES, selection, null, null, null, sortOrder);
                 break;
 
+            case LANGUAGES_ID:
+                String query = InternalDbContract.getLanguageId(uri);
+                String[] args = {query};
+                Log.d(TAG, "querying LANGUAGES with LANGUAGE_ID");
+                cursor = getDatabase(false).query(
+                        TABLE_LANGUAGES, InternalDbContract.PROJECTION_LANGUAGES, LanguageSelection.LANGUAGE_ID + "=?", args, null, null, null);
+                break;
+
             case EXERCISES:
                 Log.d(TAG, "querying EXERCISES");
-                String query = InternalDbContract.getId(uri);
-                String[] args = {query};
+                query = InternalDbContract.getId(uri);
+                String[] args2 = {query};
 
                 cursor = getDatabase(false).query(
-                        TABLE_EXERCISES, InternalDbContract.PROJECTION_EXERCISES, ExerciseContent.LANGUAGE_ID + "=?", args, null, null, sortOrder);
+                        TABLE_EXERCISES, InternalDbContract.PROJECTION_EXERCISES, ExerciseContent.LANGUAGE_ID + "=?", args2, null, null, sortOrder);
                 break;
 
             case EXERCISES_ALL:

@@ -2,6 +2,7 @@ package com.theconnoisseur.android.Activities;
 
 import android.app.Activity;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -79,7 +80,7 @@ public class ExerciseFragment extends Fragment {
         mListen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.nextExercise(false);
+                mListener.nextExercise();
             }
         });
     }
@@ -101,6 +102,10 @@ public class ExerciseFragment extends Fragment {
         mListener = null;
     }
 
+    /**
+     * Shifts screen to next exercise by loading the next word from the cursor
+     * @param c
+     */
     public void nextExercise(Cursor c) {
         mCursorPosition += 1;
 
@@ -119,13 +124,25 @@ public class ExerciseFragment extends Fragment {
     }
 
     /**
+     * Change the text colour of the language to given hex value stored in db
+     * @param hex hex value of language text colour
+     */
+    public void setLanguageColor(String hex) {
+        try {
+            mLanguage.setTextColor(Color.parseColor(hex));
+        } catch (IllegalArgumentException e) {
+            Log.d(TAG, "Illegal Hex was provided for language - check database value!");
+        }
+    }
+
+    /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
      */
     public interface OnFragmentInteractionListener {
-        public void nextExercise(boolean firstExercise);
+        public void nextExercise();
     }
 
 }

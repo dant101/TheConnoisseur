@@ -15,13 +15,14 @@ import com.theconnoisseur.R;
 import com.theconnoisseur.android.Activities.Interfaces.CursorCallback;
 import com.theconnoisseur.android.Model.ExerciseContent;
 import com.theconnoisseur.android.Model.InternalDbContract;
+import com.theconnoisseur.android.Model.LanguageSelection;
 
 public class ExerciseActivity extends FragmentActivity implements ExerciseFragment.OnFragmentInteractionListener, CursorCallback {
 
     private static final String TAG = ExerciseContent.class.getSimpleName();
     private static final String TAG_EXERCISE_FRAGMENT = "exercise_fragment";
 
-    final int italian_id = 3; //ONLY FOR TESTING
+    public final int italian_id = 3; //ONLY FOR TESTING
 
     private Cursor mCursor = null;
 
@@ -74,11 +75,8 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
         startActivity(new Intent(ExerciseActivity.this, LoginActivity.class));
     }
 
-    public void nextExercise(boolean firstExercise) {
+    public void nextExercise() {
         //TODO: work on parent activity given that fragment requests new exercise?
-        if (!firstExercise && mCursor != null) {
-            Log.d(TAG, "mCursor moves to next");
-        }
 
         Fragment fragment = getFragmentManager().findFragmentByTag(TAG_EXERCISE_FRAGMENT);
 
@@ -129,13 +127,32 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
     public void CursorLoaded(Cursor c) {
         Log.d(TAG, "CursorLoaded callback");
 
+        c.moveToFirst();
         this.mCursor = c;
-        mCursor.moveToFirst();
-        nextExercise(true);
+
+        int id = c.getInt(c.getColumnIndex(ExerciseContent.LANGUAGE_ID));
+        processLanguageColor(id);
+        nextExercise();
 
     }
 
+    private void processLanguageColor(int language_id) {
+        Cursor c = getContentResolver().query(InternalDbContract.queryForLanguages(language_id), null, null, null, null);
+        c.moveToFirst();
 
+        String hex = c.getString(c.getColumnIndex(LanguageSelection.LANGUAGE_HEX));
+
+        Fragment fragment = getFragmentManager().findFragmentByTag(TAG_EXERCISE_FRAGMENT);
+
+        if (fragment instanceof ExerciseFragment) {
+            ((ExerciseFragment)fragment).setLanguageColor("#" + hex);
+        }
+    }
+
+
+    /**
+     * Loads a cursor of exercises using given language_id. Callbacks on completion
+     */
     private class ExerciseCursorPreparationTask extends AsyncTask<Integer, Void, Void> {
 
         CursorCallback mCallback;

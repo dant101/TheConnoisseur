@@ -42,8 +42,11 @@ public class InternalDbProviderTest extends ProviderTestCase2<InternalDbProvider
         int new_items = c.getCount();
 
         c.close();
-
         assertEquals(items + 2, new_items);
+
+        c = mMockResolver.query(InternalDbContract.queryForLanguages(1), null, null, null, null);
+        assertEquals(1, c.getCount());
+
     }
 
     public void testCanRetrieveCorrectItems() {
