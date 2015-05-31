@@ -20,6 +20,10 @@
     <string name="language_selection_desc">Perfect the language of your choice in game mode, or go random and take whatever the Connoisseur throws at you</string>
     <string name="no_languages">Unfortunately no languages are currently available, please contact support</string>
 
+    <!-- Collection -->
+    <string name="collection_heading">THE CONNOISSEUR\'S COLLECTION</string>
+    <string name="collection_subheading">View and replay previous sessions</string>
+
     <!-- Placeholder values -->
     <string name="phonetic_spelling_test">ʛʠɠƙʄƈɗƭʃʒʂʐçʝɣχʁχħɦhⱱɽ</string>
     <string name="translation_test">Russian Doll</string>
@@ -32,5 +36,6 @@
     <string name="title_activity_main_menu">MainMenuActivity</string>
     <string name="title_activity_language_selection">LanguageSelectionActivity</string>
     <string name="title_activity_splash_screen">SplashScreenActivity</string>
+    <string name="title_activity_collection">CollectionActivity</string>
 
 </resources>

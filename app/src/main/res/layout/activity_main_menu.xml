@@ -11,7 +11,7 @@
         android:layout_marginTop="@dimen/normal_margin">
 
         <ImageView
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/title_width"
             android:layout_height="wrap_content"
             android:src="@drawable/logo_2_horizontal"
             android:layout_marginTop="25dp"
@@ -20,7 +20,7 @@
         <ImageButton
             android:layout_width="@dimen/home_icon_width"
             android:layout_height="@dimen/home_icon_width"
-            android:layout_marginTop="-30dp"
+            android:layout_marginTop="-40dp"
             android:layout_marginLeft="20dp"
             android:onClick="goBack"
             android:src="@drawable/ui_back"/>

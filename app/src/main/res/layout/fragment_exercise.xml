@@ -1,54 +1,119 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.theconnoisseur.android.Activities.Exercise.ExerciseActivity$PlaceholderFragment">
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/normal_padding"
+    android:background="@drawable/gradient_selector">
+
+    <ImageButton
+        android:layout_width="@dimen/home_icon_width"
+        android:layout_height="@dimen/home_icon_width"
+        android:src="@drawable/ui_back"
+        android:background="@android:color/transparent"
+        android:onClick="goBack"/>
 
     <LinearLayout
-        android:gravity="center|top"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="vertical">
-        
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="8"
+        android:orientation="vertical"
+        android:layout_marginLeft="-20dp"
+        android:layout_marginRight="-20dp"
+        android:gravity="center|top">
+
         <ImageView
             android:id="@+id/language_image"
-            android:layout_margin="@dimen/image_margin"
             android:layout_width="@dimen/language_width"
             android:layout_height="@dimen/language_height"
-            android:src="@drawable/russia"/>
-        
+            android:src="@drawable/flag_random" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/language"
+                android:text="@string/russia"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/progess"
+                android:text="@string/progress_sample"/>
+
+            </LinearLayout>
+
         <ImageView
             android:id="@+id/word_illustration"
-            android:layout_margin="@dimen/image_margin"
             android:layout_width="@dimen/illustration_width"
             android:layout_height="@dimen/illustration_height"
-            android:src="@drawable/russiandoll"/>
+            android:layout_margin="10dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/matryoshka"/>
+
+        <TextView
+            android:id="@+id/word"
+            android:layout_margin="@dimen/normal_margin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/word_sample"/>
 
         <TextView
             android:id="@+id/phonetic_spelling"
-            android:textSize="@dimen/text_medium"
-            android:layout_margin="@dimen/text_margin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/phonetic_spelling_test"/>
 
         <TextView
-            android:id="@+id/translation"
-            android:textSize="@dimen/text_small"
-            android:layout_margin="@dimen/text_margin"
+            android:id="@+id/word_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/translation_test"/>
+            android:layout_margin="@dimen/normal_margin"
+            android:gravity="center"
+            android:text="@string/description_sample"/>
 
-        <ImageButton
-            android:id="@+id/microphone_image"
-            android:layout_gravity="center"
-            android:layout_margin="@dimen/image_margin"
-            android:layout_width="@dimen/microphone_width"
-            android:layout_height="@dimen/microphone_width" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_margin="@dimen/normal_margin"
+                android:id="@+id/listen_icon"
+                android:layout_width="@dimen/microphone_width"
+                android:layout_height="@dimen/microphone_width"
+                android:src="@drawable/ui_listen"/>
+
+            <ImageView
+                android:id="@+id/record_icon"
+                android:layout_margin="@dimen/normal_margin"
+                android:layout_width="@dimen/microphone_width"
+                android:layout_height="@dimen/microphone_width"
+                android:src="@drawable/ui_record"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 
-</RelativeLayout>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginTop="30dp">
+
+        <ImageView
+            android:id="@+id/connoisseur_side"
+            android:layout_width="30dp"
+            android:layout_height="150dp"
+            android:src="@drawable/logo_2"/>
+
+
+        </LinearLayout>
+
+
+</LinearLayout>

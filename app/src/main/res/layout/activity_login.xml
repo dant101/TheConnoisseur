@@ -40,7 +40,7 @@
         android:layout_height="100dp"
         android:layout_margin="10dp"
         android:layout_below="@+id/main_menu"
-        android:src="@drawable/russia"/>
+        android:src="@drawable/flag_random"/>
 
     <Button
         android:layout_width="wrap_content"

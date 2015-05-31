@@ -74,8 +74,10 @@ public class MainMenuActivity extends ActionBarActivity {
                 startActivity(new Intent(MainMenuActivity.this, LanguageSelectionActivity.class));
                 break;
             case R.id.connoisseur_collection_button:
+                startActivity(new Intent(MainMenuActivity.this, CollectionActivity.class));
+                break;
 
-                Toast.makeText(this, "Button selection not currently supported", Toast.LENGTH_SHORT).show();
+            //Adventures button?
         }
     }
 }

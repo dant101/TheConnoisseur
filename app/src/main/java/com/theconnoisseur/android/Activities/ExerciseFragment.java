@@ -61,7 +61,7 @@ public class ExerciseFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_exercise2, container, false);
+        View view = inflater.inflate(R.layout.fragment_exercise, container, false);
 
         mLanguageImage = (ImageView) view.findViewById(R.id.language_image);
         mLanguage = (TextView) view.findViewById(R.id.language);
@@ -113,7 +113,7 @@ public class ExerciseFragment extends Fragment {
         if (c == null) { return; }
         mCursorPosition += 1;
 
-        CursorHelper.toString(c); //Testing
+        //CursorHelper.toString(c); //Testing
 
         Log.d(TAG, "Exercise cursor position: " + String.valueOf(mCursorPosition));
 

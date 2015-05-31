@@ -9,18 +9,15 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-
         <activity
             android:name=".android.Activities.SplashScreenActivity"
             android:label="@string/app_name" >
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".android.Activities.LoginActivity"
             android:label="@string/app_name"
@@ -50,6 +47,13 @@
             android:name=".android.Provider.InternalDbProvider"
             android:authorities="connoisseur" >
         </provider>
+
+        <activity
+            android:name=".android.Activities.CollectionActivity"
+            android:label="@string/title_activity_collection"
+            android:launchMode="singleTask"
+            android:parentActivityName=".android.Activities.MainMenuActivity" >
+        </activity>
     </application>
 
 </manifest>
