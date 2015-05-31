@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.ImageView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -22,7 +23,7 @@ import java.net.URL;
 /**
  * This helper class can be used twofold.
  * 1: Download an image on the calling thread with getBitmapFromUrl(), returns a bitmap
- * 2: Create an instance of this class and call 'execute()' to initiate the async task which
+ * 2: Create an instance of this class and call 'getLanguages()' to initiate the async task which
  * calls the onImageDownloaded(Bitmap b) method which the calling Activity must implement
  */
 
@@ -141,6 +142,26 @@ public class ImageDownloadHelper extends AsyncTask<Boolean, Integer, Void> {
         }
 
         return null;
+    }
+
+    public static void loadImage(Context context, ImageView view, String path_in) {
+        try {
+            String path = path_in.replace(File.separator, "");
+
+            FileInputStream f = context.openFileInput(path);
+
+            Bitmap b = BitmapFactory.decodeStream(f);
+            f.close();
+
+            view.setImageBitmap(b);
+        } catch (FileNotFoundException e) {
+            Log.d(TAG, "FileNotFoundException when decoding saved image");
+            e.printStackTrace();
+        } catch (IOException f) {
+            Log.d(TAG, "Unable to close fileinputstream when decoding image");
+        } catch (NullPointerException g) {
+            Log.d(TAG, "String path given to find image was null - unable to resolve");
+        }
     }
 
     public boolean isOnline() {

@@ -14,12 +14,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.SimpleCursorAdapter;
 
 import com.theconnoisseur.android.Activities.Interfaces.CursorCallback;
+import com.theconnoisseur.android.Model.ExerciseContent;
 import com.theconnoisseur.android.Model.InternalDbContract;
 import com.theconnoisseur.android.Model.LanguageSelection;
 import com.theconnoisseur.android.Model.LanguageSelectionListItem;
@@ -35,18 +37,30 @@ import java.util.HashMap;
 import java.util.List;
 
 import Util.CursorHelper;
+import Util.ImageDownloadHelper;
 import Util.ResourceDownloader;
 
 public class LanguageSelectionActivity extends ActionBarActivity implements CursorCallback {
     private static final String TAG = LanguageSelectionActivity.class.getSimpleName();
 
+    ListView mListView;
+    SimpleCursorAdapter mAdapter;
+    Cursor mCursor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_language_selection);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
 
         // Loads the cursor with languages information
         new CursorPreparationTask(this).execute();
+
+        mListView = (ListView) findViewById(R.id.languages_list);
     }
 
 
@@ -81,7 +95,8 @@ public class LanguageSelectionActivity extends ActionBarActivity implements Curs
 
         //TODO: Cache loaded images!
 
-        CursorHelper.toString(c);
+        //CursorHelper.toString(c); for testing.
+        mCursor = c;
 
         ListView languages = (ListView) findViewById(R.id.languages_list);
 
@@ -96,18 +111,7 @@ public class LanguageSelectionActivity extends ActionBarActivity implements Curs
             public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
                 if (view.getId() == R.id.language_image) {
 
-                    String path = cursor.getString(columnIndex).replace(File.separator, "");
-                    try {
-                        FileInputStream f = openFileInput(path);
-                        Bitmap b = BitmapFactory.decodeStream(f);
-                        f.close();
-                        ((ImageView)view).setImageBitmap(b);
-                    } catch (FileNotFoundException e) {
-                        Log.d(TAG, "FileNotFoundException when decoding saved image");
-                        e.printStackTrace();
-                    } catch (IOException f) {
-                        Log.d(TAG, "Unable to close fileinputstream when decoding image");
-                    }
+                    ImageDownloadHelper.loadImage(getApplicationContext(), (ImageView)view, cursor.getString(columnIndex));
 
                     return true;
                 }
@@ -115,7 +119,27 @@ public class LanguageSelectionActivity extends ActionBarActivity implements Curs
             }
         });
 
+        mAdapter = adapter;
         languages.setAdapter(adapter);
+
+        setListeners();
+    }
+
+    private void setListeners() {
+
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                //Gets unique language_id from selected language item
+                int language_id = (int) mAdapter.getItemId(position);
+
+                //Starts the exercise activity with words from the correct language (id as extra)
+                Intent intent = new Intent(LanguageSelectionActivity.this, ExerciseActivity.class);
+                intent.putExtra(ExerciseContent.LANGUAGE_ID, language_id);
+                startActivity(intent);
+            }
+        });
     }
 
     private class CursorPreparationTask extends AsyncTask<Void, Void, Void> {

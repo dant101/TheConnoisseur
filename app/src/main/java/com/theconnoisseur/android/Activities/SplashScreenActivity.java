@@ -9,7 +9,7 @@ import com.theconnoisseur.R;
 
 public class SplashScreenActivity extends BaseActivity {
 
-    private static final int SPLASH_TIME = 1500;
+    private static final int SPLASH_TIME = 500;
 
     private boolean runningPostDelayed = true;
 

@@ -1,7 +1,6 @@
 package com.theconnoisseur.android.Activities;
 
 import android.app.Fragment;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -13,18 +12,22 @@ import android.view.MenuItem;
 import android.view.View;
 import com.theconnoisseur.R;
 import com.theconnoisseur.android.Activities.Interfaces.CursorCallback;
+import com.theconnoisseur.android.Activities.Interfaces.ExerciseContentDownloadCallback;
+import com.theconnoisseur.android.Controller.ContentDownloadController;
 import com.theconnoisseur.android.Model.ExerciseContent;
 import com.theconnoisseur.android.Model.InternalDbContract;
 import com.theconnoisseur.android.Model.LanguageSelection;
 
-public class ExerciseActivity extends FragmentActivity implements ExerciseFragment.OnFragmentInteractionListener, CursorCallback {
+import Util.CursorHelper;
+
+public class ExerciseActivity extends FragmentActivity implements ExerciseFragment.OnFragmentInteractionListener, CursorCallback, ExerciseContentDownloadCallback {
 
     private static final String TAG = ExerciseContent.class.getSimpleName();
     private static final String TAG_EXERCISE_FRAGMENT = "exercise_fragment";
 
-    public final int italian_id = 3; //ONLY FOR TESTING
+    private int LANGUAGE_ID = 3; //ONLY FOR TESTING
 
-    private Cursor mCursor = null;
+    private Cursor mCursor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,17 +38,21 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
             getFragmentManager().beginTransaction()
                     .add(R.id.container, ExerciseFragment.newInstance(), TAG_EXERCISE_FRAGMENT).commit();
         }
+
+        Intent intent = getIntent();
+        LANGUAGE_ID = intent.getIntExtra(ExerciseContent.LANGUAGE_ID, LANGUAGE_ID);
     }
 
     @Override
     protected void onStart() {
-        // Inserts dummy data for test purposes
-        insertExercisesForTest();
-
-        // Loads the exercise cursor for specific set of exercises
-        new ExerciseCursorPreparationTask(this).execute(italian_id);
-        
         super.onStart();
+
+        //Calls download task and leaves callback to setup cursor.
+        // Otherwise, initiate cursor immediately (if data already downloaded)
+        if (!ContentDownloadController.getInstance().getExercises(this, LANGUAGE_ID)) {
+            // Loads the exercise cursor for specific set of exercises
+            new ExerciseCursorPreparationTask(this).execute(LANGUAGE_ID);
+        }
     }
 
 
@@ -72,7 +79,7 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
     }
 
     public void goBack(View v) {
-        startActivity(new Intent(ExerciseActivity.this, LoginActivity.class));
+        startActivity(new Intent(ExerciseActivity.this, LanguageSelectionActivity.class));
     }
 
     public void nextExercise() {
@@ -85,68 +92,53 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
         }
 
     }
-    
-    private void insertExercisesForTest() {
 
-        ContentValues values1 = new ContentValues();
-        values1.put(ExerciseContent.WORD_ID, 1);
-        values1.put(ExerciseContent.WORD, "Piazza");
-        values1.put(ExerciseContent.PHONETIC, "phonetic1");
-        values1.put(ExerciseContent.IMAGE_URL, "http://www.see-and-do-france.com/images/French_flag_design.jpg");
-        values1.put(ExerciseContent.SOUND_RECORDING, "url1");
-        values1.put(ExerciseContent.WORD_DESCRIPTION, "A piazza is most commonly found at the meeting of two or more streets. Most italian streets have sever- al piazzas with streets radiating from the centre");
-        values1.put(ExerciseContent.LANGUAGE_ID, italian_id);
-        values1.put(ExerciseContent.LANGUAGE, "ITALIAN");
-
-        ContentValues values2 = new ContentValues();
-        values2.put(ExerciseContent.WORD_ID, 2);
-        values2.put(ExerciseContent.WORD, "Maestro");
-        values2.put(ExerciseContent.PHONETIC, "phonetic2");
-        values2.put(ExerciseContent.IMAGE_URL, "http://www.see-and-do-france.com/images/French_flag_design.jpg");
-        values2.put(ExerciseContent.SOUND_RECORDING, "url2");
-        values2.put(ExerciseContent.WORD_DESCRIPTION, "The master or teacher in an artistic field.");
-        values2.put(ExerciseContent.LANGUAGE_ID, italian_id);
-        values2.put(ExerciseContent.LANGUAGE, "ITALIANO");
-
-        ContentValues values3 = new ContentValues();
-        values3.put(ExerciseContent.WORD_ID, 3);
-        values3.put(ExerciseContent.WORD, "Cornetto");
-        values3.put(ExerciseContent.PHONETIC, "phonetic3");
-        values3.put(ExerciseContent.IMAGE_URL, "http://www.see-and-do-france.com/images/French_flag_design.jpg");
-        values3.put(ExerciseContent.SOUND_RECORDING, "url3");
-        values3.put(ExerciseContent.WORD_DESCRIPTION, "In 1959, that spican, an italian ice cream manufacturer overcame the problem of soggy waffles by insulating the inside of the waffle cone from the ice cream with a coating of oil, sugar and chocolate");
-        values3.put(ExerciseContent.LANGUAGE_ID, italian_id);
-        values3.put(ExerciseContent.LANGUAGE, "ITALIANOO");
-
-        getContentResolver().insert(InternalDbContract.insertExercisesUri(), values1);
-        getContentResolver().insert(InternalDbContract.insertExercisesUri(), values2);
-        getContentResolver().insert(InternalDbContract.insertExercisesUri(), values3);
-    }
-
+    /**
+     * Actions taken once content cursor is ready
+     * @param c returned cursor from db query
+     */
     @Override
     public void CursorLoaded(Cursor c) {
         Log.d(TAG, "CursorLoaded callback");
+        CursorHelper.toString(c); //For testing
+
+        if(c.getCount() == 0) { return; }
 
         c.moveToFirst();
         this.mCursor = c;
 
         int id = c.getInt(c.getColumnIndex(ExerciseContent.LANGUAGE_ID));
-        processLanguageColor(id);
+        prepareLanguageSpecifics(id);
         nextExercise();
 
     }
 
-    private void processLanguageColor(int language_id) {
+    // Loads the correct language image and colours for a specific set of exercises
+    private void prepareLanguageSpecifics(int language_id) {
         Cursor c = getContentResolver().query(InternalDbContract.queryForLanguages(language_id), null, null, null, null);
+
+        //Precaution
+        if(c == null || c.getCount() == 0) { return; }
+
+        //Prepare for querying
         c.moveToFirst();
 
         String hex = c.getString(c.getColumnIndex(LanguageSelection.LANGUAGE_HEX));
+        String path = c.getString(c.getColumnIndex(LanguageSelection.LANGUAGE_IMAGE_URL));
 
+        //Find fragment and apply colour and image
         Fragment fragment = getFragmentManager().findFragmentByTag(TAG_EXERCISE_FRAGMENT);
-
         if (fragment instanceof ExerciseFragment) {
-            ((ExerciseFragment)fragment).setLanguageColor("#" + hex);
+            ((ExerciseFragment)fragment).setLanguageSpecifics("#" + hex, path);
         }
+    }
+
+    /**
+     * Initiates loading of content cursor once exercises have been downloaded
+     */
+    @Override
+    public void ExerciseDownloaded() {
+        new ExerciseCursorPreparationTask(this).execute(LANGUAGE_ID);
     }
 
 
@@ -176,9 +168,9 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
         @Override
         protected void onPostExecute(Void result) {
             Log.d(TAG, "ExerciseCursorPreparationTask onPostExecute called");
+            super.onPostExecute(result);
 
             mCallback.CursorLoaded(mCursor);
-            super.onPostExecute(result);
         }
     }
 

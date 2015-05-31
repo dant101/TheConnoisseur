@@ -15,6 +15,9 @@ import android.widget.TextView;
 import com.theconnoisseur.R;
 import com.theconnoisseur.android.Model.ExerciseContent;
 
+import Util.CursorHelper;
+import Util.ImageDownloadHelper;
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -107,32 +110,36 @@ public class ExerciseFragment extends Fragment {
      * @param c
      */
     public void nextExercise(Cursor c) {
+        if (c == null) { return; }
         mCursorPosition += 1;
 
-        //CursorHelper.toString(c); //Testing
+        CursorHelper.toString(c); //Testing
 
         Log.d(TAG, "Exercise cursor position: " + String.valueOf(mCursorPosition));
 
         c.moveToPosition(mCursorPosition);
-
-        if(c.isAfterLast()) { return; }
+        if (c.isAfterLast()) { return; }
 
         mLanguage.setText(c.getString(c.getColumnIndex(ExerciseContent.LANGUAGE)));
         mWord.setText(c.getString(c.getColumnIndex(ExerciseContent.WORD)));
         mWordDescription.setText(c.getString(c.getColumnIndex(ExerciseContent.WORD_DESCRIPTION)));
         mPhoneticSpelling.setText(c.getString(c.getColumnIndex(ExerciseContent.PHONETIC)));
+
+        ImageDownloadHelper.loadImage(getActivity(), mWordIllustration, c.getString(c.getColumnIndex(ExerciseContent.IMAGE_URL)));
     }
 
     /**
      * Change the text colour of the language to given hex value stored in db
      * @param hex hex value of language text colour
      */
-    public void setLanguageColor(String hex) {
+    public void setLanguageSpecifics(String hex, String image_path) {
         try {
             mLanguage.setTextColor(Color.parseColor(hex));
         } catch (IllegalArgumentException e) {
             Log.d(TAG, "Illegal Hex was provided for language - check database value!");
         }
+
+        ImageDownloadHelper.loadImage(getActivity(), mLanguageImage, image_path);
     }
 
     /**

@@ -21,7 +21,7 @@ public class BaseActivity extends Activity {
     @Override
     protected void onStart() {
         Log.d(TAG, "BaseActivity onStart");
-        ContentDownloadController.getInstance().execute(this);
+        ContentDownloadController.getInstance().getLanguages(this);
 
         super.onStart();
     }

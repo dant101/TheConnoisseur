@@ -13,6 +13,7 @@ import com.theconnoisseur.android.Model.ExerciseContent;
 import com.theconnoisseur.android.Model.InternalDbContract;
 import com.theconnoisseur.android.Model.LanguageSelection;
 
+import Util.CursorHelper;
 import Util.InternalDbHelper;
 
 /**
@@ -99,9 +100,13 @@ public class InternalDbProvider extends ContentProvider {
 
                 cursor = getDatabase(false).query(
                         TABLE_EXERCISES, InternalDbContract.PROJECTION_EXERCISES, ExerciseContent.LANGUAGE_ID + "=?", args2, null, null, sortOrder);
+
+                Log.d(TAG, "query: "+ query);
+                CursorHelper.toString(cursor);
                 break;
 
             case EXERCISES_ALL:
+                Log.d(TAG, "querying EXERCISES_ALL");
                 cursor = getDatabase(false).query(
                 TABLE_EXERCISES, InternalDbContract.PROJECTION_EXERCISES, selection, null, null, null, sortOrder);
                 break;
@@ -140,14 +145,6 @@ public class InternalDbProvider extends ContentProvider {
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         return 0;
-    }
-
-    /**
-     * Series of pre-made cursor requests, returns specific cursor
-     */
-
-    public Cursor getLanguagesCursor() {
-        return query(InternalDbContract.queryForLanguages(), null, null, null, null);
     }
 }
 

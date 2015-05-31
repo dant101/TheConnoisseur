@@ -16,7 +16,7 @@ public class ImageDownloadTest extends AndroidTestCase {
         Bitmap mBitmap = null;
 
         ImageDownloadHelper mDownload = new ImageDownloadHelper(magic, null, mBitmap, null);
-        //mDownload.execute(false);
+        //mDownload.getLanguages(false);
 
         //Download Image and test returned bitmap is not null
         mBitmap = ImageDownloadHelper.getBitmapFromUrl(magic, getContext(), false);
