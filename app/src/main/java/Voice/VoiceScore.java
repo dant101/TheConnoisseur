@@ -1,9 +1,5 @@
 package Voice;
 
-import android.util.Log;
-
-import java.util.ArrayList;
-
 /**
  * Created by dan on 24/05/15.
  */
@@ -14,6 +10,24 @@ public class VoiceScore {
 
     private float score;
 
+    /*
+     * Originally NOT_SET
+     * Will stay NOT_SET until final results have been computed
+     * Must call reset() before reusing the same voiceRecogniser
+     * eg. If a user needs to retry a word as they have failed or want to improve
+     * My idea for implementing this efficiently will be to have something like this:-
+     *
+     *  Executors.newSingleThreadExecutor().execute(new Runnable() {
+     *       @Override
+     *       public void run() {
+     *           while (voiceScore.getResult() == NOT_SET) {
+     *               Thread.sleep(500);
+     *           }
+     *           updateScore();
+     *       }
+     *   });
+     *
+     */
     public VoiceScore() {
         score = NOT_SET;
     }
@@ -29,4 +43,6 @@ public class VoiceScore {
     public float getResult() {
         return score;
     }
+
+    public void reset() { score = NOT_SET; }
 }

@@ -95,7 +95,17 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
 
     }
 
+    /*
+     * For a toggling voice recogniser switch
+     */
     public void voiceClick(View v) {
+
+        // These must be created somewhere:-
+
+        // VoiceScore voiceScore = new VoiceScore();
+        // VoiceRecogniser vr = new VoiceRecogniser(this, "МЕНЯ", "ru-RU", voiceScore
+        // vr.clicked = false;
+        // VoiceRecogniser should add a global boolean clicked
 
         vr.clicked = !vr.clicked;
 

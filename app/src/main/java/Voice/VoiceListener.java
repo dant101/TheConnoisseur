@@ -17,6 +17,10 @@ public class VoiceListener implements RecognitionListener {
     private VoiceScore score;
     private Locale locale;
 
+    /*
+     * Called from VoiceRecogniser
+     * Methods will be called when certain actions happen according to the speech recogniser
+     */
     VoiceListener(String target, VoiceScore score, String lang) {
 
         this.target = target;
