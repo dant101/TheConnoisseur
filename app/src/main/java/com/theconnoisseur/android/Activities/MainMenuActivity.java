@@ -9,7 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.theconnoisseur.R;
 
@@ -70,11 +69,11 @@ public class MainMenuActivity extends ActionBarActivity {
         Log.d(TAG, "onSelection Button click registered");
         switch(v.getId()) {
 
-            case R.id.language_selection_button:
+            case R.id.language_selection:
                 startActivity(new Intent(MainMenuActivity.this, LanguageSelectionActivity.class));
                 break;
-            case R.id.connoisseur_collection_button:
-                startActivity(new Intent(MainMenuActivity.this, CollectionActivity.class));
+            case R.id.collection_selection:
+                startActivity(new Intent(MainMenuActivity.this, CollectionSelectionActivity.class));
                 break;
 
             //Adventures button?

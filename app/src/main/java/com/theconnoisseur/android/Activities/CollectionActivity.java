@@ -14,37 +14,53 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 import com.theconnoisseur.R;
 import com.theconnoisseur.android.Activities.Interfaces.CursorCallback;
 import com.theconnoisseur.android.Model.ExerciseContent;
 import com.theconnoisseur.android.Model.InternalDbContract;
-import com.theconnoisseur.android.Model.LanguageSelection;
 
 import Util.ImageDownloadHelper;
 import Util.ToastHelper;
 
-public class CollectionSelectionActivity extends ActionBarActivity implements CursorCallback{
-    public static final String TAG = CollectionSelectionActivity.class.getSimpleName();
+public class CollectionActivity extends ActionBarActivity implements CursorCallback {
+    public static final String TAG = CollectionActivity.class.getSimpleName();
 
+    private int mLanguage_id = -1;
+    private String mImage_url;
+    private String mLanguageName;
+
+    private TextView mLanguage;
+    private ListView mListView;
     private Cursor mCursor;
     private Adapter mAdapter;
-    private ListView mListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_collection_selection);
+        setContentView(R.layout.activity_collection);
+
+        Intent intent = getIntent();
+        mLanguage_id = intent.getIntExtra(ExerciseContent.LANGUAGE_ID, mLanguage_id);
+        mImage_url = intent.getStringExtra(ExerciseContent.IMAGE_URL);
+        mLanguageName = intent.getStringExtra(ExerciseContent.LANGUAGE);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        // Loads the cursor with languages information to fill ListView
+        //Loads the cursor with words to fill out the ListView
         new CursorPreparationTask(this).execute();
 
-        mListView = (ListView) findViewById(R.id.collections_list);
+        mListView = (ListView) findViewById(R.id.word_list);
+        mLanguage = (TextView) findViewById(R.id.language);
+
+        if (mImage_url != null) {
+            ImageDownloadHelper.loadImage(this, (ImageView) findViewById(R.id.language_image), mImage_url);
+        }
+        mLanguage.setText(mLanguageName);
     }
 
 
@@ -71,26 +87,25 @@ public class CollectionSelectionActivity extends ActionBarActivity implements Cu
     }
 
     public void goBack(View v) {
-        startActivity(new Intent(CollectionSelectionActivity.this, MainMenuActivity.class));
+        startActivity(new Intent(CollectionActivity.this, CollectionSelectionActivity.class));
     }
 
     @Override
     public void CursorLoaded(Cursor c) {
         this.mCursor = c;
 
-        ListView collections = (ListView) findViewById(R.id.collections_list);
+        ListView word_list = (ListView) findViewById(R.id.word_list);
 
-        //TODO: alter database to include scores and dates
-        String[] from = new String[] {LanguageSelection.LANGUAGE_NAME, LanguageSelection.LANGUAGE_IMAGE_URL, LanguageSelection.LANGUAGE_ID};
-        int[] to = new int[] {R.id.language_text, R.id.language_image, R.id.item_order};
+        String[] from = new String[] {ExerciseContent.IMAGE_URL, ExerciseContent.WORD_DESCRIPTION};
+        int[] to = new int[] {R.id.word_image, R.id.word_description};
 
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this , R.layout.collections_selection_list_item, c, from, to, BIND_IMPORTANT);
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.collection_list_item, c, from, to, BIND_IMPORTANT);
 
-        //Binding for language image
+        //Binding for word image
         adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
             @Override
             public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
-                if (view.getId() == R.id.language_image) {
+                if(view.getId() == R.id.word_image) {
                     ImageDownloadHelper.loadImage(getApplicationContext(), (ImageView) view, cursor.getString(columnIndex));
                     return true;
                 }
@@ -99,7 +114,7 @@ public class CollectionSelectionActivity extends ActionBarActivity implements Cu
         });
 
         mAdapter = adapter;
-        collections.setAdapter(adapter);
+        word_list.setAdapter(adapter);
 
         setListeners();
     }
@@ -108,29 +123,11 @@ public class CollectionSelectionActivity extends ActionBarActivity implements Cu
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //TODO: Click on item? Actions?
 
-                int language_id = (int) mAdapter.getItemId(position);
-
-                Log.d(TAG, "CollectionActivity: selected item with id " + String.valueOf(language_id));
-
-                //Starts the collections activity for selected language
-                Intent intent = new Intent(CollectionSelectionActivity.this, CollectionActivity.class);
-                intent.putExtra(ExerciseContent.LANGUAGE_ID, language_id);
-
-                //Assumes the items in the listview are consistent with their language_id (to put image uri on intent)
-                //TODO: probably will not be the case later on...
-                //TODO: get score here too
-                mCursor.moveToPosition(language_id - 1); //DIRTY DIRTY
-                String path = mCursor.getString(mCursor.getColumnIndex(LanguageSelection.LANGUAGE_IMAGE_URL));
-                String language = mCursor.getString(mCursor.getColumnIndex(LanguageSelection.LANGUAGE_NAME));
-
-                intent.putExtra(ExerciseContent.IMAGE_URL, path);
-                intent.putExtra(ExerciseContent.LANGUAGE, language);
-
-                startActivity(intent);
+                ToastHelper.toast(CollectionActivity.this, "Item selected: " + String.valueOf(id));
             }
         });
-
     }
 
     private class CursorPreparationTask extends AsyncTask<Void, Void, Void> {
@@ -144,7 +141,11 @@ public class CollectionSelectionActivity extends ActionBarActivity implements Cu
 
         @Override
         protected Void doInBackground(Void... params) {
-            mCursor = getContentResolver().query(InternalDbContract.queryForLanguages(), null, null, null, null);
+            if (mLanguage_id != -1) {
+                mCursor = getContentResolver().query(InternalDbContract.queryForWords(mLanguage_id), null, null, null, null);
+            } else {
+                Log.d(TAG, "CollectionActivity cursor preparation task: Unable to query database, invalid language_id");
+            }
 
             return null;
         }
@@ -157,4 +158,5 @@ public class CollectionSelectionActivity extends ActionBarActivity implements Cu
             super.onPostExecute(result);
         }
     }
+
 }

@@ -100,7 +100,7 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
     @Override
     public void CursorLoaded(Cursor c) {
         Log.d(TAG, "CursorLoaded callback");
-        CursorHelper.toString(c); //For testing
+        //CursorHelper.toString(c); //For testing
 
         if(c.getCount() == 0) { return; }
 

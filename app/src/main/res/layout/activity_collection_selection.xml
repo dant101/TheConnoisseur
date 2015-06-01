@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="@dimen/small_margin">
+        android:layout_marginTop="@dimen/normal_margin">
 
         <ImageView
             android:layout_width="@dimen/title_width"
@@ -41,54 +41,14 @@
             android:textColor="@color/green"
             android:text="@string/collection_subheading"/>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/normal_margin">
-
-            <LinearLayout
-                android:id="@+id/language_info"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_centerInParent="true"
-                android:gravity="center">
-
-                <TextView
-                    android:id="@+id/language"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/russia"
-                    android:textStyle="bold"/>
-
-                <TextView
-                    android:id="@+id/language_score"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Score: 2/10"/>
-
-
-            </LinearLayout>
-
-            <ImageView
-                android:id="@+id/language_image"
-                android:layout_width="@dimen/collections_flag_width"
-                android:layout_height="@dimen/flag_height"
-                android:src="@drawable/flag_random"
-                android:layout_marginLeft="@dimen/normal_margin"
-                android:layout_toRightOf="@id/language_info"/>
-
-            </RelativeLayout>
-
 
     </LinearLayout>
 
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/small_margin"
-        android:id="@+id/word_list"
+        android:layout_marginTop="@dimen/large_margin"
+        android:id="@+id/collections_list"
         android:layout_gravity="center_horizontal"
         android:divider="#00000000"/>
 
