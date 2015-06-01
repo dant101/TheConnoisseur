@@ -9,6 +9,21 @@
     <string name="the">THE</string>
     <string name="connoisseur_phonetic">Con-nois-seur</string>
 
+    <!-- Main Menu Strings -->
+    <string name="main_menu">MAIN MENU</string>
+    <string name="connoisseur_collection">THE CONNOISSEUR\'S COLLECTION</string>
+    <string name="connoisseur_collection_desc">See how you scored on previous sessions, which phrases you learnt and replay sessions to gain a better score</string>
+
+    <!-- Language selection Strings -->
+    <string name="language_selection_instruction">Choose your language of choice</string>
+    <string name="language_selection">LANGUAGE SELECTION</string>
+    <string name="language_selection_desc">Perfect the language of your choice in game mode, or go random and take whatever the Connoisseur throws at you</string>
+    <string name="no_languages">Unfortunately no languages are currently available, please contact support</string>
+
+    <!-- Collection -->
+    <string name="collection_heading">THE CONNOISSEUR\'S COLLECTION</string>
+    <string name="collection_subheading">View and replay previous sessions</string>
+
     <!-- Placeholder values -->
     <string name="phonetic_spelling_test">ʛʠɠƙʄƈɗƭʃʒʂʐçʝɣχʁχħɦhⱱɽ</string>
     <string name="translation_test">Russian Doll</string>
@@ -18,5 +33,9 @@
     <string name="description_sample">The first Russian nested doll set was made in 1890 by Vasily Zvyozdochkin from a design by Sergey Malyutin, who was a folk crafts painter at Abramtsevo</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="download_test">Download Image</string>
+    <string name="title_activity_main_menu">MainMenuActivity</string>
+    <string name="title_activity_language_selection">LanguageSelectionActivity</string>
+    <string name="title_activity_splash_screen">SplashScreenActivity</string>
+    <string name="title_activity_collection">CollectionActivity</string>
 
 </resources>

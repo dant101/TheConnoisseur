@@ -2,7 +2,7 @@ package com.theconnoisseur;
 
 import android.test.AndroidTestCase;
 
-import com.theconnoisseur.Activities.Model.ExerciseContent;
+import com.theconnoisseur.android.Model.ExerciseContent;
 
 import Util.JSONHelper;
 

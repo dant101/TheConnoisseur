@@ -3,6 +3,7 @@ package Database;
 import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -70,11 +71,12 @@ public class Postgresql implements Database {
         }
     }
 
-    /*Execute an SQL query
+    /*Execute an SQL selectQuery
     * Get the result back as a list of rows where each row is a list of objects (int, string, date...)
-    * sqlQuery is an SQL query example: "SELECT name, surname FROM test"
+    * sqlQuery is an SQL selectQuery example: "SELECT name, surname FROM test"
     * arguments is what we want back example: "name, surname, city"*/
-    public List<List<String>> query(String sqlQuery, List<String> arguments) {
+    public List<List<String>> selectQuery(String sqlQuery, List<String> arguments) {
+        this.connect();
         List<List<String>> result = new ArrayList<>();
 
         try {
@@ -94,6 +96,74 @@ public class Postgresql implements Database {
         } catch (Exception e){
             e.printStackTrace();
         } finally {
+            this.disconnect();
+            return result;
+        }
+    }
+
+    /*Does an insert into the database
+    Format example: "INSERT INTO exercise VALUES (100, 'Zara', 'Ali', 18)"
+     */
+    public void insertQuery(String sqlQuery) {
+        this.connect();
+        try {
+            Statement stmt = connection.createStatement();
+            stmt.executeUpdate(sqlQuery);
+            stmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            this.disconnect();
+        }
+    }
+
+    /*We need a special loginQuery to prevent user from doing SQLInjection*/
+    public List<List<String>> loginQuery(String sqlQuery, List<String> arguments, String value) {
+        this.connect();
+        List<List<String>> result = new ArrayList<>();
+
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sqlQuery);
+            stmt.setString(1,value);
+            ResultSet rs = stmt.executeQuery();
+            //Loop over all the rows
+            while (rs.next()) {
+                //For each row get the different values needed
+                List<String> row = new ArrayList<>();
+                for(String arg : arguments) {
+                    row.add(rs.getString(arg));
+                }
+                result.add(row);
+            }
+            rs.close();
+            stmt.close();
+        } catch (Exception e){
+            e.printStackTrace();
+        } finally {
+            this.disconnect();
+            return result;
+        }
+    }
+
+    /*We need a special createLoginQuery to prevent user from doing SQLInjection*/
+    public boolean createLoginQuery(String sqlQuery,
+                                 String username, String password,
+                                 String email, int salt) {
+        this.connect();
+        boolean result = false;
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sqlQuery);
+            stmt.setString(1, username);
+            stmt.setString(2, password);
+            stmt.setString(3, email);
+            stmt.setInt(4, salt);
+            stmt.executeUpdate();
+            stmt.close();
+            result = true;
+        } catch (Exception e){
+            e.printStackTrace();
+        } finally {
+            this.disconnect();
             return result;
         }
     }

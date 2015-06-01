@@ -2,9 +2,6 @@ package Database;
 
 import java.util.List;
 
-/**
- * Created by Alexandre on 22/05/2015.
- */
 public class ExerciseOnlineDBFormat {
     private int word_id;
     private String word;
@@ -14,19 +11,6 @@ public class ExerciseOnlineDBFormat {
     private String word_description;
     private int language_id;
     private String language;
-
-    public ExerciseOnlineDBFormat(int word_id, String word, String phonetic,String image_url,
-                                  String sound_recording, String word_description,
-                                  int language_id, String language) {
-        this.word_id = word_id;
-        this.word = word;
-        this.phonetic = phonetic;
-        this.image_url = image_url;
-        this.sound_recording = sound_recording;
-        this.word_description = word_description;
-        this.language_id = language_id;
-        this.language = language;
-    }
 
     public ExerciseOnlineDBFormat(List<String> list) {
         this.word_id = Integer.parseInt(list.get(0));
@@ -43,9 +27,7 @@ public class ExerciseOnlineDBFormat {
         return word_id;
     }
 
-    public String getWord() {
-        return word;
-    }
+    public String getWord() { return word; }
 
     public String getPhonetic() {
         return phonetic;

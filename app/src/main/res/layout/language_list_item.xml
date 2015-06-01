@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:paddingTop="@dimen/normal_padding"
+    android:paddingBottom="@dimen/normal_padding">
+
+    <TextView
+        android:id="@+id/language_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/russia"
+        android:textSize="@dimen/text_small"
+        android:textStyle="bold"
+        android:paddingTop="@dimen/large_padding"
+        android:paddingBottom="@dimen/large_padding"
+        android:background="@color/grey"
+        android:gravity="center"/>
+
+    <ImageView
+        android:id="@+id/language_image"
+        android:layout_width="@dimen/flag_width"
+        android:layout_height="@dimen/flag_height"
+        android:src="@drawable/flag_random"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="75dp"/>
+
+</RelativeLayout>
