@@ -23,8 +23,6 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
 
     private static final String TAG_EXERCISE_FRAGMENT = "exercise_fragment";
 
-    public static VoiceRecogniser vr;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,11 +32,6 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, ExerciseFragment.newInstance(), TAG_EXERCISE_FRAGMENT).commit();
         }
-
-        VoiceScore voiceScore = new VoiceScore();
-
-        vr = new VoiceRecogniser(this, "МЕНЯ", "ru-RU", voiceScore);
-        vr.clicked = false;
 
     }
 
@@ -98,6 +91,7 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
     /*
      * For a toggling voice recogniser switch
      */
+    /*
     public void voiceClick(View v) {
 
         // These must be created somewhere:-
@@ -120,8 +114,5 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
         }
 
     }
-
-    public void logScoreButton(View v) {
-        Log.d("voiceClick", ("Score - "+vr.getVoiceScore().getResult()));
-    }
+    */
 }

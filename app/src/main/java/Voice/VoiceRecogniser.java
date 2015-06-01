@@ -15,8 +15,6 @@ public class VoiceRecogniser {
     private Intent i;
     private VoiceScore voiceScore;
 
-    public boolean clicked;
-
     private final int MAX_RESULTS = 10;
 
     /*

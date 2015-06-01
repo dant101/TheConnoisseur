@@ -97,4 +97,8 @@ public class ExerciseFragment extends Fragment {
         //public void onFragmentInteraction(Uri uri);
     }
 
+    public static void scoreUpdate(float score) {
+        // Do Something with this new score
+    }
+
 }
