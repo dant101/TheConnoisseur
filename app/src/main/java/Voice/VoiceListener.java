@@ -5,12 +5,10 @@ import android.speech.RecognitionListener;
 import android.speech.SpeechRecognizer;
 import android.util.Log;
 
-import com.theconnoisseur.Activities.Exercise.ExerciseFragment;
-
 import java.util.ArrayList;
 import java.util.Locale;
 
-import static com.theconnoisseur.Activities.Exercise.ExerciseFragment.*;
+import static com.theconnoisseur.android.Activities.ExerciseFragment.scoreUpdate;
 
 /**
  * Created by dan on 24/05/15.
@@ -78,7 +76,7 @@ public class VoiceListener implements RecognitionListener {
         logResults(results, scores);
         getScore(results, scores);
 
-        ExerciseFragment.scoreUpdate(score.getResult());
+        scoreUpdate(score.getResult());
     }
 
     // Returns corresponding score, if there is one
