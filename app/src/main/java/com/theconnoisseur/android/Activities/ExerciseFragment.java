@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 
 import Util.ContentDownloadHelper;
+import Voice.VoiceRecogniser;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -208,8 +209,5 @@ public class ExerciseFragment extends Fragment {
         public void nextExercise();
     }
 
-    public static void scoreUpdate(float score) {
-        // Do Something with this new score
-    }
 
 }
