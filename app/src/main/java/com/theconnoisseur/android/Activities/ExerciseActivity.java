@@ -82,15 +82,19 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
         startActivity(new Intent(ExerciseActivity.this, LanguageSelectionActivity.class));
     }
 
+    public void playRecording(View v) {
+    Fragment fragment = getFragmentManager().findFragmentByTag(TAG_EXERCISE_FRAGMENT);
+        if (fragment instanceof ExerciseFragment) {
+            ((ExerciseFragment)fragment).playRecording();
+        }
+    }
+
     public void nextExercise() {
         //TODO: work on parent activity given that fragment requests new exercise?
-
         Fragment fragment = getFragmentManager().findFragmentByTag(TAG_EXERCISE_FRAGMENT);
-
         if (fragment instanceof ExerciseFragment) {
             ((ExerciseFragment)fragment).nextExercise(mCursor);
         }
-
     }
 
     /**

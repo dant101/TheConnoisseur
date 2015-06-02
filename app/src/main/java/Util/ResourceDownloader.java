@@ -38,7 +38,7 @@ public class ResourceDownloader {
 
             context.getContentResolver().insert(InternalDbContract.insertLanguagesUri(), values);
 
-            ImageDownloadHelper.getBitmapFromUrl(row.getLanguage_image_url(), context, true);
+            ContentDownloadHelper.getBitmapFromUrl(row.getLanguage_image_url(), context, true);
         }
     }
 
@@ -66,7 +66,8 @@ public class ResourceDownloader {
 
             context.getContentResolver().insert(InternalDbContract.insertExercisesUri(), values);
 
-            ImageDownloadHelper.getBitmapFromUrl(row.getImage_url(), context, true);
+            ContentDownloadHelper.getBitmapFromUrl(row.getImage_url(), context, true);
+            ContentDownloadHelper.saveSoundFile(context, row.getSound_recording());
         }
     }
 }

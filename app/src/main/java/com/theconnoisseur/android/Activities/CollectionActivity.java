@@ -21,7 +21,7 @@ import com.theconnoisseur.android.Activities.Interfaces.CursorCallback;
 import com.theconnoisseur.android.Model.ExerciseContent;
 import com.theconnoisseur.android.Model.InternalDbContract;
 
-import Util.ImageDownloadHelper;
+import Util.ContentDownloadHelper;
 import Util.ToastHelper;
 
 public class CollectionActivity extends ActionBarActivity implements CursorCallback {
@@ -58,7 +58,7 @@ public class CollectionActivity extends ActionBarActivity implements CursorCallb
         mLanguage = (TextView) findViewById(R.id.language);
 
         if (mImage_url != null) {
-            ImageDownloadHelper.loadImage(this, (ImageView) findViewById(R.id.language_image), mImage_url);
+            ContentDownloadHelper.loadImage(this, (ImageView) findViewById(R.id.language_image), mImage_url);
         }
         mLanguage.setText(mLanguageName);
     }
@@ -106,7 +106,7 @@ public class CollectionActivity extends ActionBarActivity implements CursorCallb
             @Override
             public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
                 if(view.getId() == R.id.word_image) {
-                    ImageDownloadHelper.loadImage(getApplicationContext(), (ImageView) view, cursor.getString(columnIndex));
+                    ContentDownloadHelper.loadImage(getApplicationContext(), (ImageView) view, cursor.getString(columnIndex));
                     return true;
                 }
                 return false;

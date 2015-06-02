@@ -1,8 +1,10 @@
 package com.theconnoisseur.android.Activities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -15,8 +17,10 @@ import android.widget.TextView;
 import com.theconnoisseur.R;
 import com.theconnoisseur.android.Model.ExerciseContent;
 
-import Util.CursorHelper;
-import Util.ImageDownloadHelper;
+import java.io.File;
+import java.io.IOException;
+
+import Util.ContentDownloadHelper;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,6 +43,9 @@ public class ExerciseFragment extends Fragment {
 
     private ImageView mRecord;
     private ImageView mListen;
+
+    private MediaPlayer mMediaPlayer;
+    private boolean played = false; //TESTING, Illegal state exception on second playback...
 
     private int mCursorPosition = -1;
 
@@ -80,7 +87,7 @@ public class ExerciseFragment extends Fragment {
     }
 
     private void setListeners() {
-        mListen.setOnClickListener(new View.OnClickListener() {
+        mRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mListener.nextExercise();
@@ -106,6 +113,24 @@ public class ExerciseFragment extends Fragment {
     }
 
     /**
+     * Plays the exercise sound recording
+     */
+    public void playRecording() {
+        if (mMediaPlayer != null && !played) {
+            try {
+
+                mMediaPlayer.prepare();
+                mMediaPlayer.start();
+                played = true;
+
+            } catch (IOException e) {
+                Log.d(TAG, "Unable to prepare sound recording");
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
      * Shifts screen to next exercise by loading the next word from the cursor
      * @param c
      */
@@ -125,7 +150,8 @@ public class ExerciseFragment extends Fragment {
         mWordDescription.setText(c.getString(c.getColumnIndex(ExerciseContent.WORD_DESCRIPTION)));
         mPhoneticSpelling.setText(c.getString(c.getColumnIndex(ExerciseContent.PHONETIC)));
 
-        ImageDownloadHelper.loadImage(getActivity(), mWordIllustration, c.getString(c.getColumnIndex(ExerciseContent.IMAGE_URL)));
+        ContentDownloadHelper.loadImage(getActivity(), mWordIllustration, c.getString(c.getColumnIndex(ExerciseContent.IMAGE_URL)));
+        setSoundFile(c.getString(c.getColumnIndex(ExerciseContent.SOUND_RECORDING)));
     }
 
     /**
@@ -137,9 +163,39 @@ public class ExerciseFragment extends Fragment {
             mLanguage.setTextColor(Color.parseColor(hex));
         } catch (IllegalArgumentException e) {
             Log.d(TAG, "Illegal Hex was provided for language - check database value!");
+            e.printStackTrace();
         }
 
-        ImageDownloadHelper.loadImage(getActivity(), mLanguageImage, image_path);
+        ContentDownloadHelper.loadImage(getActivity(), mLanguageImage, image_path);
+    }
+
+    /**
+     * Prepares the sound file for playing
+     * @param path
+     */
+    private void setSoundFile(String path) {
+        if (path == null) { Log.d(TAG, "SoundPath is null"); return; }
+
+        played = false;
+        path = path.replace(File.separator, "");
+
+        try {
+            MediaPlayer mediaPlayer = new MediaPlayer();
+            mediaPlayer.setDataSource(getActivity().getFilesDir()+ "/" + path);
+            mMediaPlayer = mediaPlayer;
+
+            mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {mp.release(); Log.d(TAG, "MediaPlayer onCompletion!");
+                }
+            });
+
+            Log.d(TAG, "mediaPlayer set with source: " + getActivity().getFilesDir() + path);
+
+        } catch (IOException e) {
+            Log.d(TAG, "setSoundFile - cannot setDataSource: --getActivity().getFilesDir()-- " + path);
+            e.printStackTrace();
+        }
     }
 
     /**

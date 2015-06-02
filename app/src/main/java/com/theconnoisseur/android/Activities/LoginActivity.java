@@ -1,10 +1,6 @@
 package com.theconnoisseur.android.Activities;
 
-import android.content.ContentProvider;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.StrictMode;
 import android.graphics.Bitmap;
 import android.support.v7.app.ActionBarActivity;
@@ -15,18 +11,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.theconnoisseur.android.Model.ExerciseContent;
-import com.theconnoisseur.android.Model.InternalDbContract;
-import com.theconnoisseur.android.Model.LanguageSelection;
 import com.theconnoisseur.R;
-import com.theconnoisseur.android.Provider.InternalDbProvider;
 
-import Util.CursorHelper;
-import Util.ImageDownloadHelper;
-import Util.InternalDbHelper;
+import Util.ContentDownloadHelper;
 
 
-public class LoginActivity extends ActionBarActivity implements ImageDownloadHelper.ImageLoaderListener {
+public class LoginActivity extends ActionBarActivity implements ContentDownloadHelper.ImageLoaderListener {
     public static final String TAG = LoginActivity.class.getSimpleName();
 
     private static Bitmap mBitmap;
@@ -52,7 +42,7 @@ public class LoginActivity extends ActionBarActivity implements ImageDownloadHel
     public void downloadTest(View v) {
         //String magic = "http://www.see-and-do-france.com/images/French_flag_design.jpg";
         String magic = "http://www.doc.ic.ac.uk/project/2014/271/g1427115/images/flags/4-russian.png";
-        ImageDownloadHelper mDownloader = new ImageDownloadHelper(magic, LoginActivity.this, mBitmap, this);
+        ContentDownloadHelper mDownloader = new ContentDownloadHelper(magic, LoginActivity.this, mBitmap, this);
         mDownloader.execute(true);
 
     }

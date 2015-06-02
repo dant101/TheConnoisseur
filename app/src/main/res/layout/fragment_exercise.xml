@@ -84,6 +84,7 @@
             <ImageView
                 android:layout_margin="@dimen/normal_margin"
                 android:id="@+id/listen_icon"
+                android:onClick="playRecording"
                 android:layout_width="@dimen/microphone_width"
                 android:layout_height="@dimen/microphone_width"
                 android:src="@drawable/ui_listen"/>

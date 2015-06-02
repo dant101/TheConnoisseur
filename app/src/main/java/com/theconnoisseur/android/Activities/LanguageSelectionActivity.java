@@ -1,13 +1,8 @@
 package com.theconnoisseur.android.Activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,28 +12,15 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.SimpleCursorAdapter;
 
 import com.theconnoisseur.android.Activities.Interfaces.CursorCallback;
 import com.theconnoisseur.android.Model.ExerciseContent;
 import com.theconnoisseur.android.Model.InternalDbContract;
 import com.theconnoisseur.android.Model.LanguageSelection;
-import com.theconnoisseur.android.Model.LanguageSelectionListItem;
 import com.theconnoisseur.R;
-import com.theconnoisseur.android.Provider.InternalDbProvider;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import Util.CursorHelper;
-import Util.ImageDownloadHelper;
-import Util.ResourceDownloader;
+import Util.ContentDownloadHelper;
 
 public class LanguageSelectionActivity extends ActionBarActivity implements CursorCallback {
     private static final String TAG = LanguageSelectionActivity.class.getSimpleName();
@@ -110,7 +92,7 @@ public class LanguageSelectionActivity extends ActionBarActivity implements Curs
             @Override
             public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
                 if (view.getId() == R.id.language_image) {
-                    ImageDownloadHelper.loadImage(getApplicationContext(), (ImageView)view, cursor.getString(columnIndex));
+                    ContentDownloadHelper.loadImage(getApplicationContext(), (ImageView) view, cursor.getString(columnIndex));
                     return true;
                 }
                 return false;

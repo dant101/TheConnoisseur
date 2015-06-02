@@ -35,9 +35,9 @@ import java.net.URL;
  //                f.close();
  */
 
-public class ImageDownloadHelper extends AsyncTask<Boolean, Integer, Void> {
+public class ContentDownloadHelper extends AsyncTask<Boolean, Integer, Void> {
 
-    private static final String TAG = ImageDownloadHelper.class.getSimpleName();
+    private static final String TAG = ContentDownloadHelper.class.getSimpleName();
 
     private String mUrl;
     private Context mContext;
@@ -45,7 +45,7 @@ public class ImageDownloadHelper extends AsyncTask<Boolean, Integer, Void> {
     private ImageLoaderListener mListener;
     //TODO: progress bar,etc. hook into activity here by passing as arguments to constructor
 
-    public ImageDownloadHelper(String url, Context c, Bitmap bmp, ImageLoaderListener listener) {
+    public ContentDownloadHelper(String url, Context c, Bitmap bmp, ImageLoaderListener listener) {
         this.mUrl = url;
         this.mContext = c;
         this.mBitmap = bmp;
@@ -89,6 +89,38 @@ public class ImageDownloadHelper extends AsyncTask<Boolean, Integer, Void> {
         }
 
         super.onPostExecute(result);
+    }
+
+    public static void saveSoundFile(Context context, String urlString) {
+        try {
+            //Set up http connection
+            URL url = new URL(urlString);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+
+            urlString = urlString.replace(File.separator, "");
+
+            InputStream input = connection.getInputStream();
+            FileOutputStream output = context.openFileOutput(urlString, Context.MODE_WORLD_READABLE);
+
+            byte[] buffer = new byte[1024];
+            int bytesRead = input.read(buffer);
+
+            while(bytesRead != -1) {
+                output.write(buffer, 0, bytesRead);
+                bytesRead = input.read(buffer);
+            }
+
+            output.close();
+
+        } catch (MalformedURLException e) {
+            Log.d(TAG, "Malformed URL Exception thrown, provided URL for image download is invalid:" + urlString);
+            e.printStackTrace();
+        } catch (IOException f) {
+            Log.d(TAG, "Failed to write to output stream");
+            f.printStackTrace();
+        }
     }
 
     /**
