@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.util.Log;
 
+import com.theconnoisseur.android.Activities.ExerciseActivity;
 import com.theconnoisseur.android.Model.ExerciseContent;
 import com.theconnoisseur.android.Model.InternalDbContract;
 import com.theconnoisseur.android.Model.LanguageSelection;
@@ -63,6 +64,7 @@ public class ResourceDownloader {
             values.put(ExerciseContent.WORD_DESCRIPTION, row.getWord_description());
             values.put(ExerciseContent.LANGUAGE_ID, row.getLanguage_id());
             values.put(ExerciseContent.LANGUAGE, row.getLanguage());
+            values.put(ExerciseContent.LOCALE, row.getLocale());
 
             context.getContentResolver().insert(InternalDbContract.insertExercisesUri(), values);
 

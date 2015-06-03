@@ -24,7 +24,8 @@ public class InternalDbContract {
             ExerciseContent.SOUND_RECORDING,
             ExerciseContent.WORD_DESCRIPTION,
             ExerciseContent.LANGUAGE_ID,
-            ExerciseContent.LANGUAGE
+            ExerciseContent.LANGUAGE,
+            ExerciseContent.LOCALE
     };
 
     public static Uri queryForLanguages() {

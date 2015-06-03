@@ -10,6 +10,8 @@ import com.theconnoisseur.android.Model.ExerciseContent;
 import com.theconnoisseur.android.Model.InternalDbContract;
 import com.theconnoisseur.android.Model.LanguageSelection;
 
+import java.io.Externalizable;
+
 //TODO: create test case to test setting up of database, test cursors
 
 /**
@@ -35,9 +37,10 @@ public class InternalDbHelper extends SQLiteOpenHelper {
     private static String WORD_DESCRIPTION = ExerciseContent.WORD_DESCRIPTION;
     private static String LANGUAGE_ID = ExerciseContent.LANGUAGE_ID;
     private static String LANGUAGE = ExerciseContent.LANGUAGE;
+    private static String LOCALE = ExerciseContent.LOCALE;
 
     private static String EXERCISES_TABLE_CREATE =
-            "CREATE TABLE EXERCISES(_id INTEGER PRIMARY KEY AUTOINCREMENT, word TEXT, phonetic TEXT, image_url TEXT, sound_recording TEXT, word_description TEXT, language_id INTEGER, language TEXT)";
+            "CREATE TABLE EXERCISES(_id INTEGER PRIMARY KEY AUTOINCREMENT, word TEXT, phonetic TEXT, image_url TEXT, sound_recording TEXT, word_description TEXT, language_id INTEGER, language TEXT, locale TEXT)";
 
 
     //Names of all the columns in the LANGUAGES database - references from LanguageSelection model class

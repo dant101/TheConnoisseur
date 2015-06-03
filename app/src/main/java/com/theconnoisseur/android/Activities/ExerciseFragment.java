@@ -33,7 +33,7 @@ import Voice.VoiceRecogniser;
  * Use the {@link ExerciseFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ExerciseFragment extends Fragment {
+public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceCallback {
     private static final String TAG = ExerciseFragment.class.getSimpleName();
 
     private ImageView mLanguageImage;
@@ -54,11 +54,13 @@ public class ExerciseFragment extends Fragment {
 
     private MediaPlayer mMediaPlayer;
     private boolean played = false; //TESTING, Illegal state exception on second playback...
+    private boolean mClicked = false;
 
     private int mCursorPosition = -1;
     private int mSessionWord = 0;
 
     private OnFragmentInteractionListener mListener;
+    private VoiceRecogniser mVoiceRecogniser;
 
     public static ExerciseFragment newInstance() {
         ExerciseFragment fragment = new ExerciseFragment();
@@ -111,7 +113,12 @@ public class ExerciseFragment extends Fragment {
         mRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onSuccess();
+                mClicked = !mClicked;
+                if (mClicked) {
+                    mVoiceRecogniser.startListening();
+                } else {
+                    mVoiceRecogniser.stopListening();
+                }
             }
         });
     }
@@ -177,6 +184,12 @@ public class ExerciseFragment extends Fragment {
 
         ContentDownloadHelper.loadImage(getActivity(), mWordIllustration, c.getString(c.getColumnIndex(ExerciseContent.IMAGE_URL)));
         setSoundFile(c.getString(c.getColumnIndex(ExerciseContent.SOUND_RECORDING)));
+
+        String word = c.getString(c.getColumnIndex(ExerciseContent.WORD));
+        String locale = c.getString(c.getColumnIndex(ExerciseContent.LOCALE));
+        locale = locale == null ? "en-GB" : locale;
+
+        mVoiceRecogniser = new VoiceRecogniser(getActivity(),  word, locale, this);//that should be bonjour...
     }
 
     /**
@@ -234,6 +247,11 @@ public class ExerciseFragment extends Fragment {
         mLives.setVisibility(View.VISIBLE);
         mLivesSmall.setVisibility(View.INVISIBLE);
         mWordDescriptionView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void updateScore(float a) {
+        mScore.setText(String.valueOf(a) + "%");
     }
 
     /**

@@ -8,10 +8,6 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Locale;
 
-
-/**
- * Created by dan on 24/05/15.
- */
 public class VoiceListener implements RecognitionListener {
 
     private String target;

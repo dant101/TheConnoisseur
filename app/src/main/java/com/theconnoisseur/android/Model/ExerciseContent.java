@@ -21,6 +21,7 @@ public class ExerciseContent {
     public static final String WORD_DESCRIPTION = "word_description";
     public static final String LANGUAGE_ID = "language_id";
     public static final String LANGUAGE = "language";
+    public static final String LOCALE = "locale";
 
     private int word_id;
     private String word;

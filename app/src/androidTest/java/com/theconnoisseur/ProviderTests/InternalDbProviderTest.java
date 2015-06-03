@@ -80,6 +80,7 @@ public class InternalDbProviderTest extends ProviderTestCase2<InternalDbProvider
         assertEquals("description", c.getString(c.getColumnIndex(ExerciseContent.WORD_DESCRIPTION)));
         assertEquals(23, c.getInt(c.getColumnIndex(ExerciseContent.LANGUAGE_ID)));
         assertEquals("POLISH", c.getString(c.getColumnIndex(ExerciseContent.LANGUAGE)));
+        assertEquals("pl", c.getString(c.getColumnIndex(ExerciseContent.LOCALE)));
 
         c.close();
     }
@@ -104,6 +105,7 @@ public class InternalDbProviderTest extends ProviderTestCase2<InternalDbProvider
         values.put(ExerciseContent.WORD_DESCRIPTION, "description");
         values.put(ExerciseContent.LANGUAGE_ID, 23);
         values.put(ExerciseContent.LANGUAGE, "POLISH");
+        values.put(ExerciseContent.LOCALE, "pl");
 
         return values;
     }

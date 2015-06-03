@@ -35,6 +35,8 @@
     <dimen name="accuracy_diameter">40dp</dimen>
     <dimen name="hearts_height_small">30dp</dimen>
     <dimen name="hearts_height">60dp</dimen>
+    <dimen name="connoisseur_head_diameter">120dp</dimen>
+    <dimen name="share_image_height">40dp</dimen>
 
 
     <dimen name="home_icon_width">50dp</dimen>

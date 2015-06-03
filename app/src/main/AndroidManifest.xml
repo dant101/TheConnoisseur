@@ -61,6 +61,10 @@
             android:name=".android.Activities.CollectionActivity"
             android:label="@string/title_activity_collection" >
         </activity>
+        <activity
+            android:name=".android.Activities.SessionSummary"
+            android:label="@string/title_activity_session_summary" >
+        </activity>
     </application>
 
 </manifest>

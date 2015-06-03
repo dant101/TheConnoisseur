@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/normal_padding"
+    android:background="@drawable/gradient_selector">
+
+    <ImageButton
+        android:layout_width="@dimen/home_icon_width"
+        android:layout_height="@dimen/home_icon_width"
+        android:src="@drawable/ui_back"
+        android:background="@android:color/transparent"
+        android:onClick="goBack"/>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="8"
+        android:orientation="vertical"
+        android:layout_marginLeft="-20dp"
+        android:layout_marginRight="-20dp"
+        android:gravity="center|top">
+
+        <RelativeLayout
+            android:layout_width="@dimen/ring_diameter"
+            android:layout_height="@dimen/ring_diameter">
+
+            <ImageView
+                android:id="@+id/language_image"
+                android:layout_width="@dimen/language_width"
+                android:layout_height="@dimen/language_height"
+                android:src="@drawable/flag_random"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"/>
+
+            <ImageView
+                android:layout_width="@dimen/ring_diameter"
+                android:layout_height="@dimen/ring_diameter"
+                android:src="@drawable/ring"/>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/language"
+                android:text="@string/russia"
+                android:textAllCaps="true"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/session"
+                android:text="Session 12"
+                android:textSize="@dimen/text_vsmall"/>
+
+            <TextView
+                android:id="@+id/score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="(8/10 passed)"
+                android:textSize="@dimen/text_vsmall"/>
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/connoisseur_image"
+            android:layout_width="@dimen/connoisseur_head_diameter"
+            android:layout_height="@dimen/connoisseur_head_diameter"
+            android:layout_margin="5dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/logo_1"
+            android:onClick="voiceClick"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/you_have_the_tongue"/>
+
+        <TextView
+            android:id="@+id/tongue_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Connoisseur"
+            android:textSize="@dimen/text_large"/>
+
+        <TextView
+            android:id="@+id/tongue_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/connoisseur_description"
+            android:textStyle="bold|italic"/>
+
+        <ImageView
+            android:id="@+id/share_link"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/share_image_height"
+            android:padding="@dimen/normal_padding"
+            android:layout_margin="@dimen/normal_margin"
+            android:src="@drawable/logo_2_horizontal"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey"
+            android:layout_margin="@dimen/small_margin"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/personal_highlights_text"
+            android:textSize="@dimen/text_vsmall"
+            android:textStyle="bold"
+            android:layout_margin="@dimen/small_margin"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/vsmall_margin"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/best_score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="YOUR BEST (85%)"
+                    android:textStyle="bold"
+                    android:layout_margin="@dimen/small_margin"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/best_word"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Peloton"
+                        android:layout_centerVertical="true"/>
+
+                    <ImageView
+                        android:id="@+id/best_word_language"
+                        android:layout_width="@dimen/flag_width"
+                        android:layout_height="@dimen/flag_height"
+                        android:src="@drawable/flag_random"
+                        android:layout_alignParentRight="true"/>
+
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="@dimen/vsmall_margin">
+
+                <TextView
+                    android:id="@+id/worst_score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="YOUR BEST (85%)"
+                    android:layout_margin="@dimen/small_margin"
+                    android:textStyle="bold"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/worst_word"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Enfant \nterrible"
+                        android:layout_centerVertical="true"/>
+
+                    <ImageView
+                        android:id="@+id/worst_word_language"
+                        android:layout_width="@dimen/flag_width"
+                        android:layout_height="@dimen/flag_height"
+                        android:src="@drawable/flag_random"
+                        android:layout_alignParentRight="true"/>
+
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/play_new_session"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/play_new_session"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginTop="30dp">
+
+        <ImageView
+            android:id="@+id/connoisseur_side"
+            android:layout_width="30dp"
+            android:layout_height="150dp"
+            android:src="@drawable/logo_2"/>
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -18,10 +18,9 @@ import com.theconnoisseur.android.Model.ExerciseContent;
 import com.theconnoisseur.android.Model.InternalDbContract;
 import com.theconnoisseur.android.Model.LanguageSelection;
 
-import Util.CursorHelper;
 import Voice.VoiceRecogniser;
 
-public class ExerciseActivity extends FragmentActivity implements ExerciseFragment.OnFragmentInteractionListener, CursorCallback, ExerciseContentDownloadCallback, VoiceRecogniser.VoiceCallback {
+public class ExerciseActivity extends FragmentActivity implements ExerciseFragment.OnFragmentInteractionListener, CursorCallback, ExerciseContentDownloadCallback {
 
     private static final String TAG = ExerciseContent.class.getSimpleName();
     private static final String TAG_EXERCISE_FRAGMENT = "exercise_fragment";
@@ -29,8 +28,6 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
     private int LANGUAGE_ID = 3; //ONLY FOR TESTING
 
     private Cursor mCursor;
-
-    private VoiceRecogniser vr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +41,6 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
 
         Intent intent = getIntent();
         LANGUAGE_ID = intent.getIntExtra(ExerciseContent.LANGUAGE_ID, LANGUAGE_ID);
-
-        vr = new VoiceRecogniser(this,  "МЕНЯ", "ru-RU", (VoiceRecogniser.VoiceCallback) this);
     }
 
     @Override
@@ -181,26 +176,6 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
 
             mCallback.CursorLoaded(mCursor);
         }
-    }
-
-    /*
-     * Called when results have been computed by the voiceRecogniser
-     */
-    @Override
-    public void updateScore(float a) {
-        // Do something with the score
-        Log.d("updateScore","callback success: "+a);
-    }
-
-    // Simple toggle button
-    boolean click = true;
-    public void voiceClick(View view) {
-        if (click) {
-            vr.startListening();
-        } else {
-            vr.stopListening();
-        }
-        click = !click;
     }
 
 }
