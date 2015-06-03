@@ -7,6 +7,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -52,7 +54,7 @@ public class Postgresql implements Database {
         }
 
         if (connection != null) {
-            System.out.println("You made it, take control your database now!");
+            System.out.println("Connection was successful!");
         } else {
             System.out.println("Failed to make connection!");
         }
@@ -102,7 +104,9 @@ public class Postgresql implements Database {
     }
 
     /*Does an insert into the database
-    Format example: "INSERT INTO exercise VALUES (100, 'Zara', 'Ali', 18)"
+    Format example:
+    - "INSERT INTO exercise VALUES (100, 'Zara', 'Ali', 18)"
+    - "UPDATE database SET username = alex WHERE id = 123";
      */
     public void insertQuery(String sqlQuery) {
         this.connect();
@@ -149,8 +153,8 @@ public class Postgresql implements Database {
     public boolean createLoginQuery(String sqlQuery,
                                  String username, String password,
                                  String email, int salt) {
-        this.connect();
         boolean result = false;
+        this.connect();
         try {
             PreparedStatement stmt = connection.prepareStatement(sqlQuery);
             stmt.setString(1, username);
@@ -167,4 +171,34 @@ public class Postgresql implements Database {
             return result;
         }
     }
+
+    /*We need a special createCommentQuery to prevent user from doing SQLInjection*/
+    public boolean createCommentQuery(String sqlQuery,
+                                      int word_id, String username,
+                                      int nesting_level, int reply_to_id,
+                                      String comment, Timestamp time,
+                                      int score) {
+        boolean result = false;
+
+        this.connect();
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sqlQuery);
+            stmt.setInt(1, word_id);
+            stmt.setString(2, username);
+            stmt.setInt(3, nesting_level);
+            stmt.setInt(4, reply_to_id);
+            stmt.setString(5, comment);
+            stmt.setTimestamp(6, time);
+            stmt.setInt(7, score);
+            stmt.executeUpdate();
+            stmt.close();
+            result = true;
+        } catch (Exception e){
+            e.printStackTrace();
+        } finally {
+            this.disconnect();
+            return result;
+        }
+    }
+
 }

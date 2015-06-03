@@ -15,5 +15,5 @@ public abstract class OnlineDB {
         this.database = database;
     }
 
-    abstract <T> List<T> format(List<List<String>> queryResult, Class<T> cls) throws Exception;
+    abstract <T> List<T> format(List<List<String>> queryResult, Class<T> cls);
 }
