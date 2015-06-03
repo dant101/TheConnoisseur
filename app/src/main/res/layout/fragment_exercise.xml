@@ -21,11 +21,25 @@
         android:layout_marginRight="-20dp"
         android:gravity="center|top">
 
-        <ImageView
-            android:id="@+id/language_image"
-            android:layout_width="@dimen/language_width"
-            android:layout_height="@dimen/language_height"
-            android:src="@drawable/flag_random" />
+        <RelativeLayout
+            android:layout_width="@dimen/ring_diameter"
+            android:layout_height="@dimen/ring_diameter">
+
+            <ImageView
+                android:id="@+id/language_image"
+                android:layout_width="@dimen/language_width"
+                android:layout_height="@dimen/language_height"
+                android:src="@drawable/flag_random"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"/>
+
+            <ImageView
+                android:layout_width="@dimen/ring_diameter"
+                android:layout_height="@dimen/ring_diameter"
+                android:src="@drawable/ring"/>
+
+        </RelativeLayout>
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -36,7 +50,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/language"
-                android:text="@string/russia"/>
+                android:text="@string/russia"
+                android:textAllCaps="true"
+                android:textStyle="bold"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -60,44 +76,126 @@
             android:layout_margin="@dimen/normal_margin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:text="@string/word_sample"/>
 
         <TextView
             android:id="@+id/phonetic_spelling"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:text="@string/phonetic_spelling_test"/>
 
-        <TextView
-            android:id="@+id/word_description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/normal_margin"
-            android:gravity="center"
-            android:text="@string/description_sample"/>
+        <LinearLayout
+            android:id="@+id/lives_section_small"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/hearts_height_small"
+            android:visibility="invisible"
+            android:padding="@dimen/small_padding">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/large_hearts"/>
+
+        </LinearLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/hearts_height"
+            android:id="@+id/word_description_view"
+            android:visibility="gone"
+            android:layout_margin="@dimen/vsmall_margin">
+
+            <TextView
+                android:id="@+id/word_description"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/hearts_height"
+                android:gravity="center"
+                android:text="@string/description_sample"/>
+
+        </ScrollView>
 
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:id="@+id/lives_section"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/hearts_height"
+            android:layout_margin="@dimen/vsmall_margin"
+            android:visibility="visible"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/normal_padding"
+                android:src="@drawable/large_hearts"/>
+
+        </LinearLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <ImageView
-                android:layout_margin="@dimen/normal_margin"
-                android:id="@+id/listen_icon"
-                android:onClick="playRecording"
-                android:layout_width="@dimen/microphone_width"
-                android:layout_height="@dimen/microphone_width"
-                android:src="@drawable/ui_listen"/>
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true">
 
-            <ImageView
-                android:id="@+id/record_icon"
-                android:layout_margin="@dimen/normal_margin"
-                android:layout_width="@dimen/microphone_width"
-                android:layout_height="@dimen/microphone_width"
-                android:src="@drawable/ui_record"/>
+                <TextView
+                    android:id="@+id/score"
+                    android:layout_width="@dimen/accuracy_diameter"
+                    android:layout_height="@dimen/accuracy_diameter"
+                    android:textSize="@dimen/text_vsmall"
+                    android:layout_marginLeft="2dp"
+                    android:textColor="@color/green"
+                    android:gravity="center"
+                    android:text="86%"/>
+
+                <ImageView
+                    android:layout_width="@dimen/accuracy_diameter"
+                    android:layout_height="@dimen/accuracy_diameter"
+                    android:src="@drawable/accuracy_positive"/>
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true">
+
+                <ImageView
+                    android:layout_margin="@dimen/normal_margin"
+                    android:id="@+id/listen_icon"
+                    android:onClick="playRecording"
+                    android:layout_width="@dimen/microphone_width"
+                    android:layout_height="@dimen/microphone_width"
+                    android:src="@drawable/ui_listen"/>
+
+                <ImageView
+                    android:id="@+id/record_icon"
+                    android:visibility="visible"
+                    android:layout_margin="@dimen/normal_margin"
+                    android:layout_width="@dimen/microphone_width"
+                    android:layout_height="@dimen/microphone_width"
+                    android:src="@drawable/ui_record"/>
 
             </LinearLayout>
+
+            <ImageView
+                android:id="@+id/proceed"
+                android:layout_width="@dimen/accuracy_diameter"
+                android:layout_height="@dimen/accuracy_diameter"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/accuracy_negative"/>
+
+            </RelativeLayout>
 
         </LinearLayout>
 
