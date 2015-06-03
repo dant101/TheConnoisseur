@@ -18,6 +18,7 @@ public class ExerciseOnlineDB extends OnlineDB {
         allArguments.add("word_description");
         allArguments.add("language_id");
         allArguments.add("language");
+        allArguments.add("locale");
     }
 
     public List<ExerciseOnlineDBFormat> getLanguageByID(int id) {
