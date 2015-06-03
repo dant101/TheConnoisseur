@@ -11,6 +11,7 @@ public class ExerciseOnlineDBFormat {
     private String word_description;
     private int language_id;
     private String language;
+    private String locale;
 
     public ExerciseOnlineDBFormat(List<String> list) {
         this.word_id = Integer.parseInt(list.get(0));
@@ -21,17 +22,14 @@ public class ExerciseOnlineDBFormat {
         this.word_description = list.get(5);
         this.language_id = Integer.parseInt(list.get(6));
         this.language = list.get(7);
+        this.locale = list.get(8);
     }
 
-    public int getWord_id() {
-        return word_id;
-    }
+    public int getWord_id() { return word_id; }
 
     public String getWord() { return word; }
 
-    public String getPhonetic() {
-        return phonetic;
-    }
+    public String getPhonetic() { return phonetic; }
 
     public String getImage_url() {
         return image_url;
@@ -52,4 +50,6 @@ public class ExerciseOnlineDBFormat {
     public String getLanguage() {
         return language;
     }
+
+    public String getLocale() {return locale;}
 }
