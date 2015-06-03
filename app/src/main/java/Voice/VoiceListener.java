@@ -8,7 +8,6 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import static com.theconnoisseur.android.Activities.ExerciseFragment.scoreUpdate;
 
 /**
  * Created by dan on 24/05/15.
@@ -17,16 +16,20 @@ public class VoiceListener implements RecognitionListener {
 
     private String target;
     private VoiceScore score;
+    private VoiceRecogniser.VoiceCallback vcb;
     private Locale locale;
+
 
     /*
      * Called from VoiceRecogniser
      * Methods will be called when certain actions happen according to the speech recogniser
+     * Calls back to vc when results computed
      */
-    VoiceListener(String target, VoiceScore score, String lang) {
+    VoiceListener(String target, VoiceScore score, String lang, VoiceRecogniser.VoiceCallback vc) {
 
         this.target = target;
         this.score = score;
+        this.vcb = vc;
 
         locale = new Locale(lang);
 
@@ -76,7 +79,7 @@ public class VoiceListener implements RecognitionListener {
         logResults(results, scores);
         getScore(results, scores);
 
-        scoreUpdate(score.getResult());
+        vcb.updateScore(score.getResult());
     }
 
     // Returns corresponding score, if there is one

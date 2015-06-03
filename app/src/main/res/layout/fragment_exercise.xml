@@ -68,7 +68,8 @@
             android:layout_height="@dimen/illustration_height"
             android:layout_margin="10dp"
             android:background="@android:color/transparent"
-            android:src="@drawable/matryoshka"/>
+            android:src="@drawable/matryoshka"
+            android:onClick="voiceClick"/>
 
         <TextView
             android:id="@+id/word"

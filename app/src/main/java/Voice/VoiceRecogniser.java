@@ -19,22 +19,22 @@ public class VoiceRecogniser {
 
     /*
      * Called with the application context, string we are searching for, language
-     * and voiceResult, which will be updated with the corresponding score when it is computed
-     * (This usually takes around 500ms)
+     * and VoiceCallback
+     * Speech computation  usually takes around 500ms
      * Lang must be locale, eg. en-US or ru-RU
      * Usually looks something like this:
-     * VoiceScore vs = new VoiceScore();
-     * VoiceRecogniser vr = new VoiceRecogniser(this, "МЕНЯ", "ru-RU", vs);
+     * VoiceRecogniser vr =
+     *      new VoiceRecogniser(this, "МЕНЯ", "ru-RU", (VoiceRecogniser.VoiceCallback) this);
      */
-    public VoiceRecogniser(Context c, String targetString, String lang, VoiceScore voiceScore) {
-        this.voiceScore = voiceScore;
+    public VoiceRecogniser(Context c, String targetString, String lang, VoiceCallback vc) {
+        voiceScore = new VoiceScore();
 
         i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         i.putExtra(RecognizerIntent.EXTRA_LANGUAGE, lang);
         i.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, MAX_RESULTS);
         i.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
 
-        VoiceListener listener = new VoiceListener(targetString, voiceScore, lang);
+        VoiceListener listener = new VoiceListener(targetString, voiceScore, lang, vc);
 
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(c);
 
@@ -67,6 +67,10 @@ public class VoiceRecogniser {
      * This may be useful if optimisation is an issue
      */
     public void destroyVoiceRecogniser() { speechRecognizer.destroy(); }
+
+    public interface VoiceCallback {
+        public void updateScore(float a);
+    }
 
 }
 
