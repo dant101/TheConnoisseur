@@ -12,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.theconnoisseur.R;
@@ -37,9 +39,14 @@ public class ExerciseFragment extends Fragment {
     private TextView mLanguage;
     private TextView mProgress;
     private ImageView mWordIllustration;
-    private TextView mWord;
-    private TextView mPhoneticSpelling;
+    //private TextView mWord;
+    //private TextView mPhoneticSpelling;
     private TextView mWordDescription;
+    private ScrollView mWordDescriptionView;
+    private TextView mScore;
+    private ImageView mProceed;
+    private LinearLayout mLives;
+    private LinearLayout mLivesSmall;
 
     private ImageView mRecord;
     private ImageView mListen;
@@ -48,6 +55,7 @@ public class ExerciseFragment extends Fragment {
     private boolean played = false; //TESTING, Illegal state exception on second playback...
 
     private int mCursorPosition = -1;
+    private int mSessionWord = 0;
 
     private OnFragmentInteractionListener mListener;
 
@@ -74,23 +82,35 @@ public class ExerciseFragment extends Fragment {
         mLanguage = (TextView) view.findViewById(R.id.language);
         mProgress = (TextView) view.findViewById(R.id.progess);
         mWordIllustration = (ImageView) view.findViewById(R.id.word_illustration);
-        mWord = (TextView) view.findViewById(R.id.word);
-        mPhoneticSpelling = (TextView) view.findViewById(R.id.phonetic_spelling);
+        //mWord = (TextView) view.findViewById(R.id.word);
+        //mPhoneticSpelling = (TextView) view.findViewById(R.id.phonetic_spelling);
         mWordDescription = (TextView) view.findViewById(R.id.word_description);
+        mWordDescriptionView = (ScrollView) view.findViewById(R.id.word_description_view);
+        mScore = (TextView) view.findViewById(R.id.score);
+        mProceed = (ImageView) view.findViewById(R.id.proceed);
+        mLives = (LinearLayout) view.findViewById(R.id.lives_section);
+        mLivesSmall = (LinearLayout) view.findViewById(R.id.lives_section_small);
 
         mRecord = (ImageView) view.findViewById(R.id.record_icon);
         mListen = (ImageView) view.findViewById(R.id.listen_icon);
 
         setListeners();
+        setInitialView();
 
         return view;
     }
 
     private void setListeners() {
-        mRecord.setOnClickListener(new View.OnClickListener() {
+        mProceed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mListener.nextExercise();
+            }
+        });
+        mRecord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onSuccess();
             }
         });
     }
@@ -137,6 +157,7 @@ public class ExerciseFragment extends Fragment {
     public void nextExercise(Cursor c) {
         if (c == null) { return; }
         mCursorPosition += 1;
+        mSessionWord += 1;
 
         //CursorHelper.toString(c); //Testing
 
@@ -145,10 +166,13 @@ public class ExerciseFragment extends Fragment {
         c.moveToPosition(mCursorPosition);
         if (c.isAfterLast()) { return; }
 
+        setInitialView();
+
+        mProgress.setText(String.valueOf(mSessionWord));
         mLanguage.setText(c.getString(c.getColumnIndex(ExerciseContent.LANGUAGE)));
-        mWord.setText(c.getString(c.getColumnIndex(ExerciseContent.WORD)));
+        //mWord.setText(c.getString(c.getColumnIndex(ExerciseContent.WORD)));
         mWordDescription.setText(c.getString(c.getColumnIndex(ExerciseContent.WORD_DESCRIPTION)));
-        mPhoneticSpelling.setText(c.getString(c.getColumnIndex(ExerciseContent.PHONETIC)));
+        //mPhoneticSpelling.setText(c.getString(c.getColumnIndex(ExerciseContent.PHONETIC)));
 
         ContentDownloadHelper.loadImage(getActivity(), mWordIllustration, c.getString(c.getColumnIndex(ExerciseContent.IMAGE_URL)));
         setSoundFile(c.getString(c.getColumnIndex(ExerciseContent.SOUND_RECORDING)));
@@ -161,6 +185,7 @@ public class ExerciseFragment extends Fragment {
     public void setLanguageSpecifics(String hex, String image_path) {
         try {
             mLanguage.setTextColor(Color.parseColor(hex));
+            mProgress.setTextColor(Color.parseColor(hex));
         } catch (IllegalArgumentException e) {
             Log.d(TAG, "Illegal Hex was provided for language - check database value!");
             e.printStackTrace();
@@ -196,6 +221,18 @@ public class ExerciseFragment extends Fragment {
             Log.d(TAG, "setSoundFile - cannot setDataSource: --getActivity().getFilesDir()-- " + path);
             e.printStackTrace();
         }
+    }
+
+    private void onSuccess() {
+        mLives.setVisibility(View.GONE);
+        mLivesSmall.setVisibility(View.VISIBLE);
+        mWordDescriptionView.setVisibility(View.VISIBLE);
+    }
+
+    private void setInitialView() {
+        mLives.setVisibility(View.VISIBLE);
+        mLivesSmall.setVisibility(View.INVISIBLE);
+        mWordDescriptionView.setVisibility(View.GONE);
     }
 
     /**
