@@ -1,17 +1,39 @@
 package com.theconnoisseur.android.Activities;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.theconnoisseur.R;
+import com.theconnoisseur.android.Model.ExerciseContent;
+import com.theconnoisseur.android.Model.SessionSummaryContent;
+
+import java.net.URISyntaxException;
+
+import Util.ContentDownloadHelper;
 
 public class SessionSummary extends ActionBarActivity {
+    public static final String TAG = SessionSummary.class.getSimpleName();
+
+    private int mAverageScore;
+    private int mWorstScore;
+    private int mBestScore;
+    private String mWorstWord;
+    private String mBestWord;
+    private String mFlagUri;
+    private int mWordsPassed;
+    private String mLanguageString;
+    private int mTotalWords;
+    private int mLanguageId;
+    private String mLanguageHex;
 
     private ImageView mLanguageImage;
     private TextView mLanguage;
@@ -20,12 +42,14 @@ public class SessionSummary extends ActionBarActivity {
     private TextView mTongueType;
     private TextView mTongueDescription;
     private ImageView mShareLink;
-    private TextView mBestScore;
-    private TextView mBestWord;
+    private TextView mPersonalHighlightText;
+    private TextView mBestScoreTextView;
+    private TextView mBestWordTextView;
     private ImageView mBestWordLanguage;
-    private TextView mWorstScore;
-    private TextView mWorstWord;
+    private TextView mWorstScoreTextView;
+    private TextView mWorstWordTextView;
     private ImageView mWorstWordLanguage;
+    private ImageView mConnoisseurImage;
     private Button mPlayNewSession;
 
     @Override
@@ -40,39 +64,97 @@ public class SessionSummary extends ActionBarActivity {
         mTongueType = (TextView) findViewById(R.id.tongue_type);
         mTongueDescription = (TextView) findViewById(R.id.tongue_description);
         mShareLink = (ImageView) findViewById(R.id.share_link);
-        mBestScore = (TextView) findViewById(R.id.best_score);
-        mBestWord = (TextView) findViewById(R.id.best_word);
+        mPersonalHighlightText = (TextView) findViewById(R.id.personal_highlight_text);
+        mBestScoreTextView = (TextView) findViewById(R.id.best_score);
+        mBestWordTextView = (TextView) findViewById(R.id.best_word);
         mBestWordLanguage = (ImageView) findViewById(R.id.best_word_language);
-        mWorstScore = (TextView) findViewById(R.id.worst_score);
-        mWorstWord = (TextView) findViewById(R.id.worst_word);
+        mWorstScoreTextView = (TextView) findViewById(R.id.worst_score);
+        mWorstWordTextView = (TextView) findViewById(R.id.worst_word);
         mWorstWordLanguage = (ImageView) findViewById(R.id.worst_word_language);
+        mConnoisseurImage = (ImageView) findViewById(R.id.connoisseur_image);
         mPlayNewSession = (Button) findViewById(R.id.play_new_session);
 
-
-        Intent i = getIntent();
         //Get all relevant information from intent
+        Intent i = getIntent();
+
+        mAverageScore = i.getIntExtra(SessionSummaryContent.AVERAGE_SCORE, 0);
+        mWorstScore = i.getIntExtra(SessionSummaryContent.WORST_SCORE, 0);
+        mBestScore = i.getIntExtra(SessionSummaryContent.BEST_SCORE, 0);
+        mWorstWord = i.getStringExtra(SessionSummaryContent.WORST_WORD);
+        mBestWord = i.getStringExtra(SessionSummaryContent.BEST_WORD);
+        mFlagUri = i.getStringExtra(SessionSummaryContent.LANGUAGE_FLAG_URI);
+        mWordsPassed = i.getIntExtra(SessionSummaryContent.WORDS_PASSED, 0);
+        mTotalWords = i.getIntExtra(SessionSummaryContent.TOTAL_WORDS, 0);
+        mLanguageString = i.getStringExtra(SessionSummaryContent.LANGUAGE);
+        mLanguageId = i.getIntExtra(SessionSummaryContent.LANGUAGE_ID, -1);
+        mLanguageHex = i.getStringExtra(SessionSummaryContent.LANGUAGE_HEX);
     }
 
-
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_session_summary, menu);
-        return true;
+    public void onStart() {
+        super.onStart();
+
+        ContentDownloadHelper.loadImage(this, mLanguageImage, mFlagUri);
+        ContentDownloadHelper.loadImage(this, mBestWordLanguage, mFlagUri);
+        ContentDownloadHelper.loadImage(this, mWorstWordLanguage, mFlagUri);
+
+        mLanguage.setText(mLanguageString);
+        mScore.setText("(" + String.valueOf(mWordsPassed) + "/" + String.valueOf(mTotalWords) + " passed)");
+        mBestScoreTextView.setText("YOUR BEST (" + String.valueOf(mBestScore) + "%)");
+        mWorstScoreTextView.setText("YOUR WORST (" + String.valueOf(mWorstScore) + "%)");
+        mBestWordTextView.setText(mBestWord);
+        mWorstWordTextView.setText(mWorstWord);
+
+        setTongueLevel();
+        setTextColour();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    private void setTongueLevel() {
+        if (mAverageScore < ExerciseContent.SCORE_PASS) {
+            mConnoisseurImage.setImageResource(R.drawable.face_barbarian);
+            mTongueType.setText(R.string.performance_1);
+            mTongueDescription.setText(R.string.barbarian_description);
+        } else if (mAverageScore >= ExerciseContent.SCORE_PASS && mAverageScore < ExerciseContent.SCORE_CONNOISSEUR) {
+            mConnoisseurImage.setImageResource(R.drawable.face_tourist);
+            mTongueType.setText(R.string.performance_2);
+            mTongueDescription.setText(R.string.tourist_description);
+        } else if (mAverageScore >= ExerciseContent.SCORE_CONNOISSEUR) {
+            mConnoisseurImage.setImageResource(R.drawable.face_connoisseur);
+            mTongueType.setText(R.string.performance_3);
+            mTongueDescription.setText(R.string.connoisseur_description);
+        }
+    }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+    private void setTextColour() {
+        try {
+            mLanguage.setTextColor(Color.parseColor(mLanguageHex));
+            mSession.setTextColor(Color.parseColor(mLanguageHex));
+            mScore.setTextColor(Color.parseColor(mLanguageHex));
+            mPersonalHighlightText.setTextColor(Color.parseColor(mLanguageHex));
+        } catch (IllegalArgumentException e) {
+            Log.d(TAG, "Illegal Hex was provided for language - check database value!");
+            e.printStackTrace();
+        }
+    }
+
+    public void newSession(View v) {
+        Intent intent;
+        if (mLanguageId != -1) {
+            intent = new Intent(this, ExerciseActivity.class);
+            intent.putExtra(ExerciseContent.LANGUAGE_ID, mLanguageId);
+        } else {
+            intent = new Intent(this, MainMenuActivity.class);
         }
 
-        return super.onOptionsItemSelected(item);
+        startActivity(intent);
+        finish();
     }
+
+    public void goBack(View v) {
+        startActivity(new Intent(this, LanguageSelectionActivity.class));
+        finish();
+    }
+
+
+
 }

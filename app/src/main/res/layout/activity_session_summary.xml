@@ -76,8 +76,7 @@
             android:layout_height="@dimen/connoisseur_head_diameter"
             android:layout_margin="5dp"
             android:background="@android:color/transparent"
-            android:src="@drawable/logo_1"
-            android:onClick="voiceClick"/>
+            android:src="@drawable/face_connoisseur"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -102,9 +101,9 @@
             android:id="@+id/share_link"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/share_image_height"
-            android:padding="@dimen/normal_padding"
+            android:padding="@dimen/small_padding"
             android:layout_margin="@dimen/normal_margin"
-            android:src="@drawable/logo_2_horizontal"/>
+            android:src="@drawable/share_image"/>
 
         <ImageView
             android:layout_width="match_parent"
@@ -113,13 +112,13 @@
             android:layout_margin="@dimen/small_margin"/>
 
         <TextView
+            android:id="@+id/personal_highlight_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/personal_highlights_text"
             android:textSize="@dimen/text_vsmall"
-            android:textStyle="bold"
-            android:layout_margin="@dimen/small_margin"/>
+            android:textStyle="bold"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -141,26 +140,31 @@
                     android:textStyle="bold"
                     android:layout_margin="@dimen/small_margin"/>
 
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center">
 
                     <TextView
                         android:id="@+id/best_word"
-                        android:layout_width="wrap_content"
+                        android:layout_weight="3"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="Peloton"
+                        android:textSize="@dimen/text_small"
                         android:layout_centerVertical="true"/>
 
                     <ImageView
                         android:id="@+id/best_word_language"
-                        android:layout_width="@dimen/flag_width"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
                         android:layout_height="@dimen/flag_height"
                         android:src="@drawable/flag_random"
                         android:layout_alignParentRight="true"/>
 
 
-                </RelativeLayout>
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -169,7 +173,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_margin="@dimen/vsmall_margin">
+                android:layout_margin="@dimen/small_margin">
 
                 <TextView
                     android:id="@+id/worst_score"
@@ -179,26 +183,31 @@
                     android:layout_margin="@dimen/small_margin"
                     android:textStyle="bold"/>
 
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center">
 
                     <TextView
                         android:id="@+id/worst_word"
-                        android:layout_width="wrap_content"
+                        android:layout_weight="4"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/small_margin"
                         android:text="Enfant \nterrible"
+                        android:textSize="@dimen/text_small"
                         android:layout_centerVertical="true"/>
 
                     <ImageView
                         android:id="@+id/worst_word_language"
-                        android:layout_width="@dimen/flag_width"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
                         android:layout_height="@dimen/flag_height"
                         android:src="@drawable/flag_random"
                         android:layout_alignParentRight="true"/>
 
-
-                </RelativeLayout>
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -209,7 +218,8 @@
             android:id="@+id/play_new_session"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/play_new_session"/>
+            android:text="@string/play_new_session"
+            android:onClick="newSession"/>
 
     </LinearLayout>
 

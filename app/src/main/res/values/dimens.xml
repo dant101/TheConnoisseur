@@ -52,8 +52,8 @@
     <dimen name="icon_side">40dp</dimen>
 
     <!-- LanguageSelection Activity -->
-    <dimen name="flag_width">50dp</dimen>
-    <dimen name="flag_height">30dp</dimen>
+    <dimen name="flag_width">30dp</dimen>
+    <dimen name="flag_height">20dp</dimen>
 
     <!-- Collections Activity -->
     <dimen name="collections_flag_width">40dp</dimen>

@@ -1,6 +1,7 @@
 package com.theconnoisseur.android.Activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.media.MediaPlayer;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 
 import com.theconnoisseur.R;
 import com.theconnoisseur.android.Model.ExerciseContent;
+import com.theconnoisseur.android.Model.SessionSummaryContent;
 
 import java.io.File;
 import java.io.IOException;
@@ -66,8 +68,24 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
 
     private int mCursorPosition = -1;
     private int mSessionWord = 0;
+    private int mCurrentWordBestScore;
+    private int mSessionCumulativeScore = 0;
 
-    private int mLives = 3;
+    private int mSessionWordPasses = 0;
+    private int mSessionWorstScore = 100;
+    private int mSessionBestScore = 0;
+    private String mSessionWorstWord = "";
+    private String mSessionBestWord = "";
+
+    private String mCurrentWord;
+    private String mLanguageString;
+    private String mWordIllustrationUri;
+    private String mLanguageFlagUri;
+    private String mLanguageHex;
+    private int mLanguageId;
+
+    private boolean mPassedWord = false;
+    private int mLives = ExerciseContent.MAXIMUM_LIVES;
 
     private OnFragmentInteractionListener mListener;
     private VoiceRecogniser mVoiceRecogniser;
@@ -125,6 +143,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         mProceed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                concludeWordAttempt();
                 mListener.nextExercise();
             }
         });
@@ -138,21 +157,6 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
                 } else {
                     mVoiceRecogniser.stopListening();
                 }
-            }
-        });
-        mWordIllustration.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mLives -= 1;
-                onSuccess();
-                updateLives();
-            }
-        });
-        mSideLogo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mLives -= 1;
-                updateLives();
             }
         });
     }
@@ -200,24 +204,35 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         if (c == null) { return; }
         mCursorPosition += 1;
         mSessionWord += 1;
-        mLives = 3;
+        mCurrentWordBestScore = 0;
+
+        mLives = ExerciseContent.MAXIMUM_LIVES;
+        firstAttempt = true;
 
         //CursorHelper.toString(c); //Testing
 
         Log.d(TAG, "Exercise cursor position: " + String.valueOf(mCursorPosition));
 
         c.moveToPosition(mCursorPosition);
-        if (c.isAfterLast()) { return; }
+        if (c.isAfterLast()) { concludeSession(); getActivity().finish(); return; }
 
         setInitialView();
 
         mProgress.setText(String.valueOf(mSessionWord));
-        mLanguage.setText(c.getString(c.getColumnIndex(ExerciseContent.LANGUAGE)));
+
+        mLanguageString = c.getString(c.getColumnIndex(ExerciseContent.LANGUAGE));
+        mLanguage.setText(mLanguageString);
+
         mWordDescription.setText(c.getString(c.getColumnIndex(ExerciseContent.WORD_DESCRIPTION)));
+
         //mWord.setText(c.getString(c.getColumnIndex(ExerciseContent.WORD)));
+        mCurrentWord = c.getString(c.getColumnIndex(ExerciseContent.WORD));
         //mPhoneticSpelling.setText(c.getString(c.getColumnIndex(ExerciseContent.PHONETIC)));
 
-        ContentDownloadHelper.loadImage(getActivity(), mWordIllustration, c.getString(c.getColumnIndex(ExerciseContent.IMAGE_URL)));
+        mWordIllustrationUri = c.getString(c.getColumnIndex(ExerciseContent.IMAGE_URL));
+        mLanguageId = c.getInt(c.getColumnIndex(ExerciseContent.LANGUAGE_ID));
+
+        ContentDownloadHelper.loadImage(getActivity(), mWordIllustration, mWordIllustrationUri);
         setSoundFile(c.getString(c.getColumnIndex(ExerciseContent.SOUND_RECORDING)));
 
         String word = c.getString(c.getColumnIndex(ExerciseContent.WORD));
@@ -232,6 +247,8 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
      * @param hex hex value of language text colour
      */
     public void setLanguageSpecifics(String hex, String image_path) {
+        mLanguageFlagUri = image_path;
+        mLanguageHex = hex;
         try {
             mLanguage.setTextColor(Color.parseColor(hex));
             mProgress.setTextColor(Color.parseColor(hex));
@@ -277,9 +294,6 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         mLivesBig.setVisibility(View.GONE);
         mLivesSmall.setVisibility(View.VISIBLE);
         mWordDescriptionView.setVisibility(View.VISIBLE);;
-
-        updateLives();
-        if(!firstAttempt) { afterFirstAttempt(); firstAttempt = true; } //TODO: on scoreupdate - put in correct spot...
     }
 
     //UI alterations after first recording attempt by user
@@ -296,10 +310,9 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         mWordDescriptionView.setVisibility(View.GONE);
         mScoreFeedback.setVisibility(View.INVISIBLE);
         mProceed.setVisibility(View.INVISIBLE);
+        mRecord.setVisibility(View.VISIBLE);
 
         updateLives();
-
-        firstAttempt = false;
     }
 
     private void updateLives() {
@@ -327,9 +340,77 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         }
     }
 
+    // House keeping as we move onto the next word in a session
+    private void concludeWordAttempt() {
+        //Maintain cumulative score for average calculation
+        mSessionCumulativeScore += mCurrentWordBestScore;
+
+        //Maintain best and worst scores/words
+        if (mCurrentWordBestScore > mSessionBestScore) {
+            mSessionBestScore = mCurrentWordBestScore;
+            mSessionBestWord = mCurrentWord;
+        } else if (mCurrentWordBestScore < mSessionWorstScore) {
+            mSessionWorstScore = mCurrentWordBestScore;
+            mSessionWorstWord = mCurrentWord;
+        }
+
+        //Main number of words passed
+        if (mCurrentWordBestScore > ExerciseContent.SCORE_PASS) {
+            mSessionWordPasses += 1;
+        }
+
+    }
+
+    private void concludeSession() {
+        mSessionWord -= 1; //Since we increment before we realise we have none left, correct here
+        Intent intent = new Intent(getActivity(), SessionSummary.class);
+
+        intent.putExtra(SessionSummaryContent.AVERAGE_SCORE, mSessionCumulativeScore / mSessionWord);
+        intent.putExtra(SessionSummaryContent.BEST_SCORE, mSessionBestScore);
+        intent.putExtra(SessionSummaryContent.BEST_WORD, mSessionBestWord);
+        intent.putExtra(SessionSummaryContent.WORST_SCORE, mSessionWorstScore);
+        intent.putExtra(SessionSummaryContent.WORST_WORD, mSessionWorstWord);
+        intent.putExtra(SessionSummaryContent.LANGUAGE_FLAG_URI, mLanguageFlagUri);
+        intent.putExtra(SessionSummaryContent.WORDS_PASSED, mSessionWordPasses);
+        intent.putExtra(SessionSummaryContent.TOTAL_WORDS, mSessionWord);
+        intent.putExtra(SessionSummaryContent.LANGUAGE, mLanguageString);
+        intent.putExtra(SessionSummaryContent.LANGUAGE_ID, mLanguageId);
+        intent.putExtra(SessionSummaryContent.LANGUAGE_HEX, mLanguageHex);
+
+        startActivity(intent);
+    }
+
     @Override
     public void updateScore(float a) {
-        mScore.setText(String.valueOf(a) + "%");
+        if(firstAttempt) { afterFirstAttempt(); firstAttempt = false; }
+
+        int score = Math.round(a * 100);
+        Log.d(TAG, "Pronunciation Score: " + String.valueOf(score));
+
+        if (score == -100) {
+            //TODO: retry message?
+            mScore.setText("0%");
+        } else {
+            mScore.setText(String.valueOf(score) + "%");
+        }
+
+        mLives -= 1;
+
+        //Updates current word best score
+        mCurrentWordBestScore = score > mCurrentWordBestScore ? score : mCurrentWordBestScore;
+
+        if (score < ExerciseContent.SCORE_PASS) {
+            mPassedWord = true;
+        } else if (score >= ExerciseContent.SCORE_PASS && score < ExerciseContent.SCORE_CONNOISSEUR) {
+            mPassedWord = true;
+            onSuccess();
+        } else {
+            onSuccess();
+            //Connoisseurship - save score?
+        }
+        updateLives();
+
+        Log.d(TAG, "Cumulative score: " + String.valueOf(mSessionCumulativeScore) + ". BestCurrent: " + String.valueOf(mCurrentWordBestScore));
     }
 
     /**

@@ -31,6 +31,12 @@ public class LoginActivity extends ActionBarActivity implements ContentDownloadH
         setContentView(R.layout.activity_login);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        startActivity(new Intent(this, MainMenuActivity.class));
+    }
+
     public void click (View v) {
         startActivity(new Intent(LoginActivity.this, ExerciseActivity.class));
     }
