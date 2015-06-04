@@ -33,8 +33,11 @@
     <dimen name="illustration_height">250dp</dimen>
     <dimen name="microphone_width">80dp</dimen>
     <dimen name="accuracy_diameter">40dp</dimen>
+    <dimen name="proceed_diameter">50dp</dimen>
     <dimen name="hearts_height_small">30dp</dimen>
     <dimen name="hearts_height">60dp</dimen>
+    <dimen name="hearts_width_small">30dp</dimen>
+    <dimen name="hearts_width">60dp</dimen>
     <dimen name="connoisseur_head_diameter">120dp</dimen>
     <dimen name="share_image_height">40dp</dimen>
 

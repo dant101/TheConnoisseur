@@ -40,6 +40,7 @@ public class ContentDownloadController {
         this.mContext = context;
 
         if (shouldFetchContent()) {
+            Log.d(TAG, "ContentDownloadController: fetching language content...");
             new LanguagesContentDownloadTask().execute(context);
         } else {
             Log.d(TAG, "ContentDownloadController: should NOT fetch language content");

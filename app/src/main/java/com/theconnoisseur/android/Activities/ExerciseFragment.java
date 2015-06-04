@@ -1,7 +1,6 @@
 package com.theconnoisseur.android.Activities;
 
 import android.app.Activity;
-import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.media.MediaPlayer;
@@ -13,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -46,18 +46,28 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
     private ScrollView mWordDescriptionView;
     private TextView mScore;
     private ImageView mProceed;
-    private LinearLayout mLives;
+    private LinearLayout mLivesBig;
     private LinearLayout mLivesSmall;
-
+    private RelativeLayout mScoreFeedback;
     private ImageView mRecord;
     private ImageView mListen;
+    private ImageView mBigLife1;
+    private ImageView mBigLife2;
+    private ImageView mBigLife3;
+    private ImageView mSmallLife1;
+    private ImageView mSmallLife2;
+    private ImageView mSmallLife3;
+    private ImageView mSideLogo;
 
     private MediaPlayer mMediaPlayer;
     private boolean played = false; //TESTING, Illegal state exception on second playback...
     private boolean mClicked = false;
+    private boolean firstAttempt = true;
 
     private int mCursorPosition = -1;
     private int mSessionWord = 0;
+
+    private int mLives = 3;
 
     private OnFragmentInteractionListener mListener;
     private VoiceRecogniser mVoiceRecogniser;
@@ -91,11 +101,19 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         mWordDescriptionView = (ScrollView) view.findViewById(R.id.word_description_view);
         mScore = (TextView) view.findViewById(R.id.score);
         mProceed = (ImageView) view.findViewById(R.id.proceed);
-        mLives = (LinearLayout) view.findViewById(R.id.lives_section);
+        mLivesBig = (LinearLayout) view.findViewById(R.id.lives_section);
         mLivesSmall = (LinearLayout) view.findViewById(R.id.lives_section_small);
+        mScoreFeedback = (RelativeLayout) view.findViewById(R.id.score_feedback);
 
         mRecord = (ImageView) view.findViewById(R.id.record_icon);
         mListen = (ImageView) view.findViewById(R.id.listen_icon);
+        mBigLife1 = (ImageView) view.findViewById(R.id.heart_big_1);
+        mBigLife2 = (ImageView) view.findViewById(R.id.heart_big_2);
+        mBigLife3 = (ImageView) view.findViewById(R.id.heart_big_3);
+        mSmallLife1 = (ImageView) view.findViewById(R.id.heart_small_1);
+        mSmallLife2 = (ImageView) view.findViewById(R.id.heart_small_2);
+        mSmallLife3 = (ImageView) view.findViewById(R.id.heart_small_3);
+        mSideLogo = (ImageView) view.findViewById(R.id.connoisseur_side);
 
         setListeners();
         setInitialView();
@@ -116,9 +134,25 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
                 mClicked = !mClicked;
                 if (mClicked) {
                     mVoiceRecogniser.startListening();
+                    mClicked = !mClicked;
                 } else {
                     mVoiceRecogniser.stopListening();
                 }
+            }
+        });
+        mWordIllustration.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mLives -= 1;
+                onSuccess();
+                updateLives();
+            }
+        });
+        mSideLogo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mLives -= 1;
+                updateLives();
             }
         });
     }
@@ -166,6 +200,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         if (c == null) { return; }
         mCursorPosition += 1;
         mSessionWord += 1;
+        mLives = 3;
 
         //CursorHelper.toString(c); //Testing
 
@@ -178,8 +213,8 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
 
         mProgress.setText(String.valueOf(mSessionWord));
         mLanguage.setText(c.getString(c.getColumnIndex(ExerciseContent.LANGUAGE)));
-        //mWord.setText(c.getString(c.getColumnIndex(ExerciseContent.WORD)));
         mWordDescription.setText(c.getString(c.getColumnIndex(ExerciseContent.WORD_DESCRIPTION)));
+        //mWord.setText(c.getString(c.getColumnIndex(ExerciseContent.WORD)));
         //mPhoneticSpelling.setText(c.getString(c.getColumnIndex(ExerciseContent.PHONETIC)));
 
         ContentDownloadHelper.loadImage(getActivity(), mWordIllustration, c.getString(c.getColumnIndex(ExerciseContent.IMAGE_URL)));
@@ -189,7 +224,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         String locale = c.getString(c.getColumnIndex(ExerciseContent.LOCALE));
         locale = locale == null ? "en-GB" : locale;
 
-        mVoiceRecogniser = new VoiceRecogniser(getActivity(),  word, locale, this);//that should be bonjour...
+        mVoiceRecogniser = new VoiceRecogniser(getActivity(),  word, locale, this);
     }
 
     /**
@@ -237,16 +272,59 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         }
     }
 
+    //UI change as a result of a successful recording attempt
     private void onSuccess() {
-        mLives.setVisibility(View.GONE);
+        mLivesBig.setVisibility(View.GONE);
         mLivesSmall.setVisibility(View.VISIBLE);
-        mWordDescriptionView.setVisibility(View.VISIBLE);
+        mWordDescriptionView.setVisibility(View.VISIBLE);;
+
+        updateLives();
+        if(!firstAttempt) { afterFirstAttempt(); firstAttempt = true; } //TODO: on scoreupdate - put in correct spot...
     }
 
+    //UI alterations after first recording attempt by user
+    private void afterFirstAttempt() {
+        Log.d(TAG, "afterFirstAttempt");
+        mScoreFeedback.setVisibility(View.VISIBLE);
+        mProceed.setVisibility(View.VISIBLE);
+    }
+
+    //Initial UI settings (see story board)
     private void setInitialView() {
-        mLives.setVisibility(View.VISIBLE);
+        mLivesBig.setVisibility(View.VISIBLE);
         mLivesSmall.setVisibility(View.INVISIBLE);
         mWordDescriptionView.setVisibility(View.GONE);
+        mScoreFeedback.setVisibility(View.INVISIBLE);
+        mProceed.setVisibility(View.INVISIBLE);
+
+        updateLives();
+
+        firstAttempt = false;
+    }
+
+    private void updateLives() {
+
+        mBigLife1.setImageResource(R.drawable.heart_green_black);
+        mBigLife2.setImageResource(R.drawable.heart_green_black);
+        mBigLife3.setImageResource(R.drawable.heart_green_black);
+        mSmallLife1.setImageResource(R.drawable.heart_green_black);
+        mSmallLife2.setImageResource(R.drawable.heart_green_black);
+        mSmallLife3.setImageResource(R.drawable.heart_green_black);
+
+        switch(mLives) {
+            case 3:
+                mBigLife3.setImageResource(R.drawable.heart_green_large);
+                mSmallLife3.setImageResource(R.drawable.heart_green_small);
+            case 2:
+                mBigLife2.setImageResource(R.drawable.heart_green_large);
+                mSmallLife2.setImageResource(R.drawable.heart_green_small);
+            case 1:
+                mBigLife1.setImageResource(R.drawable.heart_green_large);
+                mSmallLife1.setImageResource(R.drawable.heart_green_small);
+                break;
+            case 0:
+                mRecord.setVisibility(View.GONE);
+        }
     }
 
     @Override

@@ -68,8 +68,7 @@
             android:layout_height="@dimen/illustration_height"
             android:layout_margin="10dp"
             android:background="@android:color/transparent"
-            android:src="@drawable/matryoshka"
-            android:onClick="voiceClick"/>
+            android:src="@drawable/matryoshka"/>
 
         <TextView
             android:id="@+id/word"
@@ -91,12 +90,28 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/hearts_height_small"
             android:visibility="invisible"
-            android:padding="@dimen/small_padding">
+            android:gravity="center">
 
             <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/large_hearts"/>
+                android:id="@+id/heart_small_1"
+                android:layout_width="@dimen/hearts_width_small"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/normal_padding"
+                android:src="@drawable/heart_green_black"/>
+
+            <ImageView
+                android:id="@+id/heart_small_2"
+                android:layout_width="@dimen/hearts_width_small"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/normal_padding"
+                android:src="@drawable/heart_green_black"/>
+
+            <ImageView
+                android:id="@+id/heart_small_3"
+                android:layout_width="@dimen/hearts_width_small"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/normal_padding"
+                android:src="@drawable/heart_green_black"/>
 
         </LinearLayout>
 
@@ -123,13 +138,29 @@
             android:layout_height="@dimen/hearts_height"
             android:layout_margin="@dimen/vsmall_margin"
             android:visibility="visible"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="fill_parent"
+                android:id="@+id/heart_big_1"
+                android:layout_width="@dimen/hearts_width"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/normal_padding"
-                android:src="@drawable/large_hearts"/>
+                android:src="@drawable/heart_green_black"/>
+
+            <ImageView
+                android:id="@+id/heart_big_2"
+                android:layout_width="@dimen/hearts_width"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/normal_padding"
+                android:src="@drawable/heart_green_black"/>
+
+            <ImageView
+                android:id="@+id/heart_big_3"
+                android:layout_width="@dimen/hearts_width"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/normal_padding"
+                android:src="@drawable/heart_green_black"/>
 
         </LinearLayout>
 
@@ -140,10 +171,12 @@
             android:orientation="horizontal">
 
             <RelativeLayout
+                android:id="@+id/score_feedback"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true">
+                android:layout_centerVertical="true"
+                android:visibility="invisible">
 
                 <TextView
                     android:id="@+id/score"
@@ -189,11 +222,12 @@
 
             <ImageView
                 android:id="@+id/proceed"
-                android:layout_width="@dimen/accuracy_diameter"
-                android:layout_height="@dimen/accuracy_diameter"
+                android:layout_width="@dimen/proceed_diameter"
+                android:layout_height="@dimen/proceed_diameter"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:src="@drawable/accuracy_negative"/>
+                android:visibility="invisible"
+                android:src="@drawable/ui_next"/>
 
             </RelativeLayout>
 
