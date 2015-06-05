@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.theconnoisseur.android.Activities.Interfaces.ExerciseContentDownloadCallback;
 
+import Util.ContentSample;
 import Util.ResourceDownloader;
 
 /**
@@ -42,6 +43,10 @@ public class ContentDownloadController {
         if (shouldFetchContent()) {
             Log.d(TAG, "ContentDownloadController: fetching language content...");
             new LanguagesContentDownloadTask().execute(context);
+
+            //Temp testing
+            //ContentSample.insertSampleItalian(context);
+
         } else {
             Log.d(TAG, "ContentDownloadController: should NOT fetch language content");
         }

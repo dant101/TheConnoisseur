@@ -24,14 +24,13 @@
     <string name="collection_heading">THE CONNOISSEUR\'S COLLECTION</string>
     <string name="collection_subheading">View and replay previous sessions</string>
 
-    <!--Exercise-->
+    <!-- Exercise -->
     <string name="you_have_the_tongue">You have the tongue of a...</string>
 
-        <!-- Performance ranked low to high (1 worst, 3 best) -->
+    <!-- Performance ranked low to high (1 worst, 3 best) -->
     <string name="performance_1">Barbarian</string>
     <string name="performance_2">Tourist</string>
     <string name="performance_3">Connoisseur</string>
-
     <string name="connoisseur_description">(Average accuracy of 75% or above)</string>
     <string name="tourist_description">(Average accuracy of 50% - 75%)</string>
     <string name="barbarian_description">(Average accuracy of below 50%)</string>
@@ -52,5 +51,6 @@
     <string name="title_activity_splash_screen">SplashScreenActivity</string>
     <string name="title_activity_collection">CollectionActivity</string>
     <string name="title_activity_session_summary">SessionSummary</string>
+    <string name="title_activity_voice_recogniser_test">VoiceRecogniserTestActivity</string>
 
 </resources>

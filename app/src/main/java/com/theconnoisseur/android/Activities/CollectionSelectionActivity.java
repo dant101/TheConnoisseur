@@ -22,6 +22,7 @@ import com.theconnoisseur.android.Model.InternalDbContract;
 import com.theconnoisseur.android.Model.LanguageSelection;
 
 import Util.ContentDownloadHelper;
+import Util.CursorHelper;
 
 public class CollectionSelectionActivity extends ActionBarActivity implements CursorCallback{
     public static final String TAG = CollectionSelectionActivity.class.getSimpleName();
@@ -153,6 +154,9 @@ public class CollectionSelectionActivity extends ActionBarActivity implements Cu
             Log.d(TAG, "CursorPreparationTask onPostExecute called");
 
             mCallback.CursorLoaded(mCursor);
+
+            CursorHelper.toString(mCursor);
+
             super.onPostExecute(result);
         }
     }

@@ -11,6 +11,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.theconnoisseur.R;
+import com.theconnoisseur.android.Activities.Testing.VoiceRecogniserTestActivity;
+
+import Voice.VoiceRecogniser;
 
 public class MainMenuActivity extends ActionBarActivity {
     public static final String TAG = MainMenuActivity.class.getSimpleName();
@@ -63,6 +66,10 @@ public class MainMenuActivity extends ActionBarActivity {
 
     public void goBack(View v) {
         startActivity(new Intent(MainMenuActivity.this, LoginActivity.class));
+    }
+
+    public void voiceRecogniserTest(View v) {
+        startActivity(new Intent(MainMenuActivity.this, VoiceRecogniserTestActivity.class));
     }
 
     public void onSelection(View v) {

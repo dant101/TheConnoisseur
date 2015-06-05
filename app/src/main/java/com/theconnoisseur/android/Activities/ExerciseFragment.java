@@ -239,6 +239,8 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         String locale = c.getString(c.getColumnIndex(ExerciseContent.LOCALE));
         locale = locale == null ? "en-GB" : locale;
 
+        Log.d(TAG, "Locale: " + locale);
+
         mVoiceRecogniser = new VoiceRecogniser(getActivity(),  word, locale, this);
     }
 

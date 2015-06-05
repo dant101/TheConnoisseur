@@ -144,6 +144,28 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:onClick="voiceRecogniserTest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="@dimen/normal_margin"
+            android:layout_marginTop="@dimen/large_margin"
+            android:layout_marginBottom="@dimen/large_margin"
+            android:background="@color/flag_blue">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="VOICE RECOGNISER TEST"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_medium"
+                android:textStyle="bold"/>
+
+
+            </LinearLayout>
+
 
         </LinearLayout>
 

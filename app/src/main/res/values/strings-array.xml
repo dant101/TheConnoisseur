@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="locale_array">
+        <item>it</item>
+        <item>fr</item>
+        <item>de</item>
+        <item>es</item>
+        <item>en-GB</item>
+    </string-array>
+</resources>

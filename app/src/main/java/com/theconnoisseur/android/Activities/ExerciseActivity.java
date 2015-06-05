@@ -18,6 +18,7 @@ import com.theconnoisseur.android.Model.ExerciseContent;
 import com.theconnoisseur.android.Model.InternalDbContract;
 import com.theconnoisseur.android.Model.LanguageSelection;
 
+import Util.CursorHelper;
 import Voice.VoiceRecogniser;
 
 public class ExerciseActivity extends FragmentActivity implements ExerciseFragment.OnFragmentInteractionListener, CursorCallback, ExerciseContentDownloadCallback {
@@ -173,6 +174,8 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
         protected void onPostExecute(Void result) {
             Log.d(TAG, "ExerciseCursorPreparationTask onPostExecute called");
             super.onPostExecute(result);
+
+            CursorHelper.toString(mCursor);
 
             mCallback.CursorLoaded(mCursor);
         }

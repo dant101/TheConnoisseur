@@ -7,6 +7,8 @@ import android.util.Log;
 
 import com.theconnoisseur.android.Controller.ContentDownloadController;
 
+import Util.ContentSample;
+
 /**
  * Base Activity class that all other activities will extend
  */

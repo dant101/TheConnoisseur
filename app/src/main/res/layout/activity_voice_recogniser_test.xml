@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:gravity="center">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Voice Recogniser Test"
+        android:textSize="@dimen/text_medium"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_margin="@dimen/normal_margin"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Type in the desired word into the text box and press the record button to initiate recording - record yourself and the score is shown"
+        android:textSize="@dimen/text_small"
+        android:layout_margin="@dimen/normal_margin"
+        android:gravity="center"/>
+
+    <EditText
+        android:id="@+id/word_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/large_margin"
+        android:layout_gravity="center"/>
+
+    <Spinner
+        android:id="@+id/locale_spinner"
+        android:padding="@dimen/normal_margin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/xlarge_padding"
+        android:background="@color/flag_green"
+        android:layout_margin="@dimen/normal_margin"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_medium"
+        android:text="(Score appears here)"/>
+
+    <ImageView
+        android:id="@+id/record_icon"
+        android:visibility="visible"
+        android:layout_margin="20dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/ui_record"
+        android:onClick="onRecord"/>
+
+
+</LinearLayout>
