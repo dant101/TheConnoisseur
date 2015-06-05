@@ -114,5 +114,6 @@ public class VoiceRecogniserTestActivity extends Activity implements AdapterView
     @Override
     public void onStop() {
         setLocale(mDeviceLocale);
+        super.onStop();
     }
 }
