@@ -23,7 +23,8 @@
 
         <RelativeLayout
             android:layout_width="@dimen/ring_diameter"
-            android:layout_height="@dimen/ring_diameter">
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
             <ImageView
                 android:id="@+id/language_image"
@@ -65,7 +66,8 @@
         <ImageView
             android:id="@+id/word_illustration"
             android:layout_width="@dimen/illustration_width"
-            android:layout_height="@dimen/illustration_height"
+            android:layout_height="0dp"
+            android:layout_weight="6"
             android:layout_margin="10dp"
             android:background="@android:color/transparent"
             android:src="@drawable/matryoshka"/>
@@ -88,28 +90,29 @@
         <LinearLayout
             android:id="@+id/lives_section_small"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/hearts_height_small"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:visibility="invisible"
             android:gravity="center">
 
             <ImageView
                 android:id="@+id/heart_small_1"
                 android:layout_width="@dimen/hearts_width_small"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:padding="@dimen/normal_padding"
                 android:src="@drawable/heart_green_black"/>
 
             <ImageView
                 android:id="@+id/heart_small_2"
                 android:layout_width="@dimen/hearts_width_small"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:padding="@dimen/normal_padding"
                 android:src="@drawable/heart_green_black"/>
 
             <ImageView
                 android:id="@+id/heart_small_3"
                 android:layout_width="@dimen/hearts_width_small"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:padding="@dimen/normal_padding"
                 android:src="@drawable/heart_green_black"/>
 
@@ -136,7 +139,8 @@
         <LinearLayout
             android:id="@+id/lives_section"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/hearts_height"
+            android:layout_height="0dp"
+            android:layout_weight="2"
             android:layout_margin="@dimen/vsmall_margin"
             android:visibility="visible"
             android:gravity="center"
@@ -145,21 +149,21 @@
             <ImageView
                 android:id="@+id/heart_big_1"
                 android:layout_width="@dimen/hearts_width"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:padding="@dimen/normal_padding"
                 android:src="@drawable/heart_green_black"/>
 
             <ImageView
                 android:id="@+id/heart_big_2"
                 android:layout_width="@dimen/hearts_width"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:padding="@dimen/normal_padding"
                 android:src="@drawable/heart_green_black"/>
 
             <ImageView
                 android:id="@+id/heart_big_3"
                 android:layout_width="@dimen/hearts_width"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:padding="@dimen/normal_padding"
                 android:src="@drawable/heart_green_black"/>
 
@@ -168,15 +172,17 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="2"
             android:orientation="horizontal">
 
             <RelativeLayout
                 android:id="@+id/score_feedback"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
+                android:gravity="center"
                 android:visibility="invisible">
 
                 <TextView
@@ -198,7 +204,7 @@
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="horizontal"
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true">
@@ -208,7 +214,7 @@
                     android:id="@+id/listen_icon"
                     android:onClick="playRecording"
                     android:layout_width="@dimen/microphone_width"
-                    android:layout_height="@dimen/microphone_width"
+                    android:layout_height="match_parent"
                     android:src="@drawable/ui_listen"/>
 
                 <ImageView
@@ -216,7 +222,7 @@
                     android:visibility="visible"
                     android:layout_margin="@dimen/normal_margin"
                     android:layout_width="@dimen/microphone_width"
-                    android:layout_height="@dimen/microphone_width"
+                    android:layout_height="match_parent"
                     android:src="@drawable/ui_record"/>
 
             </LinearLayout>

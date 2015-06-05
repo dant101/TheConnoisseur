@@ -6,10 +6,10 @@ android {
 
     defaultConfig {
         applicationId "com.theconnoisseur"
-        minSdkVersion 16
+        minSdkVersion 15
         targetSdkVersion 21
-        versionCode 6
-        versionName "1.5"
+        versionCode 8
+        versionName "1.7"
     }
     buildTypes {
         release {
