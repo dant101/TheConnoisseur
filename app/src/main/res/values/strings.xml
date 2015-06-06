@@ -9,6 +9,15 @@
     <string name="the">THE</string>
     <string name="connoisseur_phonetic">Con-nois-seur</string>
 
+    <!-- Login -->
+    <string name="login_email_prompt">Enter your email</string>
+    <string name="login_username_prompt">Enter your username</string>
+    <string name="signup_username_prompt">Pick a username</string>
+    <string name="login_password_prompt">Enter your password</string>
+    <string name="signup_password_prompt">Think of a password</string>
+    <string name="create_account">Create Account</string>
+    <string name="login">Login</string>
+
     <!-- Main Menu Strings -->
     <string name="main_menu">MAIN MENU</string>
     <string name="connoisseur_collection">THE CONNOISSEUR\'S COLLECTION</string>

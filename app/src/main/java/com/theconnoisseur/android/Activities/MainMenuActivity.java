@@ -65,7 +65,7 @@ public class MainMenuActivity extends ActionBarActivity {
     }
 
     public void goBack(View v) {
-        startActivity(new Intent(MainMenuActivity.this, LoginActivity.class));
+        //startActivity(new Intent(MainMenuActivity.this, LoginActivity.class));
     }
 
     public void voiceRecogniserTest(View v) {

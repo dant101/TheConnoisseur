@@ -1,14 +1,14 @@
 package Database;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import Util.PasswordEncryption;
 
-/**
- * Created by Alexandre on 28/05/2015.
- */
 public class LoginOnlineDB extends OnlineDB {
+    public static final String TAG = LoginOnlineDB.class.getSimpleName();
 
     public LoginOnlineDB(Postgresql database) {
         super(database);
@@ -20,17 +20,24 @@ public class LoginOnlineDB extends OnlineDB {
     }
 
     /* Tries to login returning true if success*/
-    public boolean login(String username, String password) throws Exception {
+    public boolean login(String username, String password) {
         boolean result = false;
 
-        //using a different selectQuery format here to prevent SQLInjections
-        String query = "SELECT * " +
-                "FROM login " +
-                "WHERE username = ?";
-        List<List<String>> queryResult = database.loginQuery(query, this.allArguments, username);
-        if(queryResult.size() == 1) {;
-            LoginOnlineDBFormat formatLogin = format(queryResult,LoginOnlineDBFormat.class).get(0);
-            result = PasswordEncryption.isExpectedPassword(password, formatLogin.getSalt(), formatLogin.getPassword());
+        try {
+            //using a different selectQuery format here to prevent SQLInjections
+            String query = "SELECT * " +
+                    "FROM login " +
+                    "WHERE username = ?";
+            List<List<String>> queryResult = database.loginQuery(query, this.allArguments, username);
+            if(queryResult.size() == 1) {;
+                LoginOnlineDBFormat formatLogin = format(queryResult,LoginOnlineDBFormat.class).get(0);
+                result = PasswordEncryption.isExpectedPassword(password, formatLogin.getSalt(), formatLogin.getPassword());
+            }
+
+        } catch (Exception e) {
+            Log.d(TAG, "Unable to correctly verify login - assume false");
+            result = false;
+            e.printStackTrace();
         }
 
         return result;
