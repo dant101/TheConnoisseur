@@ -7,6 +7,9 @@
     <dimen name="logo_width">250dp</dimen>
     <dimen name="logo_height">300dp</dimen>
 
+    <!-- Login screen -->
+    <dimen name="feedback_length">20dp</dimen>
+
     <!-- MainMenu -->
     <dimen name="title_width">200dp</dimen>
 

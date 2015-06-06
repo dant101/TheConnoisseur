@@ -16,12 +16,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.theconnoisseur.R;
 import com.theconnoisseur.android.Model.GlobalPreferenceString;
 
 import Database.ConnoisseurDatabase;
 import Util.ContentDownloadHelper;
+import Util.ToastHelper;
 
 
 /**
@@ -35,6 +37,10 @@ public class LoginActivity extends Activity {
     private EditText mEditPassword;
     private Button mEnterDetails;
     private TextView mLogin;
+
+    private ImageView mFeedbackEmail;
+    private ImageView mFeedbackUsername;
+    private ImageView mFeedbackPassword;
 
     private String mEmail;
     private String mUsername;
@@ -64,6 +70,11 @@ public class LoginActivity extends Activity {
         mEnterDetails = (Button) findViewById(R.id.enter_details);
         mLogin = (TextView) findViewById(R.id.login);
 
+        mFeedbackEmail = (ImageView) findViewById(R.id.feedback_email);
+        mFeedbackUsername = (ImageView) findViewById(R.id.feedback_username);
+        mFeedbackPassword = (ImageView) findViewById(R.id.feedback_password);
+
+        setListeners();
     }
 
     // Automatically logs in the user (based on previously saved logging credentials)
@@ -76,6 +87,78 @@ public class LoginActivity extends Activity {
 
             startMainMenuActivity();
         }
+    }
+
+    //Defines the specific screen element behaviours regarding touch events - in particular, email/username validation
+    private void setListeners() {
+        mEditEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus) {
+                    String input = ((EditText) v).getText().toString();
+                    if(input.isEmpty()) { return; }
+                    boolean unique = ConnoisseurDatabase.getInstance().getLoginTable().isEmailUnique(input);
+                    boolean valid = ConnoisseurDatabase.getInstance().getLoginTable().isEmailUnique(input);
+
+                    if(unique && valid) {
+                        mFeedbackEmail.setImageResource(R.drawable.greentick);
+                    } else {
+                        mFeedbackEmail.setImageResource(R.drawable.redcross);
+                        if (!unique) {
+                            ToastHelper.toast(getApplicationContext(), getString(R.string.not_unique_email), Toast.LENGTH_LONG);
+                        }
+                        if(!valid) {
+                            ToastHelper.toast(getApplicationContext(), getString(R.string.invalid_email), Toast.LENGTH_LONG);
+                        }
+                    }
+                    mFeedbackEmail.setVisibility(View.VISIBLE);
+                } else {
+                    mFeedbackEmail.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
+        mEditUsername.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus) {
+                    String input = ((EditText) v).getText().toString();
+                    if(input.isEmpty()) { return; }
+                    boolean unique = ConnoisseurDatabase.getInstance().getLoginTable().isUserNameUnique(input);
+
+                    if(mCreatingNewAccount) {
+                        if(unique) {
+                            mFeedbackUsername.setImageResource(R.drawable.greentick);
+                        } else {
+                            mFeedbackUsername.setImageResource(R.drawable.redcross);
+                            ToastHelper.toast(getApplicationContext(), getString(R.string.not_unique_username), Toast.LENGTH_LONG);
+                        }
+                    } else { //If user is logging in
+                        if(unique) {
+                            mFeedbackUsername.setImageResource(R.drawable.redcross);
+                            ToastHelper.toast(getApplicationContext(), getString(R.string.not_existing_username), Toast.LENGTH_LONG);
+                        } else {
+                            mFeedbackUsername.setImageResource(R.drawable.greentick);
+                        }
+                    }
+                    mFeedbackUsername.setVisibility(View.VISIBLE);
+                } else {
+                    mFeedbackUsername.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
+        mEditPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    mFeedbackPassword.setImageResource(R.drawable.redcross);
+                    mFeedbackPassword.setVisibility(View.VISIBLE);
+                } else {
+                    mFeedbackPassword.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
     }
 
     // User elects to skip the account creation/login step
@@ -104,12 +187,15 @@ public class LoginActivity extends Activity {
             //Logging in
             if(ConnoisseurDatabase.getInstance().getLoginTable().login(mUsername, mPassword)) {
                 //Successful user sign in
+                mFeedbackPassword.setImageResource(R.drawable.greentick);
                 setUserSessionDetails();
                 Log.d(TAG, "Successfully signed in user: Username(" + mUsername + ") Email(" + mEmail + ")");
                 startMainMenuActivity();
             } else {
                 //Unable to login in user
                 Log.d(TAG, "Failed to sign in with user credentials");
+                mFeedbackPassword.setImageResource(R.drawable.redcross);
+                ToastHelper.toast(getApplicationContext(), getString(R.string.wrong_password), Toast.LENGTH_LONG);
             }
         }
     }
@@ -133,23 +219,24 @@ public class LoginActivity extends Activity {
 
     // User selects to login - changes views appropriately
     public void loginToggle(View v) {
+        mCreatingNewAccount = !mCreatingNewAccount;
+
         if(mCreatingNewAccount) {
-
-            mEditEmail.setVisibility(View.GONE);
-            mEditUsername.setHint(R.string.login_username_prompt);
-            mEditPassword.setHint(R.string.login_password_prompt);
-            mEnterDetails.setText(R.string.login);
-            mLogin.setText(R.string.create_account);
-
-        } else {
             mEditEmail.setVisibility(View.VISIBLE);
+            mFeedbackEmail.setVisibility(View.INVISIBLE);
             mEditUsername.setHint(R.string.signup_username_prompt);
             mEditPassword.setHint(R.string.signup_password_prompt);
             mEnterDetails.setText(R.string.create_account);
             mLogin.setText(R.string.login);
-        }
 
-        mCreatingNewAccount = !mCreatingNewAccount;
+        } else {
+            mEditEmail.setVisibility(View.GONE);
+            mFeedbackEmail.setVisibility(View.GONE);
+            mEditUsername.setHint(R.string.login_username_prompt);
+            mEditPassword.setHint(R.string.login_password_prompt);
+            mEnterDetails.setText(R.string.login);
+            mLogin.setText(R.string.create_account);
+        }
     }
 
 

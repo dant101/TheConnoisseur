@@ -17,6 +17,11 @@
     <string name="signup_password_prompt">Think of a password</string>
     <string name="create_account">Create Account</string>
     <string name="login">Login</string>
+    <string name="invalid_email">Unfortunately, we don\'t think your email address is correct</string>
+    <string name="not_unique_email">There already is a user using this email address</string>
+    <string name="not_unique_username">Sorry, someone has already picked that username</string>
+    <string name="not_existing_username">Sorry, no such username exists</string>
+    <string name="wrong_password">That password does not match the username</string>
 
     <!-- Main Menu Strings -->
     <string name="main_menu">MAIN MENU</string>
