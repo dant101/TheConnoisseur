@@ -5,6 +5,9 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+
 import Util.PasswordEncryption;
 
 public class LoginOnlineDB extends OnlineDB {
@@ -29,7 +32,7 @@ public class LoginOnlineDB extends OnlineDB {
                     "FROM login " +
                     "WHERE username = ?";
             List<List<String>> queryResult = database.loginQuery(query, this.allArguments, username);
-            if(queryResult.size() == 1) {;
+            if(queryResult.size() == 1) {
                 LoginOnlineDBFormat formatLogin = format(queryResult,LoginOnlineDBFormat.class).get(0);
                 result = PasswordEncryption.isExpectedPassword(password, formatLogin.getSalt(), formatLogin.getPassword());
             }
@@ -54,7 +57,7 @@ public class LoginOnlineDB extends OnlineDB {
 
         //check that username and email are not taken
 
-        if(isEmailUnique(email) && isUserNameUnique(username)) {
+        if(isEmailUnique(email) && isEmailValid(email) && isUserNameUnique(username)) {
             int salt = PasswordEncryption.getNextSalt();
             String hash = PasswordEncryption.hash(password, salt);
 
@@ -67,7 +70,7 @@ public class LoginOnlineDB extends OnlineDB {
     /*
     Returns true if email not present in database
      */
-    private boolean isEmailUnique(String email) {
+    public boolean isEmailUnique(String email) {
         String queryUsername = "SELECT * " +
                 "FROM login " +
                 "WHERE email = ?";
@@ -77,15 +80,27 @@ public class LoginOnlineDB extends OnlineDB {
     }
 
     /*
-    Returns true if username not rpesent is database
+    Returns true if username not present is database
      */
-    private boolean isUserNameUnique(String username) {
+    public boolean isUserNameUnique(String username) {
         String queryUsername = "SELECT * " +
                 "FROM login " +
                 "WHERE username = ?";
         List<List<String>> queryResultUsername = database.loginQuery(queryUsername, this.allArguments, username);
 
         return queryResultUsername.size() == 0;
+    }
+
+    public boolean isEmailValid(String email) {
+        boolean result = true;
+        try {
+            InternetAddress emailAddress = new InternetAddress(email);
+            emailAddress.validate();
+        } catch (AddressException ex) {
+            result = false;
+        } finally {
+            return result;
+        }
     }
 
     @Override
