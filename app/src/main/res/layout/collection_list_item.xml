@@ -4,29 +4,73 @@
     android:layout_height="match_parent"
     android:padding="@dimen/large_padding">
 
-    <TextView
-        android:layout_width="@dimen/ring_width"
-        android:layout_height="@dimen/ring_width"
-        android:id="@+id/item_order"
-        android:text="1"
-        android:gravity="center"
-        android:textStyle="bold"
-        android:background="@drawable/ring"/>
+        <TextView
+            android:layout_width="@dimen/ring_width"
+            android:layout_height="@dimen/ring_width"
+            android:layout_margin="@dimen/small_margin"
+            android:id="@+id/item_order"
+            android:text="1"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:background="@drawable/ring"/>
 
-    <ImageView
-        android:layout_width="@dimen/collection_image_width"
-        android:layout_height="@dimen/collection_image_height"
-        android:id="@+id/word_image"
-        android:layout_gravity="center"
-        android:src="@drawable/matryoshka"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/word_image"
+            android:layout_gravity="center"
+            android:src="@drawable/matryoshka"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/word_description"
-        android:gravity="center"
-        android:layout_gravity="center"
-        android:layout_marginTop="@dimen/large_margin"
-        android:text="@string/description_sample"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/word_description"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/large_margin"
+            android:text="@string/description_sample"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/normal_padding">
+
+            <ImageView
+                android:id="@+id/listen_icon"
+                android:layout_width="@dimen/microphone_width"
+                android:layout_height="@dimen/microphone_width"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ui_listen"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:orientation="horizontal"
+                android:padding="@dimen/normal_padding"
+                android:onClick="viewComments">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/view_comments"
+                    android:layout_toLeftOf="@+id/arrow"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/green"/>
+
+                <ImageView
+                    android:id="@+id/arrow"
+                    android:layout_width="@dimen/arrow_width"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/normal_margin"
+                    android:src="@drawable/arrow_green"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
 
 </LinearLayout>

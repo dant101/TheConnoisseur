@@ -25,6 +25,12 @@
             android:onClick="goBack"
             android:src="@drawable/ui_back"/>
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/collection_icon_height"
+            android:layout_gravity="center"
+            android:src="@drawable/collection_logo_large"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -45,10 +51,10 @@
     </LinearLayout>
 
     <ListView
+        android:id="@+id/collections_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/large_margin"
-        android:id="@+id/collections_list"
         android:layout_gravity="center_horizontal"
         android:divider="#00000000"/>
 

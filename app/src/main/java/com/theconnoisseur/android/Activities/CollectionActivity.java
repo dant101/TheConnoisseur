@@ -90,6 +90,10 @@ public class CollectionActivity extends ActionBarActivity implements CursorCallb
         startActivity(new Intent(CollectionActivity.this, CollectionSelectionActivity.class));
     }
 
+    public void viewComments(View v) {
+        //
+    }
+
     @Override
     public void CursorLoaded(Cursor c) {
         this.mCursor = c;

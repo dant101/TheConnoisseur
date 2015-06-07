@@ -1,12 +1,13 @@
 package Database;
 
 import java.sql.Timestamp;
+import java.util.Comparator;
 import java.util.List;
 
 /**
  * Created by Alexandre on 03/06/2015.
  */
-public class CommentOnlineDBFormat {
+public class CommentOnlineDBFormat implements Comparator<CommentOnlineDBFormat> {
     private int comment_id;
     private int word_id;
     private String username;
@@ -58,4 +59,5 @@ public class CommentOnlineDBFormat {
     public Timestamp getTime() {
         return time;
     }
+
 }

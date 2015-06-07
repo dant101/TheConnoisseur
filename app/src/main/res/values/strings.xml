@@ -36,7 +36,9 @@
 
     <!-- Collection -->
     <string name="collection_heading">THE CONNOISSEUR\'S COLLECTION</string>
-    <string name="collection_subheading">View and replay previous sessions</string>
+    <string name="collection_subheading">View past sessions and the phrases you succeeded</string>
+    <string name="view_comments">View\ncomments</string>
+    <string name="close_comment">Close\ncomments</string>
 
     <!-- Exercise -->
     <string name="you_have_the_tongue">You have the tongue of a...</string>

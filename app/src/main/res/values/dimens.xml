@@ -62,6 +62,7 @@
     <dimen name="collections_flag_width">40dp</dimen>
     <dimen name="collection_image_width">200dp</dimen>
     <dimen name="collection_image_height">200dp</dimen>
+    <dimen name="collection_icon_height">80dp</dimen>
     <dimen name="ring_width">30dp</dimen>
 
 </resources>

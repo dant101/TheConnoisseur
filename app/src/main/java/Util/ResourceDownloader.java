@@ -2,15 +2,19 @@ package Util;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.MatrixCursor;
 import android.util.Log;
 
 import com.theconnoisseur.android.Activities.ExerciseActivity;
+import com.theconnoisseur.android.Model.Comment;
 import com.theconnoisseur.android.Model.ExerciseContent;
 import com.theconnoisseur.android.Model.InternalDbContract;
 import com.theconnoisseur.android.Model.LanguageSelection;
 
+import java.util.Collections;
 import java.util.List;
 
+import Database.CommentOnlineDBFormat;
 import Database.ConnoisseurDatabase;
 import Database.ExerciseOnlineDBFormat;
 import Database.LanguageOnlineDBFormat;
@@ -71,5 +75,20 @@ public class ResourceDownloader {
             ContentDownloadHelper.getBitmapFromUrl(row.getImage_url(), context, true);
             ContentDownloadHelper.saveSoundFile(context, row.getSound_recording());
         }
+    }
+
+    public static MatrixCursor downloadComments(Context context, int word_id) {
+
+        List<CommentOnlineDBFormat> rows = ConnoisseurDatabase.getInstance().getCommentTable().getCommentsByWordId(word_id);
+        Collections.sort(rows, new CommentUtil());
+
+        MatrixCursor matrixCursor = new MatrixCursor(Comment.columns);
+        for (CommentOnlineDBFormat row :rows) {
+            matrixCursor.addRow(new Object[] {row.getComment_id(), row.getWord_id(), row.getUsername(), row.getNesting_level(), row.getReply_to_id(), row.getComment(), row.getTime(), row.getScore()});
+        }
+
+        CursorHelper.toString(matrixCursor);
+
+        return matrixCursor;
     }
 }
