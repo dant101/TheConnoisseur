@@ -5,7 +5,7 @@ package com.theconnoisseur.android.Model;
  */
 public class Comment {
 
-    public final static String comment_id = "comment_id";
+    public final static String comment_id = "_id";
     public final static String word_id = "word_id";
     public static final String username = "username";
     public static final String comment = "comment";

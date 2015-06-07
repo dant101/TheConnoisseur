@@ -81,6 +81,7 @@ public class ResourceDownloader {
 
         List<CommentOnlineDBFormat> rows = ConnoisseurDatabase.getInstance().getCommentTable().getCommentsByWordId(word_id);
         Collections.sort(rows, new CommentUtil());
+        Collections.reverse(rows);
 
         MatrixCursor matrixCursor = new MatrixCursor(Comment.columns);
         for (CommentOnlineDBFormat row :rows) {
@@ -93,8 +94,6 @@ public class ResourceDownloader {
                     row.getScore(),
                     row.getParent_path()});
         }
-
-        CursorHelper.toString(matrixCursor);
 
         return matrixCursor;
     }

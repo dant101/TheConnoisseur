@@ -105,6 +105,10 @@ public class CollectionSelectionActivity extends ActionBarActivity implements Cu
         setListeners();
     }
 
+    public void commentTest(View v) {
+        startActivity(new Intent(this, CommentActivity.class));
+    }
+
     private void setListeners() {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -153,7 +157,7 @@ public class CollectionSelectionActivity extends ActionBarActivity implements Cu
 
         @Override
         protected void onPostExecute(Void result) {
-            Log.d(TAG, "CursorPreparationTask onPostExecute called");
+            Log.d(TAG, "CollectionSelectionActivity CursorPreparationTask onPostExecute called");
 
             mCallback.CursorLoaded(mCursor);
 

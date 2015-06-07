@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/small_padding">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/large_margin"
+                android:text="Tomek"/>
+
+            <TextView
+                android:id="@+id/date"
+                android:text="23/05/2015 19:14"
+                android:layout_marginLeft="@dimen/large_margin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/normal_padding"
+            android:id="@+id/comment"
+            android:text="@string/sample_comment"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/upvote"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/vote_icon_width"
+                android:layout_weight="1"
+                android:padding="@dimen/vsmall_padding"
+                android:src="@drawable/arrow_green"/>
+
+            <ImageView
+                android:id="@+id/downvote"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/vote_icon_width"
+                android:layout_weight="1"
+                android:padding="@dimen/vsmall_padding"
+                android:src="@drawable/arrow_black"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/score"
+                android:textStyle="bold"
+                android:textSize="@dimen/text_medium"
+                android:text="20"/>
+
+            </LinearLayout>
+
+        <TextView
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/normal_padding"
+            android:text="REPLY"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+</LinearLayout>

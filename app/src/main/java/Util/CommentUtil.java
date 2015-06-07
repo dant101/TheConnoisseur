@@ -11,10 +11,13 @@ public class CommentUtil implements Comparator<CommentOnlineDBFormat> {
 
     @Override
     public int compare(CommentOnlineDBFormat lhs, CommentOnlineDBFormat rhs) {
-        return compare(lhs.getParent_path(), rhs.getParent_path(), lhs.getScore(), rhs.getScore());
+        String lPath = lhs.getParent_path() + String.valueOf(lhs.getComment_id());
+        String rPath = rhs.getParent_path() + String.valueOf(rhs.getComment_id());
+        return compare(lPath, rPath, lhs.getScore(), rhs.getScore());
     }
 
     public int compare(String lhs, String rhs, int lscore, int rscore) {
+
         String[] lhsPath = lhs.split("\\.");
         String[] rhsPath = rhs.split("\\.");
 
@@ -37,6 +40,7 @@ public class CommentUtil implements Comparator<CommentOnlineDBFormat> {
         if (integerCompare(lhsPathLength, rhsPathLength) == 0) {
             return integerCompare(lscore, rscore);
         } else {
+            // Comment with short path comes first (less nested)
             return integerCompare(lhsPathLength, rhsPathLength);
         }
     }
