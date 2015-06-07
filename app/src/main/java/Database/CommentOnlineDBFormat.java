@@ -10,21 +10,19 @@ public class CommentOnlineDBFormat {
     private int comment_id;
     private int word_id;
     private String username;
-    private int nesting_level;
-    private int reply_to_id;
     private String comment;
     private Timestamp time;
     private int score;
+    private String parent_path;
 
     public CommentOnlineDBFormat(List<String> list) {
         this.comment_id = Integer.parseInt(list.get(0));
         this.word_id = Integer.parseInt(list.get(1));
         this.username = list.get(2);
-        this.nesting_level = Integer.parseInt(list.get(3));
-        this.reply_to_id = Integer.parseInt(list.get(4));
-        this.comment = list.get(5);
-        this.time = Timestamp.valueOf(list.get(6));
-        this.score = Integer.parseInt(list.get(7));
+        this.comment = list.get(3);
+        this.time = Timestamp.valueOf(list.get(4));
+        this.score = Integer.parseInt(list.get(5));
+        this.parent_path = list.get(6);
     }
 
     public int getComment_id() {
@@ -39,14 +37,6 @@ public class CommentOnlineDBFormat {
         return username;
     }
 
-    public int getReply_to_id() {
-        return reply_to_id;
-    }
-
-    public int getNesting_level() {
-        return nesting_level;
-    }
-
     public String getComment() {
         return comment;
     }
@@ -57,5 +47,9 @@ public class CommentOnlineDBFormat {
 
     public Timestamp getTime() {
         return time;
+    }
+
+    public String getParent_path() {
+        return parent_path;
     }
 }

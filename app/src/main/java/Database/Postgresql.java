@@ -175,9 +175,8 @@ public class Postgresql implements Database {
     /*We need a special createCommentQuery to prevent user from doing SQLInjection*/
     public boolean createCommentQuery(String sqlQuery,
                                       int word_id, String username,
-                                      int nesting_level, int reply_to_id,
                                       String comment, Timestamp time,
-                                      int score) {
+                                      int score, String parent_path) {
         boolean result = false;
 
         this.connect();
@@ -185,11 +184,10 @@ public class Postgresql implements Database {
             PreparedStatement stmt = connection.prepareStatement(sqlQuery);
             stmt.setInt(1, word_id);
             stmt.setString(2, username);
-            stmt.setInt(3, nesting_level);
-            stmt.setInt(4, reply_to_id);
-            stmt.setString(5, comment);
-            stmt.setTimestamp(6, time);
-            stmt.setInt(7, score);
+            stmt.setString(3, comment);
+            stmt.setTimestamp(4, time);
+            stmt.setInt(5, score);
+            stmt.setString(6, parent_path);
             stmt.executeUpdate();
             stmt.close();
             result = true;
@@ -200,5 +198,57 @@ public class Postgresql implements Database {
             return result;
         }
     }
+
+    /*We need a special createScoreQuery to prevent user from doing SQLInjection*/
+    public boolean createScoreQuery(String sqlQuery,
+                                      String username, Integer word_id, Integer best_score) {
+        boolean result = false;
+        this.connect();
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sqlQuery);
+            stmt.setString(1, username);
+            if(word_id != null && best_score != null) {
+                stmt.setInt(2, word_id);
+                stmt.setInt(3, best_score);
+            }
+            stmt.executeUpdate();
+            stmt.close();
+            result = true;
+        } catch (Exception e){
+            e.printStackTrace();
+        } finally {
+            this.disconnect();
+            return result;
+        }
+    }
+
+    /*We need a special scoreQuery to prevent user from doing SQLInjection*/
+    public List<List<String>> scoreQuery(String sqlQuery, List<String> arguments, String value) {
+        this.connect();
+        List<List<String>> result = new ArrayList<>();
+
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sqlQuery);
+            stmt.setString(1,value);
+            ResultSet rs = stmt.executeQuery();
+            //Loop over all the rows
+            while (rs.next()) {
+                //For each row get the different values needed
+                List<String> row = new ArrayList<>();
+                for(String arg : arguments) {
+                    row.add(rs.getString(arg));
+                }
+                result.add(row);
+            }
+            rs.close();
+            stmt.close();
+        } catch (Exception e){
+            e.printStackTrace();
+        } finally {
+            this.disconnect();
+            return result;
+        }
+    }
+
 
 }
