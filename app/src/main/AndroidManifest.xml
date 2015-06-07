@@ -82,6 +82,10 @@
             android:name=".android.Activities.Testing.VoiceRecogniserTestActivity"
             android:label="@string/title_activity_voice_recogniser_test" >
         </activity>
+        <activity
+            android:name=".android.Activities.CommentActivity"
+            android:label="@string/title_activity_comment" >
+        </activity>
     </application>
 
 </manifest>

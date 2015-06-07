@@ -84,7 +84,14 @@ public class ResourceDownloader {
 
         MatrixCursor matrixCursor = new MatrixCursor(Comment.columns);
         for (CommentOnlineDBFormat row :rows) {
-            matrixCursor.addRow(new Object[] {row.getComment_id(), row.getWord_id(), row.getUsername(), row.getNesting_level(), row.getReply_to_id(), row.getComment(), row.getTime(), row.getScore()});
+            matrixCursor.addRow(new Object[] {
+                    row.getComment_id(),
+                    row.getWord_id(),
+                    row.getUsername(),
+                    row.getComment(),
+                    row.getTime(),
+                    row.getScore(),
+                    row.getParent_path()});
         }
 
         CursorHelper.toString(matrixCursor);

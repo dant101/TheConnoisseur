@@ -44,9 +44,6 @@ public class ContentDownloadController {
             Log.d(TAG, "ContentDownloadController: fetching language content...");
             new LanguagesContentDownloadTask().execute(context);
 
-            //Temp testing
-            //ContentSample.insertSampleItalian(context);
-
         } else {
             Log.d(TAG, "ContentDownloadController: should NOT fetch language content");
         }

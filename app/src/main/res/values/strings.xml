@@ -68,5 +68,9 @@
     <string name="title_activity_collection">CollectionActivity</string>
     <string name="title_activity_session_summary">SessionSummary</string>
     <string name="title_activity_voice_recogniser_test">VoiceRecogniserTestActivity</string>
+    <string name="title_activity_comment">CommentActivity</string>
+
+    <!-- Comments strings -->
+    <string name="comments_text">Comment your thoughts!</string>
 
 </resources>

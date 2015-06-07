@@ -23,7 +23,7 @@ public class CommentOnlineDB extends OnlineDB {
     /*Returns all the comments corresponding to a specific exercise using its word_id*/
     public List<CommentOnlineDBFormat> getCommentsByWordId(int id) {
         String query = "SELECT * " +
-                        "FROM comment" +
+                        "FROM comment " +
                         "WHERE word_id = " + id;
         List<List<String>> queryResult = database.selectQuery(query, this.allArguments);
         return format(queryResult, CommentOnlineDBFormat.class);

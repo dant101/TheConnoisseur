@@ -23,6 +23,7 @@ import com.theconnoisseur.android.Model.LanguageSelection;
 
 import Util.ContentDownloadHelper;
 import Util.CursorHelper;
+import Util.ResourceDownloader;
 
 public class CollectionSelectionActivity extends ActionBarActivity implements CursorCallback{
     public static final String TAG = CollectionSelectionActivity.class.getSimpleName();
@@ -145,6 +146,7 @@ public class CollectionSelectionActivity extends ActionBarActivity implements Cu
         @Override
         protected Void doInBackground(Void... params) {
             mCursor = getContentResolver().query(InternalDbContract.queryForLanguages(), null, null, null, null);
+            ResourceDownloader.downloadComments(getApplicationContext(), 1);
 
             return null;
         }
