@@ -18,6 +18,7 @@ public class ConnoisseurDatabase {
     private LanguageOnlineDB languageTable = new LanguageOnlineDB(database);
     private LoginOnlineDB loginTable = new LoginOnlineDB(database);
     private CommentOnlineDB commentTable = new CommentOnlineDB(database);
+    private ScoreOnlineDB scoreTable = new ScoreOnlineDB(database);
 
     private static ConnoisseurDatabase connoisseurDatabase = null;
 
@@ -43,4 +44,6 @@ public class ConnoisseurDatabase {
     public CommentOnlineDB getCommentTable() {
         return commentTable;
     }
+
+    public ScoreOnlineDB getScoreTable() { return scoreTable; }
 }
