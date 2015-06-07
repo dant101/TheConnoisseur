@@ -15,9 +15,9 @@ public class CommentOnlineDB extends OnlineDB {
         allArguments.add("word_id");
         allArguments.add("username");
         allArguments.add("comment");
-        allArguments.add("time");
         allArguments.add("score");
         allArguments.add("parent_path");
+        allArguments.add("time");
     }
 
     /*Returns all the comments corresponding to a specific exercise using its word_id*/
@@ -35,11 +35,12 @@ public class CommentOnlineDB extends OnlineDB {
         CommentOnlineDBFormat result = null;
 
         String query = "SELECT * " +
-                "FROM comment" +
+                "FROM comment " +
                 "WHERE comment_id = " + id;
         List<List<String>> queryResult = database.selectQuery(query, this.allArguments);
         List<CommentOnlineDBFormat> list = format(queryResult, CommentOnlineDBFormat.class);
 
+        System.out.println("size: "+list.size());
         if(list.size() == 1) {
             result = list.get(0);
         }
@@ -53,7 +54,7 @@ public class CommentOnlineDB extends OnlineDB {
 
         String query = "UPDATE comment "+
                 "SET score = " + score +
-                "WHERE comment_id = " + comment_id;
+                " WHERE comment_id = " + comment_id;
         database.insertQuery(query);
     }
 
@@ -63,7 +64,7 @@ public class CommentOnlineDB extends OnlineDB {
 
         String query = "UPDATE comment "+
                 "SET score = " + score +
-                "WHERE comment_id = " + comment_id;
+                " WHERE comment_id = " + comment_id;
         database.insertQuery(query);
     }
 
@@ -98,7 +99,7 @@ public class CommentOnlineDB extends OnlineDB {
     public boolean createComment(int word_id, String username, String comment, String parent_path) {
         boolean result;
 
-        String query = "INSERT INTO comment(word_id, username, comment, time, score, parent_path) " +
+        String query = "INSERT INTO comment(word_id, username, comment, score, parent_path, time) " +
                 "VALUES (?, ?, ?, ?, ?, ?)";
 
         Timestamp time = Util.Time.getCurrentTimestamp();

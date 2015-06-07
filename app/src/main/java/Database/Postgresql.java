@@ -185,9 +185,9 @@ public class Postgresql implements Database {
             stmt.setInt(1, word_id);
             stmt.setString(2, username);
             stmt.setString(3, comment);
-            stmt.setTimestamp(4, time);
-            stmt.setInt(5, score);
-            stmt.setString(6, parent_path);
+            stmt.setInt(4, score);
+            stmt.setString(5, parent_path);
+            stmt.setTimestamp(6, time);
             stmt.executeUpdate();
             stmt.close();
             result = true;
