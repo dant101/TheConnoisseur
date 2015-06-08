@@ -8,9 +8,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Adapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -61,10 +63,23 @@ public class CommentActivity extends Activity implements CursorCallback {
         this.mCursor = c;
         mCommentsFrequency = c.getCount(); mCommentsText.setText(String.valueOf(mCommentsFrequency) + " Comments");
 
-        String[] from = new String[] {Comment.username, Comment.time, Comment.comment, Comment.score};
-        int[] to = new int[] {R.id.username, R.id.date, R.id.comment, R.id.score};
+        String[] from = new String[] {Comment.username, Comment.time, Comment.comment, Comment.score, Comment.nesting};
+        int[] to = new int[] {R.id.username, R.id.date, R.id.comment, R.id.score, R.id.comment_item};
 
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.comment_item, mCursor, from, to, BIND_IMPORTANT);
+
+        adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
+            @Override
+            public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+                if (view.getId() == R.id.comment_item) {
+                    int nesting = cursor.getInt(columnIndex);
+                    view.setPadding((int) getResources().getDimension(R.dimen.comment_nesting) * nesting, 0, 0, 0);
+                    return true;
+                }
+                return false;
+            }
+        });
+
         mComments.setAdapter(adapter);
 
     }

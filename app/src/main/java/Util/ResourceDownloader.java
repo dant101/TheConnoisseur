@@ -77,10 +77,10 @@ public class ResourceDownloader {
         }
     }
 
-    public static MatrixCursor downloadComments(Context context, int word_id) {
+    public static MatrixCursor downloadComments(int word_id) {
 
         List<CommentOnlineDBFormat> rows = ConnoisseurDatabase.getInstance().getCommentTable().getCommentsByWordId(word_id);
-        Collections.sort(rows, new CommentUtil());
+        new CommentUtil(rows).sort();
         Collections.reverse(rows);
 
         MatrixCursor matrixCursor = new MatrixCursor(Comment.columns);
@@ -92,7 +92,8 @@ public class ResourceDownloader {
                     row.getComment(),
                     row.getTime(),
                     row.getScore(),
-                    row.getParent_path()});
+                    row.getParent_path(),
+                    Comment.getNesting(row.getParent_path())});
         }
 
         return matrixCursor;

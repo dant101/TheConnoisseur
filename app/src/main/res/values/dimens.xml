@@ -70,5 +70,6 @@
     <dimen name="comments_flag_width">50dp</dimen>
     <dimen name="comments_listen_width">60dp</dimen>
     <dimen name="vote_icon_width">30dp</dimen>
+    <dimen name="comment_nesting">15dp</dimen>
 
 </resources>

@@ -150,7 +150,7 @@ public class CollectionSelectionActivity extends ActionBarActivity implements Cu
         @Override
         protected Void doInBackground(Void... params) {
             mCursor = getContentResolver().query(InternalDbContract.queryForLanguages(), null, null, null, null);
-            ResourceDownloader.downloadComments(getApplicationContext(), 1);
+            ResourceDownloader.downloadComments(1);
 
             return null;
         }
