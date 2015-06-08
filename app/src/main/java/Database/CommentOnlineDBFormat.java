@@ -18,9 +18,9 @@ public class CommentOnlineDBFormat {
         this.word_id = Integer.parseInt(list.get(1));
         this.username = list.get(2);
         this.comment = list.get(3);
-        this.time = Timestamp.valueOf(list.get(4));
-        this.score = Integer.parseInt(list.get(5));
-        this.parent_path = list.get(6);
+        this.score = Integer.parseInt(list.get(4));
+        this.parent_path = list.get(5);
+        this.time = java.sql.Timestamp.valueOf(list.get(6));
     }
 
     public int getComment_id() {
