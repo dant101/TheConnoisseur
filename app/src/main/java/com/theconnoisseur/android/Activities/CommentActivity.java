@@ -93,7 +93,7 @@ public class CommentActivity extends Activity implements CursorCallback {
 
         @Override
         protected Void doInBackground(Void... params) {
-            mCursor = ResourceDownloader.downloadComments(getApplicationContext(), 1);
+            mCursor = ResourceDownloader.downloadComments(1);
 
             return null;
         }
