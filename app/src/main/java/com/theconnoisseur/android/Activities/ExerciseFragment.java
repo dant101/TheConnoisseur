@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -144,6 +145,8 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         return view;
     }
 
+    private long startAnimTime;
+
     private void setListeners() {
         mProceed.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -169,6 +172,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
 
         final Animation a = AnimationUtils.loadAnimation(getActivity(), R.anim.growfade);
 
+
         mRecord.setOnTouchListener(new View.OnTouchListener() {
 
             @Override
@@ -176,10 +180,20 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     mVoiceRecogniser.startListening();
                     mRecordAnim.startAnimation(a);
+                    startAnimTime = System.currentTimeMillis();
                     return true;
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     mVoiceRecogniser.stopListening();
-                    mRecordAnim.clearAnimation();
+
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mRecordAnim.clearAnimation();
+                        }
+                    }, a.getDuration() -
+                            (System.currentTimeMillis() - startAnimTime) % a.getDuration());
+
                     return true;
                 } else {
                     return false;
