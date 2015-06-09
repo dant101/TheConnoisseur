@@ -217,13 +217,28 @@
                     android:layout_height="match_parent"
                     android:src="@drawable/ui_listen"/>
 
-                <ImageView
-                    android:id="@+id/record_icon"
-                    android:visibility="visible"
+                <FrameLayout
                     android:layout_margin="@dimen/normal_margin"
                     android:layout_width="@dimen/microphone_width"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/ui_record"/>
+                    android:layout_height="match_parent">
+
+
+                    <ImageView
+                        android:id="@+id/record_icon_anim"
+                        android:visibility="invisible"
+                        android:layout_margin="@dimen/microphone_anim_margin"
+                        android:layout_width="@dimen/microphone_anim_width"
+                        android:layout_height="fill_parent"
+                        android:src="@drawable/ui_record_anim"/>
+
+                    <ImageView
+                        android:id="@+id/record_icon"
+                        android:visibility="visible"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:src="@drawable/ui_record" />
+
+                </FrameLayout>
 
             </LinearLayout>
 

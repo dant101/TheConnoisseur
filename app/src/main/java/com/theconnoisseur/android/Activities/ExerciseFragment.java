@@ -9,8 +9,11 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -52,6 +55,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
     private LinearLayout mLivesSmall;
     private RelativeLayout mScoreFeedback;
     private ImageView mRecord;
+    private ImageView mRecordAnim;
     private ImageView mListen;
     private ImageView mBigLife1;
     private ImageView mBigLife2;
@@ -124,6 +128,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         mScoreFeedback = (RelativeLayout) view.findViewById(R.id.score_feedback);
 
         mRecord = (ImageView) view.findViewById(R.id.record_icon);
+        mRecordAnim = (ImageView) view.findViewById(R.id.record_icon_anim);
         mListen = (ImageView) view.findViewById(R.id.listen_icon);
         mBigLife1 = (ImageView) view.findViewById(R.id.heart_big_1);
         mBigLife2 = (ImageView) view.findViewById(R.id.heart_big_2);
@@ -147,6 +152,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
                 mListener.nextExercise();
             }
         });
+        /*
         mRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -156,6 +162,27 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
                     mClicked = !mClicked;
                 } else {
                     mVoiceRecogniser.stopListening();
+                }
+            }
+        });
+        */
+
+        final Animation a = AnimationUtils.loadAnimation(getActivity(), R.anim.growfade);
+
+        mRecord.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    mVoiceRecogniser.startListening();
+                    mRecordAnim.startAnimation(a);
+                    return true;
+                } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    mVoiceRecogniser.stopListening();
+                    mRecordAnim.clearAnimation();
+                    return true;
+                } else {
+                    return false;
                 }
             }
         });
@@ -241,6 +268,9 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
 
         Log.d(TAG, "Locale: " + locale);
 
+        if (mVoiceRecogniser != null) {
+            mVoiceRecogniser.destroyVoiceRecogniser();
+        }
         mVoiceRecogniser = new VoiceRecogniser(getActivity(),  word, locale, this);
     }
 
@@ -378,6 +408,8 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         intent.putExtra(SessionSummaryContent.LANGUAGE, mLanguageString);
         intent.putExtra(SessionSummaryContent.LANGUAGE_ID, mLanguageId);
         intent.putExtra(SessionSummaryContent.LANGUAGE_HEX, mLanguageHex);
+
+        mVoiceRecogniser.destroyVoiceRecogniser();
 
         startActivity(intent);
     }
