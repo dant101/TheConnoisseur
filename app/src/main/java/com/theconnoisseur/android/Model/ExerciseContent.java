@@ -23,6 +23,8 @@ public class ExerciseContent {
     public static final String LANGUAGE = "language";
     public static final String LOCALE = "locale";
 
+    public static final String VIEW_COMMENTS = "view_comments";
+
     public static final int MAXIMUM_LIVES = 3;
     public static final int SCORE_PASS = 50;
     public static final int SCORE_CONNOISSEUR = 75;

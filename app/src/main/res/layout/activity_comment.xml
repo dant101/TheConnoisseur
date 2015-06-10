@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/normal_padding"
+    android:paddingTop="@dimen/normal_padding"
     android:background="@drawable/gradient_selector">
 
     <LinearLayout
@@ -16,6 +16,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:padding="@dimen/normal_padding"
             android:src="@drawable/matryoshka"/>
 
         <LinearLayout
@@ -28,7 +29,7 @@
 
             <TextView
                 android:id="@+id/flag_text"
-                android:layout_marginTop="@dimen/large_margin"
+                android:layout_marginTop="@dimen/vsmall_margin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/russia"/>
@@ -36,28 +37,30 @@
             <ImageView
                 android:id="@+id/flag"
                 android:layout_width="@dimen/comments_flag_width"
-                android:layout_margin="@dimen/normal_margin"
-                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/vsmall_margin"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 android:src="@drawable/flag_random"/>
 
             <ImageView
                 android:layout_width="match_parent"
-                android:layout_margin="@dimen/normal_margin"
+                android:layout_margin="@dimen/vsmall_margin"
                 android:layout_height="1dp"
                 android:background="@color/grey"/>
-            
+
             <ImageView
                 android:id="@+id/listen_icon"
-                android:layout_marginBottom="@dimen/large_margin"
                 android:layout_width="@dimen/comments_listen_width"
-                android:layout_height="@dimen/comments_listen_width"
-                android:layout_margin="@dimen/normal_margin"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:layout_margin="@dimen/vsmall_margin"
                 android:src="@drawable/ui_listen"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/comments_text"/>
+                android:text="@string/comments_text"
+                android:textStyle="bold|italic"/>
             
         </LinearLayout>
 
@@ -79,7 +82,7 @@
 
         <ListView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="@color/orange"
             android:id="@+id/comments"/>
 

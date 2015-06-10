@@ -18,8 +18,10 @@ import android.widget.TextView;
 
 import com.theconnoisseur.R;
 import com.theconnoisseur.android.Activities.Interfaces.CursorCallback;
+import com.theconnoisseur.android.Model.Comment;
 import com.theconnoisseur.android.Model.ExerciseContent;
 import com.theconnoisseur.android.Model.InternalDbContract;
+import com.theconnoisseur.android.Model.LanguageSelection;
 
 import Util.ContentDownloadHelper;
 import Util.ToastHelper;
@@ -100,8 +102,8 @@ public class CollectionActivity extends ActionBarActivity implements CursorCallb
 
         ListView word_list = (ListView) findViewById(R.id.word_list);
 
-        String[] from = new String[] {ExerciseContent.IMAGE_URL, ExerciseContent.WORD_DESCRIPTION};
-        int[] to = new int[] {R.id.word_image, R.id.word_description};
+        String[] from = new String[] {ExerciseContent.IMAGE_URL, ExerciseContent.WORD_DESCRIPTION, ExerciseContent.VIEW_COMMENTS};
+        int[] to = new int[] {R.id.word_image, R.id.word_description, R.id.collection_list_item};
 
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.collection_list_item, c, from, to, BIND_IMPORTANT);
 
@@ -111,6 +113,21 @@ public class CollectionActivity extends ActionBarActivity implements CursorCallb
             public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
                 if(view.getId() == R.id.word_image) {
                     ContentDownloadHelper.loadImage(getApplicationContext(), (ImageView) view, cursor.getString(columnIndex));
+                    return true;
+                }
+
+                Log.d(TAG, "setting View binder in CollectionActivity");
+
+                if(view.getId() == R.id.collection_list_item) {
+
+                    Log.d(TAG, "inside view.getID() == R.id.collection_list_item");
+
+                    // set listener for 'view_comment' textView
+                    view.findViewById(R.id.view_comments).setOnClickListener(new viewCommentsListener(
+                            cursor.getInt(cursor.getColumnIndex(ExerciseContent.WORD_ID)),
+                            cursor.getString(cursor.getColumnIndex(ExerciseContent.WORD)),
+                            cursor.getString(cursor.getColumnIndex(ExerciseContent.IMAGE_URL)),
+                            mImage_url, mLanguageName));
                     return true;
                 }
                 return false;
@@ -124,16 +141,46 @@ public class CollectionActivity extends ActionBarActivity implements CursorCallb
     }
 
     private void setListeners() {
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //TODO: Click on item? Actions?
-
-                ToastHelper.toast(CollectionActivity.this, "Item selected: " + String.valueOf(id));
-            }
-        });
+        //TODO: page listeners?
     }
 
+    /**
+     * Listener class that starts the appropriate CommentActivity for selected word
+     */
+    private class viewCommentsListener implements View.OnClickListener {
+        private int mWordId;
+        private String mWord;
+        private String mIllustrationUri;
+        private String mFlagUri;
+        private String mFlagText;
+
+
+        public viewCommentsListener(int word_id, String word, String illustration_uri, String flag_uri, String flag_text) {
+            mWordId = word_id;
+            mWord = word;
+            mIllustrationUri = illustration_uri;
+            mFlagUri = flag_uri;
+            mFlagText = flag_text;
+        }
+
+        @Override
+        public void onClick(View v) {
+            Intent i = new Intent(getApplicationContext(), CommentActivity.class);
+            i.putExtra(ExerciseContent.WORD_ID, mWordId);
+            i.putExtra(ExerciseContent.WORD, mWord);
+            i.putExtra(ExerciseContent.IMAGE_URL, mIllustrationUri);
+            i.putExtra(LanguageSelection.LANGUAGE_IMAGE_URL, mFlagUri);
+            i.putExtra(LanguageSelection.LANGUAGE_NAME, mFlagText);
+
+            Log.d(TAG, "View comments onClick");
+
+            startActivity(i);
+        }
+    }
+
+    /**
+     * Async task that prepares all the words for the collection view (from internal database)
+     */
     private class CursorPreparationTask extends AsyncTask<Void, Void, Void> {
 
         CursorCallback mCallback;
