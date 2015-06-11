@@ -19,7 +19,7 @@ public class Comment {
     public static int getNesting(String parent_path) {
         if (parent_path == null || parent_path.isEmpty()) { return 0; }
         String[] paths = parent_path.split("\\.");
-        return paths.length;
+        return paths.length - 1;
 
     }
 }

@@ -63,9 +63,9 @@ public class CommentComparisonTest extends AndroidTestCase {
 
     public void testCalculatesCorrectNestingFromParentPath() {
         assertEquals(0, Comment.getNesting(""));
-        assertEquals(1, Comment.getNesting("1"));
-        assertEquals(2, Comment.getNesting("1.12"));
-        assertEquals(3, Comment.getNesting("1.12.13"));
-        assertEquals(4, Comment.getNesting("1.12.13.14"));
+        assertEquals(0, Comment.getNesting("1"));
+        assertEquals(1, Comment.getNesting("1.12"));
+        assertEquals(2, Comment.getNesting("1.12.13"));
+        assertEquals(3, Comment.getNesting("1.12.13.14"));
     }
 }

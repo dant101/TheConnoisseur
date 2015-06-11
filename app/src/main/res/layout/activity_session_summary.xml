@@ -90,7 +90,7 @@
             android:layout_margin="@dimen/small_margin"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_weight="3"
+            android:layout_weight="2"
             android:text="Connoisseur"
             android:textSize="@dimen/text_large"/>
 
@@ -103,14 +103,73 @@
             android:text="@string/connoisseur_description"
             android:textStyle="bold|italic"/>
 
-        <ImageView
-            android:id="@+id/share_link"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="2"
-            android:padding="@dimen/small_padding"
-            android:layout_margin="@dimen/small_margin"
-            android:src="@drawable/share_image"/>
+            android:layout_weight="3"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Best Word"
+                    android:textStyle="italic"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/best_word"
+                    android:textStyle="bold"
+                    android:layout_margin="@dimen/vsmall_margin"
+                    android:text="Stradivari Violoncello"/>
+
+                <ImageView
+                    android:id="@+id/best_word_language"
+                    android:layout_width="@dimen/flag_width"
+                    android:layout_height="@dimen/flag_height"
+                    android:src="@drawable/flag_random"
+                    android:layout_gravity="center"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="italic"
+                    android:text="Worst Word"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/worst_word"
+                    android:textStyle="bold"
+                    android:layout_margin="@dimen/vsmall_margin"
+                    android:text="Maestro"/>
+
+                <ImageView
+                    android:id="@+id/worst_word_language"
+                    android:layout_width="@dimen/flag_width"
+                    android:layout_height="@dimen/flag_height"
+                    android:src="@drawable/flag_random"
+                    android:layout_gravity="center"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
 
         <ImageView
             android:layout_width="match_parent"
@@ -118,108 +177,16 @@
             android:background="@color/grey"
             android:layout_margin="@dimen/small_margin"/>
 
-        <TextView
-            android:id="@+id/personal_highlight_text"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="2"
-            android:gravity="center"
-            android:text="@string/personal_highlights_text"
-            android:textSize="@dimen/text_vsmall"
-            android:textStyle="bold"/>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="4"
-            android:orientation="horizontal"
+            android:layout_weight="3"
             android:gravity="center">
 
-            <LinearLayout
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/vsmall_margin"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/best_score"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="YOUR BEST (85%)"
-                    android:textStyle="bold"
-                    android:layout_margin="@dimen/small_margin"/>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center">
-
-                    <TextView
-                        android:id="@+id/best_word"
-                        android:layout_weight="4"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/normal_margin"
-                        android:text="Peloton"
-                        android:textSize="@dimen/text_small"
-                        android:layout_centerVertical="true"/>
-
-                    <ImageView
-                        android:id="@+id/best_word_language"
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/flag_height"
-                        android:src="@drawable/flag_random"
-                        android:layout_alignParentRight="true"/>
-
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_margin="@dimen/vsmall_margin">
-
-                <TextView
-                    android:id="@+id/worst_score"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="YOUR BEST (85%)"
-                    android:layout_margin="@dimen/small_margin"
-                    android:textStyle="bold"/>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center">
-
-                    <TextView
-                        android:id="@+id/worst_word"
-                        android:layout_weight="4"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/small_margin"
-                        android:text="Enfant nterrible"
-                        android:textSize="@dimen/text_small"
-                        android:layout_centerVertical="true"/>
-
-                    <ImageView
-                        android:id="@+id/worst_word_language"
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/flag_height"
-                        android:src="@drawable/flag_random"
-                        android:layout_alignParentRight="true"/>
-
-                </LinearLayout>
-
-            </LinearLayout>
+                android:text="FRIENDS SCORES HERE"/>
 
 
         </LinearLayout>

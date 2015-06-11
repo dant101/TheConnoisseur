@@ -8,7 +8,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:orientation="horizontal">
 
         <ImageView
@@ -19,57 +19,13 @@
             android:padding="@dimen/normal_padding"
             android:src="@drawable/matryoshka"/>
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:layout_gravity="center"
-            android:gravity="center">
-
-            <TextView
-                android:id="@+id/flag_text"
-                android:layout_marginTop="@dimen/vsmall_margin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/russia"/>
-
-            <ImageView
-                android:id="@+id/flag"
-                android:layout_width="@dimen/comments_flag_width"
-                android:layout_margin="@dimen/vsmall_margin"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:src="@drawable/flag_random"/>
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_margin="@dimen/vsmall_margin"
-                android:layout_height="1dp"
-                android:background="@color/grey"/>
-
-            <ImageView
-                android:id="@+id/listen_icon"
-                android:layout_width="@dimen/comments_listen_width"
-                android:layout_height="0dp"
-                android:layout_weight="2"
-                android:layout_margin="@dimen/vsmall_margin"
-                android:src="@drawable/ui_listen"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/comments_text"
-                android:textStyle="bold|italic"/>
-            
-        </LinearLayout>
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"
+        android:layout_weight="5"
         android:orientation="vertical">
 
         <TextView
@@ -83,8 +39,35 @@
         <ListView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/orange"
+            android:background="@color/comment_blue"
             android:id="@+id/comments"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/vsmall_padding"
+        android:orientation="horizontal"
+        android:background="@color/comment_light_blue"
+        android:layout_gravity="center"
+        android:gravity="center">
+
+        <EditText
+            android:id="@+id/comment_editText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:gravity="center"
+            android:background="@color/white"
+            android:padding="@dimen/small_padding"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/small_margin"
+            android:text="POST"/>
 
     </LinearLayout>
 

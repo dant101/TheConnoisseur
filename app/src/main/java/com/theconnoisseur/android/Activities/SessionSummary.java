@@ -63,12 +63,8 @@ public class SessionSummary extends ActionBarActivity {
         mScore = (TextView) findViewById(R.id.score);
         mTongueType = (TextView) findViewById(R.id.tongue_type);
         mTongueDescription = (TextView) findViewById(R.id.tongue_description);
-        mShareLink = (ImageView) findViewById(R.id.share_link);
-        mPersonalHighlightText = (TextView) findViewById(R.id.personal_highlight_text);
-        mBestScoreTextView = (TextView) findViewById(R.id.best_score);
         mBestWordTextView = (TextView) findViewById(R.id.best_word);
         mBestWordLanguage = (ImageView) findViewById(R.id.best_word_language);
-        mWorstScoreTextView = (TextView) findViewById(R.id.worst_score);
         mWorstWordTextView = (TextView) findViewById(R.id.worst_word);
         mWorstWordLanguage = (ImageView) findViewById(R.id.worst_word_language);
         mConnoisseurImage = (ImageView) findViewById(R.id.connoisseur_image);

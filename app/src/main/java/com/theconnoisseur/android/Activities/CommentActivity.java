@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -44,6 +45,7 @@ public class CommentActivity extends Activity implements CursorCallback {
     private ImageView mFlag;
     private TextView mCommentsText;
     private ListView mComments;
+    private EditText mCommentEditText;
 
     private int mCommentsFrequency;
 
@@ -77,13 +79,10 @@ public class CommentActivity extends Activity implements CursorCallback {
         new CursorPreparationTask(this).execute();
 
         mWordIllustration = (ImageView) findViewById(R.id.word_illustration);
-        mFlagText = (TextView) findViewById(R.id.flag_text);
-        mFlag = (ImageView) findViewById(R.id.flag);
         mCommentsText = (TextView) findViewById(R.id.comments_text);
         mComments = (ListView) findViewById(R.id.comments);
+        mCommentEditText = (EditText) findViewById(R.id.comment_editText);
 
-        mFlagText.setText(mLanguageName);
-        ContentDownloadHelper.loadImage(getApplicationContext(), mWordIllustration, mImageUri);
         ContentDownloadHelper.loadImage(getApplicationContext(), mFlag, mFlagUri);
     }
 

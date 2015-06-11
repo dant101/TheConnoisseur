@@ -13,6 +13,9 @@
     <color name = "app_start_color">#F0EEC4</color>
     <color name = "app_end_color">#F0EEDE</color>
 
+    <color name = "comment_blue">#B8E3E3</color>
+    <color name = "comment_light_blue">#CCDCDC</color>
+
     <color name = "orange">#E55611</color>
     <color name = "green">#59B16F</color>
     <color name = "grey">#B7B6A5</color>

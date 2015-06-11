@@ -83,7 +83,6 @@
                     android:layout_weight="1"
                     android:id="@+id/score"
                     android:textStyle="bold"
-                    android:textSize="@dimen/text_medium"
                     android:text="20"/>
 
             </LinearLayout>
