@@ -78,25 +78,9 @@ public class ResourceDownloader {
         }
     }
 
-    public static MatrixCursor downloadComments(int word_id) {
+    public static List<CommentOnlineDBFormat> downloadComments(int word_id) {
+        Log.d(TAG, "querying comments from remote database");
 
-        List<CommentOnlineDBFormat> rows = ConnoisseurDatabase.getInstance().getCommentTable().getCommentsByWordId(word_id);
-        new CommentUtil(rows).sort();
-        Collections.reverse(rows);
-
-        MatrixCursor matrixCursor = new MatrixCursor(Comment.columns);
-        for (CommentOnlineDBFormat row :rows) {
-            matrixCursor.addRow(new Object[] {
-                    row.getComment_id(),
-                    row.getWord_id(),
-                    row.getUsername(),
-                    row.getComment(),
-                    row.getTime(),
-                    row.getScore(),
-                    row.getParent_path(),
-                    Comment.getNesting(row.getParent_path())});
-        }
-
-        return matrixCursor;
+        return ConnoisseurDatabase.getInstance().getCommentTable().getCommentsByWordId(word_id);
     }
 }

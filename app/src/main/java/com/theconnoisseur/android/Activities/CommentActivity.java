@@ -7,11 +7,14 @@ import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Adapter;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
@@ -27,8 +30,11 @@ import com.theconnoisseur.android.Model.Comment;
 import com.theconnoisseur.android.Model.ExerciseContent;
 import com.theconnoisseur.android.Model.LanguageSelection;
 
+import org.w3c.dom.Text;
+
 import Database.CommentOnlineDB;
 import Database.ConnoisseurDatabase;
+import Util.CommentController;
 import Util.ContentDownloadHelper;
 import Util.CursorHelper;
 import Util.ResourceDownloader;
@@ -46,17 +52,20 @@ public class CommentActivity extends Activity implements CursorCallback {
     private TextView mCommentsText;
     private ListView mComments;
     private EditText mCommentEditText;
+    private Button mPost;
 
     private int mCommentsFrequency;
 
     private Cursor mCursor;
-    private ListAdapter mAdapter;
+    private SimpleCursorAdapter mAdapter;
 
     private int mWordId;
     private String mWord;
     private String mImageUri;
     private String mFlagUri;
     private String mLanguageName;
+
+    private boolean firstQuery = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,12 +91,16 @@ public class CommentActivity extends Activity implements CursorCallback {
         mCommentsText = (TextView) findViewById(R.id.comments_text);
         mComments = (ListView) findViewById(R.id.comments);
         mCommentEditText = (EditText) findViewById(R.id.comment_editText);
+        mPost = (Button) findViewById(R.id.post);
 
         ContentDownloadHelper.loadImage(getApplicationContext(), mFlag, mFlagUri);
     }
 
     @Override
     public void CursorLoaded(Cursor c) {
+        if (!firstQuery) { mAdapter.changeCursor(c); return; }
+        firstQuery = false;
+
         this.mCursor = c;
         mCommentsFrequency = c.getCount(); mCommentsText.setText(String.valueOf(mCommentsFrequency) + " Comments");
 
@@ -122,7 +135,28 @@ public class CommentActivity extends Activity implements CursorCallback {
     }
 
     private void setListeners() {
-        //TODO: any listeners?
+        mPost.setOnClickListener(new commentPost());
+        mCommentEditText.setOnEditorActionListener(new commentPost());
+
+    }
+
+    // Posts the user comment locally
+    private void postMessage() {
+        String comment = mCommentEditText.getText().toString();
+        // Process comment for swearing,etc
+        boolean appropriate = true;
+        if (!appropriate) {
+            ToastHelper.toast(this, "Sorry, we don't feel your comment is appropriate");
+            return;
+        }
+
+        CommentController.getInstance().comment(1, "TestCommenter", comment);
+        new CursorPreparationTask(this).execute(); //
+
+        mCommentEditText.setText("");
+        mCommentEditText.clearFocus();
+        mComments.requestFocus();
+
     }
 
     private class replyListener implements View.OnClickListener {
@@ -161,6 +195,26 @@ public class CommentActivity extends Activity implements CursorCallback {
         }
     }
 
+    /**
+     * Listener that responds to comment action. Updates visual comments and sends comment request to remote db
+     */
+    private class commentPost implements TextView.OnEditorActionListener, View.OnClickListener {
+
+        @Override
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            if (actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_DOWN) {
+                postMessage();
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public void onClick(View v) {
+            postMessage();
+        }
+    }
+
     // Async task that gets all the available comments for given word id
     private class CursorPreparationTask extends AsyncTask<Void, Void, Void> {
         CursorCallback mCallback;
@@ -170,7 +224,7 @@ public class CommentActivity extends Activity implements CursorCallback {
 
         @Override
         protected Void doInBackground(Void... params) {
-            mCursor = ResourceDownloader.downloadComments(1); //Should be mWord_Id when ready for proper test
+            mCursor = CommentController.getInstance().getComments(1); //Should be mWord_Id when ready for proper test
 
             return null;
         }

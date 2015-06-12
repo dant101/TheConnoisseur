@@ -96,8 +96,6 @@ public class SessionSummary extends ActionBarActivity {
 
         mLanguage.setText(mLanguageString);
         mScore.setText("(" + String.valueOf(mWordsPassed) + "/" + String.valueOf(mTotalWords) + " passed)");
-        mBestScoreTextView.setText("YOUR BEST (" + String.valueOf(mBestScore) + "%)");
-        mWorstScoreTextView.setText("YOUR WORST (" + String.valueOf(mWorstScore) + "%)");
         mBestWordTextView.setText(mBestWord);
         mWorstWordTextView.setText(mWorstWord);
 
@@ -126,7 +124,6 @@ public class SessionSummary extends ActionBarActivity {
             mLanguage.setTextColor(Color.parseColor(mLanguageHex));
             mSession.setTextColor(Color.parseColor(mLanguageHex));
             mScore.setTextColor(Color.parseColor(mLanguageHex));
-            mPersonalHighlightText.setTextColor(Color.parseColor(mLanguageHex));
         } catch (IllegalArgumentException e) {
             Log.d(TAG, "Illegal Hex was provided for language - check database value!");
             e.printStackTrace();

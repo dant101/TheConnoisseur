@@ -92,7 +92,7 @@ public class CommentOnlineDB extends OnlineDB {
 
     /*Creates a new comment with no parent and puts it in the database */
     public boolean createComment(int word_id, String username, String comment) {
-        return createComment(word_id, username, comment, null);
+        return createComment(word_id, username, comment, "0");
     }
 
     /*Creates a new comment with a parent and puts it tin the database*/
