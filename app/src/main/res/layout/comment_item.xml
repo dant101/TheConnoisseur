@@ -67,7 +67,8 @@
                     android:layout_height="@dimen/vote_icon_width"
                     android:layout_weight="1"
                     android:padding="@dimen/vsmall_padding"
-                    android:src="@drawable/arrow_green"/>
+                    android:rotation="270"
+                    android:src="@drawable/arrow_black"/>
 
                 <ImageView
                     android:id="@+id/downvote"
@@ -75,12 +76,14 @@
                     android:layout_height="@dimen/vote_icon_width"
                     android:layout_weight="1"
                     android:padding="@dimen/vsmall_padding"
+                    android:rotation="90"
                     android:src="@drawable/arrow_black"/>
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:gravity="center"
                     android:id="@+id/score"
                     android:textStyle="bold"
                     android:text="20"/>

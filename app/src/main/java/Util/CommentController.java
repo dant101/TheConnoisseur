@@ -1,6 +1,7 @@
 package Util;
 
 import android.database.MatrixCursor;
+import android.util.Log;
 
 import com.theconnoisseur.android.Model.Comment;
 
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import Database.CommentOnlineDB;
 import Database.CommentOnlineDBFormat;
 import Database.ConnoisseurDatabase;
 
@@ -16,6 +18,7 @@ import Database.ConnoisseurDatabase;
  * new comments separately from any updates to the UI listView of comments.
  */
 public class CommentController {
+    public static final String TAG = CommentController.class.getSimpleName();
     private final long COMMENTS_TIME_TO_LIVE = 2 * 60 * 1000; //2 minutes
 
     private static CommentController sInstance = null;
@@ -65,6 +68,19 @@ public class CommentController {
     public void comment(final int word_id, final String username, final String comment) {
         comment(word_id, username, "0", comment);
     }
+
+    public void vote(int word_id, int score) {
+        CommentOnlineDB cDb = ConnoisseurDatabase.getInstance().getCommentTable();
+        if (score > 0) {
+            Log.d(TAG, "Voting up comment with id: " + String.valueOf(word_id));
+            cDb.addOneToScore(word_id);
+        } else {
+            Log.d(TAG, "Voting down comment with id: " + String.valueOf(word_id));
+            cDb.subtractOneFromScore(word_id);
+            }
+
+    }
+
 
     public void comment(final int word_id, final String username, final String parent_path, final String comment) {
         List<CommentOnlineDBFormat> comments = commentsCache.get(word_id);

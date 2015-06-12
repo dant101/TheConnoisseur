@@ -117,8 +117,8 @@ public class CommentActivity extends Activity implements CursorCallback {
                     view.setPadding((int) getResources().getDimension(R.dimen.comment_nesting) * nesting, 0, 0, 0);
 
                     view.findViewById(R.id.reply).setOnClickListener(new replyListener(cursor.getString(cursor.getColumnIndex(Comment.parent_path))));
-                    view.findViewById(R.id.upvote).setOnClickListener(new voteListener(cursor.getInt(cursor.getColumnIndex(Comment.comment_id)), upVoteScore));
-                    view.findViewById(R.id.downvote).setOnClickListener(new voteListener(cursor.getInt(cursor.getColumnIndex(Comment.comment_id)), downVoteScore));
+                    view.findViewById(R.id.upvote).setOnClickListener(new voteListener(cursor.getInt(cursor.getColumnIndex(Comment.comment_id)), upVoteScore, view.findViewById(R.id.upvote)));
+                    view.findViewById(R.id.downvote).setOnClickListener(new voteListener(cursor.getInt(cursor.getColumnIndex(Comment.comment_id)), downVoteScore, view.findViewById(R.id.downvote)));
 
                     return true;
                 }
@@ -174,24 +174,24 @@ public class CommentActivity extends Activity implements CursorCallback {
         }
     }
 
+    /**
+     * Listener for voting. Updates the UI, makes online database vote request. (Score value doesn't change)
+     */
     private class voteListener implements View.OnClickListener {
         private int mCommentId;
         private int mVote;
+        private View mView;
 
-        public voteListener(int comment_id, int vote) {
+        public voteListener(int comment_id, int vote, View v) {
             this.mCommentId = comment_id;
             this.mVote = vote;
+            this.mView = v;
         }
 
         @Override
         public void onClick(View v) {
-            CommentOnlineDB cDb = ConnoisseurDatabase.getInstance().getCommentTable();
-            //TODO: after vote, change visual on button ui but don't update ListView.
-            if (mVote > 0) {
-                cDb.addOneToScore(mCommentId);
-            } else {
-                cDb.subtractOneFromScore(mCommentId);
-            }
+            ((ImageView)mView).setImageResource(R.drawable.arrow_green);
+            CommentController.getInstance().vote(mCommentId, mVote);
         }
     }
 
