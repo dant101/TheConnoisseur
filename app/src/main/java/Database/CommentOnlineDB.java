@@ -1,13 +1,20 @@
 package Database;
 
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import filter.Filter;
 
 /**
  * Created by Alexandre on 03/06/2015.
  */
 public class CommentOnlineDB extends OnlineDB {
+
+    HashMap<Integer, Integer> scoresMap = new HashMap<Integer, Integer>();
 
     public CommentOnlineDB(Postgresql database) {
         super(database);
@@ -18,6 +25,7 @@ public class CommentOnlineDB extends OnlineDB {
         allArguments.add("score");
         allArguments.add("parent_path");
         allArguments.add("time");
+        scoresMap.clear();
     }
 
     /*Returns all the comments corresponding to a specific exercise using its word_id*/
@@ -51,21 +59,37 @@ public class CommentOnlineDB extends OnlineDB {
     /*Adds one to the current score of a comment using its comment_id*/
     public void addOneToScore(int comment_id) {
         int score = getScoreByCommentId(comment_id) + 1;
-
-        String query = "UPDATE comment "+
-                "SET score = " + score +
-                " WHERE comment_id = " + comment_id;
-        database.insertQuery(query);
+        scoresMap.put(comment_id, score);
     }
 
     /*Subtracts one from the current score of a comment using its comment_id*/
     public void subtractOneFromScore(int comment_id) {
         int score = getScoreByCommentId(comment_id) - 1;
+        scoresMap.put(comment_id, score);
+    }
 
-        String query = "UPDATE comment "+
-                "SET score = " + score +
-                " WHERE comment_id = " + comment_id;
-        database.insertQuery(query);
+    /*Subtracts one from the current score of a comment using its comment_id*/
+    public void resetToOriginalScore(int comment_id) {
+        int score = getScoreByCommentId(comment_id);
+        scoresMap.put(comment_id, score);
+    }
+
+    public void updateScoresInDatabase() {
+        database.connect();
+
+        for (Map.Entry<Integer, Integer> entry : scoresMap.entrySet()) {
+            Integer comment_id = entry.getKey();
+            Integer score = entry.getValue();
+
+            String query = "UPDATE comment "+
+                    "SET score = " + score +
+                    " WHERE comment_id = " + comment_id;
+
+            database.insertQueryNoConnection(query);
+        }
+        scoresMap.clear();
+
+        database.disconnect();
     }
 
     /*Returns the score of a comment using its unique comment_id*/
@@ -109,6 +133,12 @@ public class CommentOnlineDB extends OnlineDB {
                 comment, time, score, parent_path);
 
         return result;
+    }
+
+    //Returns true if comment does not contain any offensive words
+    public boolean isCommentSafe(String comment) {
+        Filter filter = new Filter();
+        return filter.isSentenceSafe(comment);
     }
 
 
