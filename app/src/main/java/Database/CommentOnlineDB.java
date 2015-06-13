@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import filter.Filter;
+
 /**
  * Created by Alexandre on 03/06/2015.
  */
@@ -109,6 +111,12 @@ public class CommentOnlineDB extends OnlineDB {
                 comment, time, score, parent_path);
 
         return result;
+    }
+
+    //Returns true if comment does not contain any offensive words
+    public boolean isCommentSafe(String comment) {
+        Filter filter = new Filter();
+        return filter.isSentenceSafe(comment);
     }
 
 
