@@ -2,8 +2,10 @@ package com.theconnoisseur.android.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,6 +34,10 @@ import com.theconnoisseur.android.Model.LanguageSelection;
 
 import org.w3c.dom.Text;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import Database.CommentOnlineDB;
 import Database.ConnoisseurDatabase;
 import Util.CommentController;
@@ -59,6 +65,9 @@ public class CommentActivity extends Activity implements CursorCallback {
     private Cursor mCursor;
     private SimpleCursorAdapter mAdapter;
 
+    private Map<Integer, Integer> mVoteMap;
+    private static final String VOTE = "vote_";
+
     private int mWordId;
     private String mWord;
     private String mImageUri;
@@ -79,6 +88,8 @@ public class CommentActivity extends Activity implements CursorCallback {
         mFlagUri = i.getStringExtra(LanguageSelection.LANGUAGE_IMAGE_URL);
         mLanguageName = i.getStringExtra(LanguageSelection.LANGUAGE_NAME);
 
+        mVoteMap = new HashMap<Integer, Integer>();
+
     }
 
     @Override
@@ -93,7 +104,32 @@ public class CommentActivity extends Activity implements CursorCallback {
         mCommentEditText = (EditText) findViewById(R.id.comment_editText);
         mPost = (Button) findViewById(R.id.post);
 
-        ContentDownloadHelper.loadImage(getApplicationContext(), mFlag, mFlagUri);
+        ContentDownloadHelper.loadImage(getApplicationContext(), mWordIllustration, mImageUri);
+    }
+
+    @Override
+    protected void onStop() {
+        // Iterates through set of voted upon comments and updates global shared preferences (enforcing single vote rule)
+        Iterator it = mVoteMap.entrySet().iterator();
+        int entry;
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = prefs.edit();
+
+        while (it.hasNext()) {
+            entry = Integer.valueOf(it.next().toString().split("=")[0]);
+
+            Log.d(TAG, "Entry: " + String.valueOf(entry));
+            //Sends voting request to online db if not voted before
+            if (!prefs.getBoolean(VOTE + String.valueOf(entry), false)) {
+                int vote_score = mVoteMap.get(entry);
+                CommentController.getInstance().vote(entry, vote_score);
+                editor.putBoolean(VOTE + String.valueOf(entry), true);
+            }
+        }
+        editor.apply();
+
+        super.onStop();
     }
 
     @Override
@@ -112,13 +148,17 @@ public class CommentActivity extends Activity implements CursorCallback {
         adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
             @Override
             public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+                Log.d(TAG, "settingViewValue: " + String.valueOf(columnIndex));
                 if (view.getId() == R.id.comment_item) {
                     int nesting = cursor.getInt(columnIndex);
                     view.setPadding((int) getResources().getDimension(R.dimen.comment_nesting) * nesting, 0, 0, 0);
 
+                    int comment_id = cursor.getInt(cursor.getColumnIndex(Comment.comment_id));
+                    int known_score = mVoteMap.containsKey(comment_id) ? mVoteMap.get(comment_id) : 0;
+
                     view.findViewById(R.id.reply).setOnClickListener(new replyListener(cursor.getString(cursor.getColumnIndex(Comment.parent_path))));
-                    view.findViewById(R.id.upvote).setOnClickListener(new voteListener(cursor.getInt(cursor.getColumnIndex(Comment.comment_id)), upVoteScore, view.findViewById(R.id.upvote)));
-                    view.findViewById(R.id.downvote).setOnClickListener(new voteListener(cursor.getInt(cursor.getColumnIndex(Comment.comment_id)), downVoteScore, view.findViewById(R.id.downvote)));
+                    view.findViewById(R.id.upvote).setOnClickListener(new voteListener(cursor.getInt(cursor.getColumnIndex(Comment.comment_id)), upVoteScore, view.findViewById(R.id.upvote), view.findViewById(R.id.downvote), known_score));
+                    view.findViewById(R.id.downvote).setOnClickListener(new voteListener(cursor.getInt(cursor.getColumnIndex(Comment.comment_id)), downVoteScore, view.findViewById(R.id.downvote), view.findViewById(R.id.upvote), known_score));
 
                     return true;
                 }
@@ -176,22 +216,44 @@ public class CommentActivity extends Activity implements CursorCallback {
 
     /**
      * Listener for voting. Updates the UI, makes online database vote request. (Score value doesn't change)
+     * User can only vote once per comment and only first vote counts
      */
     private class voteListener implements View.OnClickListener {
         private int mCommentId;
         private int mVote;
         private View mView;
+        private View mAlternate;
+        private int mKnownScore;
 
-        public voteListener(int comment_id, int vote, View v) {
+        public voteListener(int comment_id, int vote, View v, View alternate, int known_score) {
             this.mCommentId = comment_id;
             this.mVote = vote;
             this.mView = v;
+            this.mAlternate = alternate;
+            this.mKnownScore = known_score;
+
+            setVisuals();
+        }
+
+        private void setVisuals() {
+            if (mKnownScore == 0) {
+                ((ImageView)mView).setImageResource(R.drawable.arrow_black);
+                ((ImageView)mAlternate).setImageResource(R.drawable.arrow_black);
+            } else  if (mVote == mKnownScore) {
+                ((ImageView)mView).setImageResource(R.drawable.arrow_green);
+                ((ImageView)mAlternate).setImageResource(R.drawable.arrow_black);
+            } else {
+                ((ImageView)mView).setImageResource(R.drawable.arrow_black);
+                ((ImageView)mAlternate).setImageResource(R.drawable.arrow_green);
+            }
         }
 
         @Override
         public void onClick(View v) {
-            ((ImageView)mView).setImageResource(R.drawable.arrow_green);
-            CommentController.getInstance().vote(mCommentId, mVote);
+            mKnownScore = mVote;
+            setVisuals();
+
+            mVoteMap.put(mCommentId, mVote);
         }
     }
 

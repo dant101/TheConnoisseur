@@ -176,7 +176,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="2"
+            android:layout_weight="3"
             android:orientation="horizontal">
 
             <RelativeLayout
@@ -215,7 +215,7 @@
                 android:clipChildren="false">
 
                 <ImageView
-                    android:layout_margin="@dimen/normal_margin"
+                    android:layout_margin="@dimen/large_margin"
                     android:id="@+id/listen_icon"
                     android:onClick="playRecording"
                     android:layout_width="@dimen/microphone_width"
@@ -223,7 +223,7 @@
                     android:src="@drawable/ui_listen"/>
 
                 <FrameLayout
-                    android:layout_margin="@dimen/normal_margin"
+                    android:layout_margin="@dimen/large_margin"
                     android:layout_width="@dimen/microphone_width"
                     android:layout_height="match_parent"
                     android:clipChildren="false"
@@ -273,8 +273,16 @@
             android:id="@+id/connoisseur_side"
             android:layout_width="30dp"
             android:layout_height="150dp"
+            android:layout_gravity="center"
             android:src="@drawable/logo_2"/>
 
+        <ImageView
+            android:id="@+id/view_comments_icon"
+            android:layout_width="@dimen/comment_icon_width"
+            android:layout_height="@dimen/comment_icon_width"
+            android:layout_marginTop="50dp"
+            android:onClick="viewComments"
+            android:src="@drawable/ic_forum_black_24dp"/>
 
         </LinearLayout>
 

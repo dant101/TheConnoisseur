@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.theconnoisseur.R;
 import com.theconnoisseur.android.Model.ExerciseContent;
+import com.theconnoisseur.android.Model.LanguageSelection;
 import com.theconnoisseur.android.Model.SessionSummaryContent;
 
 import java.io.File;
@@ -65,6 +66,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
     private ImageView mSmallLife2;
     private ImageView mSmallLife3;
     private ImageView mSideLogo;
+    private ImageView mCommentsIcon;
 
     private MediaPlayer mMediaPlayer;
     private boolean played = false; //TESTING, Illegal state exception on second playback...
@@ -83,6 +85,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
     private String mSessionBestWord = "";
 
     private String mCurrentWord;
+    private int mCurrentWordId;
     private String mLanguageString;
     private String mWordIllustrationUri;
     private String mLanguageFlagUri;
@@ -138,6 +141,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         mSmallLife2 = (ImageView) view.findViewById(R.id.heart_small_2);
         mSmallLife3 = (ImageView) view.findViewById(R.id.heart_small_3);
         mSideLogo = (ImageView) view.findViewById(R.id.connoisseur_side);
+        mCommentsIcon = (ImageView) view.findViewById(R.id.view_comments_icon);
 
         setListeners();
         setInitialView();
@@ -155,6 +159,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
                 mListener.nextExercise();
             }
         });
+
         /*
         mRecord.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -268,6 +273,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
 
         //mWord.setText(c.getString(c.getColumnIndex(ExerciseContent.WORD)));
         mCurrentWord = c.getString(c.getColumnIndex(ExerciseContent.WORD));
+        mCurrentWordId = c.getInt(c.getColumnIndex(ExerciseContent.WORD_ID));
         //mPhoneticSpelling.setText(c.getString(c.getColumnIndex(ExerciseContent.PHONETIC)));
 
         mWordIllustrationUri = c.getString(c.getColumnIndex(ExerciseContent.IMAGE_URL));
@@ -460,6 +466,18 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
 
         Log.d(TAG, "Cumulative score: " + String.valueOf(mSessionCumulativeScore) + ". BestCurrent: " + String.valueOf(mCurrentWordBestScore));
     }
+
+    public void viewComments() {
+        Intent i = new Intent(getActivity(), CommentActivity.class);
+        i.putExtra(ExerciseContent.WORD_ID, mCurrentWordId);
+        i.putExtra(ExerciseContent.WORD, mCurrentWord);
+        i.putExtra(ExerciseContent.IMAGE_URL, mWordIllustrationUri);
+
+        Log.d(TAG, "View comments onClick (from exercise fragment)");
+
+        startActivity(i);
+    }
+
 
     /**
      * This interface must be implemented by activities that contain this

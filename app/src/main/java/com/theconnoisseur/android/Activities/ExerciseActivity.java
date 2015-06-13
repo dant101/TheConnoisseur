@@ -83,6 +83,13 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
         startActivity(new Intent(ExerciseActivity.this, LanguageSelectionActivity.class));
     }
 
+    public void viewComments(View v) {
+        Fragment fragment = getFragmentManager().findFragmentByTag(TAG_EXERCISE_FRAGMENT);
+        if (fragment instanceof ExerciseFragment) {
+            ((ExerciseFragment)fragment).viewComments();
+        }
+    }
+
     public void playRecording(View v) {
     Fragment fragment = getFragmentManager().findFragmentByTag(TAG_EXERCISE_FRAGMENT);
         if (fragment instanceof ExerciseFragment) {

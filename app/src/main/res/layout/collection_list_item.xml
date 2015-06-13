@@ -60,14 +60,14 @@
                     android:text="@string/view_comments"
                     android:layout_toLeftOf="@+id/arrow"
                     android:layout_centerVertical="true"
-                    android:textColor="@color/green"/>
+                    android:textColor="@color/comment_blue"/>
 
                 <ImageView
                     android:id="@+id/arrow"
                     android:layout_width="@dimen/arrow_width"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/normal_margin"
-                    android:src="@drawable/arrow_green"
+                    android:src="@drawable/arrow_black"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"/>
 
