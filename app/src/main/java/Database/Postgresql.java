@@ -121,6 +121,22 @@ public class Postgresql implements Database {
         }
     }
 
+
+    /*Does an insert into the database without connecting first
+    Format example:
+    - "INSERT INTO exercise VALUES (100, 'Zara', 'Ali', 18)"
+    - "UPDATE database SET username = alex WHERE id = 123";
+     */
+    public void insertQueryNoConnection(String sqlQuery) {
+        try {
+            Statement stmt = connection.createStatement();
+            stmt.executeUpdate(sqlQuery);
+            stmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     /*We need a special loginQuery to prevent user from doing SQLInjection*/
     public List<List<String>> loginQuery(String sqlQuery, List<String> arguments, String value) {
         this.connect();
