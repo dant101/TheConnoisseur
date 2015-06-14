@@ -12,6 +12,7 @@ public class ExerciseOnlineDBFormat {
     private int language_id;
     private String language;
     private String locale;
+    private int threshold;
 
     public ExerciseOnlineDBFormat(List<String> list) {
         this.word_id = Integer.parseInt(list.get(0));
@@ -23,6 +24,7 @@ public class ExerciseOnlineDBFormat {
         this.language_id = Integer.parseInt(list.get(6));
         this.language = list.get(7);
         this.locale = list.get(8);
+        this.threshold = Integer.parseInt(list.get(9));
     }
 
     public int getWord_id() { return word_id; }
@@ -52,4 +54,6 @@ public class ExerciseOnlineDBFormat {
     }
 
     public String getLocale() {return locale;}
+
+    public int getThreshold() {return threshold;}
 }
