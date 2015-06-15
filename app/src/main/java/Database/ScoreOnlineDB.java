@@ -13,25 +13,40 @@ public class ScoreOnlineDB extends OnlineDB {
         allArguments.add("score_id");
         allArguments.add("username");
         allArguments.add("word_id");
-        allArguments.add("best_score");
+        allArguments.add("percentage_score");
+        allArguments.add("attempts_score");
     }
 
-    public void updateBestScore(String username, int word_id, int score) {
+    /*Update/inserts a new score into the database
+    if the variable attempts_score is set to null, then its value remains teh same as before
+     */
+
+    public void updateScoreAndAttempts(String username, int word_id, int percentage_score, Integer attempts_score) {
         String query = "";
         if(isUserScoreInDatabase(username, word_id)) {
-            query = "UPDATE score " +
-                    "SET best_score = " + score +
-                    "WHERE word_id = " + word_id +
-                    " AND username = ?";
-            database.createScoreQuery(query, username, null, null);
+            if(attempts_score != null) {
+                query = "UPDATE score" +
+                        " SET percentage_score = " + percentage_score +
+                        ", attempts_score = " + attempts_score +
+                        " WHERE word_id = " + word_id +
+                        " AND username = ?";
+                database.createScoreQuery(query, username, null, null, null);
+            } else {
+                query = "UPDATE score" +
+                        " SET percentage_score = " + percentage_score +
+                        " WHERE word_id = " + word_id +
+                        " AND username = ?";
+                database.createScoreQuery(query, username, null, null, null);
+            }
 
         } else {
-            query = "INSERT INTO score(username, word_id, best_score) " +
-                    "VALUES (?, ?, ?)";
-            database.createScoreQuery(query, username, word_id, score);
+            query = "INSERT INTO score(username, word_id, percentage_score, attempts_score) " +
+                    "VALUES (?, ?, ?, ?)";
+            database.createScoreQuery(query, username, word_id, percentage_score, attempts_score);
         }
     }
 
+    /*Checks that a user score is in the DB*/
     private boolean isUserScoreInDatabase(String username, int word_id) {
         String query = "SELECT * " +
                 "FROM score " +
@@ -41,26 +56,19 @@ public class ScoreOnlineDB extends OnlineDB {
         return queryResult.size() != 0;
     }
 
-    public int getBestScore(String username, int word_id) {
-        int bestScore = 0;
-
-        String query = "SELECT best_score " +
+    /*Returns a unique ScoreOnlineDBFormat corresponding to a username and a word_id*/
+    public ScoreOnlineDBFormat getScoreAndAttempts(String username, int word_id) {
+        String query = "SELECT * " +
                 "FROM score " +
                 "WHERE word_id = " + word_id +
                 " AND username = ?";
 
-        List<String> arguments = new ArrayList<String>();
-        arguments.add("best_score");
-
-        List<List<String>> queryResult = database.scoreQuery(query, arguments, username);
+        List<List<String>> queryResult = database.scoreQuery(query, this.allArguments, username);
 
         if(queryResult.size() == 1) {
-            List<String> row = queryResult.get(0);
-            if(row.size() == 1) {
-                bestScore = Integer.parseInt(row.get(0));
-            }
+            return format(queryResult,ScoreOnlineDBFormat.class).get(0);
         }
-        return bestScore;
+        return null;
     }
 
     @Override
