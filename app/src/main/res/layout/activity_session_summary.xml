@@ -74,7 +74,7 @@
             android:id="@+id/connoisseur_image"
             android:layout_width="@dimen/connoisseur_head_diameter"
             android:layout_height="0dp"
-            android:layout_weight="6"
+            android:layout_weight="7"
             android:layout_margin="5dp"
             android:background="@android:color/transparent"
             android:src="@drawable/face_connoisseur"/>
@@ -87,7 +87,7 @@
 
         <TextView
             android:id="@+id/tongue_type"
-            android:layout_margin="@dimen/small_margin"
+            android:layout_margin="@dimen/vsmall_margin"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="2"
@@ -112,7 +112,7 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="2"
+                android:layout_weight="3"
                 android:orientation="vertical"
                 android:gravity="center">
 
@@ -142,7 +142,7 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="2"
+                android:layout_weight="3"
                 android:orientation="vertical"
                 android:gravity="center">
 
@@ -180,7 +180,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="3"
+            android:layout_weight="4"
             android:gravity="center">
 
             <TextView

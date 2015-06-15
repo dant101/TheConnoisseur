@@ -3,6 +3,7 @@ package com.theconnoisseur.android.Activities;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.TransitionDrawable;
@@ -35,6 +36,7 @@ import com.theconnoisseur.android.Model.SessionSummaryContent;
 import java.io.File;
 import java.io.IOException;
 
+import Database.ConnoisseurDatabase;
 import Util.ContentDownloadHelper;
 import Voice.VoiceRecogniser;
 
@@ -48,6 +50,7 @@ import Voice.VoiceRecogniser;
  */
 public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceCallback {
     private static final String TAG = ExerciseFragment.class.getSimpleName();
+    private static final String ATTEMPT = "attempt";
 
     private static final int TRANSITION_TIME = 300;
     private static final int REVERSE_TRANSITION = 600;
@@ -453,7 +456,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         }
 
         //Main number of words passed
-        if (mCurrentWordBestScore > ExerciseContent.SCORE_PASS) {
+        if (mCurrentWordBestScore > mThreshold) {
             mSessionWordPasses += 1;
         }
 
@@ -466,6 +469,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
     }
 
     private void concludeSession() {
+        int session_number = getSessionNumber();
         mSessionWord -= 1; //Since we increment before we realise we have none left, correct here
         Intent intent = new Intent(getActivity(), SessionSummary.class);
 
@@ -480,6 +484,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         intent.putExtra(SessionSummaryContent.LANGUAGE, mLanguageString);
         intent.putExtra(SessionSummaryContent.LANGUAGE_ID, mLanguageId);
         intent.putExtra(SessionSummaryContent.LANGUAGE_HEX, mLanguageHex);
+        intent.putExtra(SessionSummaryContent.SESSION_NUMBER, session_number);
 
         mVoiceRecogniser.destroyVoiceRecogniser();
 
@@ -521,19 +526,54 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         startActivity(i);
     }
 
+    /**
+     * Checks whether round performance is new best for attempts/best percentage
+     * Where appropriate, updates internal and online database values
+     */
     private void saveWordPerformance() {
-        String username = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(GlobalPreferenceString.USERNAME_PREF, "Guest");
-        ContentValues v = new ContentValues();
-        v.put(ExerciseScore.USER_ID, username);
-        v.put(ExerciseScore.WORD_ID, mCurrentWordId);
-        v.put(ExerciseScore.PERCENTAGE_SCORE, mCurrentWordBestScore);
-        v.put(ExerciseScore.ATTEMPTS_SCORE, mAttempts);
-        if (getActivity().getContentResolver().update(InternalDbContract.updateExerciseScore(mCurrentWordId), v, null, null) == 0) {
-            Log.d(TAG, "ExerciseFragment: inserting scores for word_id = " + String.valueOf(mCurrentWordId));
-            getActivity().getContentResolver().insert(InternalDbContract.insertExerciseScoreUri(), v);
-        } else {
-            Log.d(TAG, "ExerciseFragment: updated scores for word_id = " + String.valueOf(mCurrentWordId));
+        Cursor score = getActivity().getContentResolver().query(InternalDbContract.queryForExerciseScore(mCurrentWordId), null, null, null, null);
+        if (score.moveToFirst()) {
+            boolean shouldUpdate = false;
+            String username = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(GlobalPreferenceString.USERNAME_PREF, "Guest");
+            ContentValues v = new ContentValues();
+            v.put(ExerciseScore.USER_ID, username);
+            v.put(ExerciseScore.WORD_ID, mCurrentWordId);
+
+            if (score.getInt(score.getColumnIndex(ExerciseScore.PERCENTAGE_SCORE)) < mCurrentWordBestScore) {
+                v.put(ExerciseScore.PERCENTAGE_SCORE, mCurrentWordBestScore);
+                shouldUpdate = true;
+            }
+
+            if (score.getInt(score.getColumnIndex(ExerciseScore.ATTEMPTS_SCORE)) > mAttempts) {
+                v.put(ExerciseScore.ATTEMPTS_SCORE, mAttempts);
+                shouldUpdate = true;
+            }
+
+            if (shouldUpdate) {
+                if (getActivity().getContentResolver().update(InternalDbContract.updateExerciseScore(mCurrentWordId), v, null, null) == 0) {
+                    Log.d(TAG, "ExerciseFragment: inserting scores for word_id = " + String.valueOf(mCurrentWordId));
+                    getActivity().getContentResolver().insert(InternalDbContract.insertExerciseScoreUri(), v);
+                } else {
+                    Log.d(TAG, "ExerciseFragment: updated scores for word_id = " + String.valueOf(mCurrentWordId));
+                }
+
+                //Initiates online database update
+                new Thread(new ScoreUpdate(username, mCurrentWordId, mAttempts, mCurrentWordBestScore)).start();
+            }
         }
+    }
+
+    /**
+     * Gets the number of the sessions attempt
+     */
+    private int getSessionNumber() {
+        int session_number = PreferenceManager.getDefaultSharedPreferences(getActivity()).getInt(mLanguageString + ATTEMPT, 0) + 1;
+
+        SharedPreferences.Editor e = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
+        e.putInt(mLanguageString + ATTEMPT, session_number);
+        e.commit();
+
+        return session_number;
     }
 
 
@@ -545,6 +585,22 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
      */
     public interface OnFragmentInteractionListener {
         public void nextExercise();
+    }
+
+    /**
+     * Responsible for initiating a online database score update off main thread
+     */
+    private class ScoreUpdate implements Runnable {
+        String username; int word_id; int attempts; int percentage;
+
+        public ScoreUpdate(String username, int word_id, int attempts, int percentage) {
+            this.username = username; this.word_id = word_id; this.attempts = attempts; this.percentage = percentage;
+        }
+
+        @Override
+        public void run() {
+            ConnoisseurDatabase.getInstance().getScoreTable().updateScoreAndAttempts(username, word_id, percentage, attempts);
+        }
     }
 
 

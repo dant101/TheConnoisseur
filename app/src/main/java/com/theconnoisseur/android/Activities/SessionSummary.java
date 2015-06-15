@@ -26,6 +26,7 @@ public class SessionSummary extends ActionBarActivity {
     private int mAverageScore;
     private int mWorstScore;
     private int mBestScore;
+    private int mSessionNumber;
     private String mWorstWord;
     private String mBestWord;
     private String mFlagUri;
@@ -84,6 +85,7 @@ public class SessionSummary extends ActionBarActivity {
         mLanguageString = i.getStringExtra(SessionSummaryContent.LANGUAGE);
         mLanguageId = i.getIntExtra(SessionSummaryContent.LANGUAGE_ID, -1);
         mLanguageHex = i.getStringExtra(SessionSummaryContent.LANGUAGE_HEX);
+        mSessionNumber = i.getIntExtra(SessionSummaryContent.SESSION_NUMBER, 1);
     }
 
     @Override
@@ -98,6 +100,7 @@ public class SessionSummary extends ActionBarActivity {
         mScore.setText("(" + String.valueOf(mWordsPassed) + "/" + String.valueOf(mTotalWords) + " passed)");
         mBestWordTextView.setText(mBestWord);
         mWorstWordTextView.setText(mWorstWord);
+        mSession.setText("Session " + String.valueOf(mSessionNumber));
 
         setTongueLevel();
         setTextColour();
