@@ -217,15 +217,16 @@ public class Postgresql implements Database {
 
     /*We need a special createScoreQuery to prevent user from doing SQLInjection*/
     public boolean createScoreQuery(String sqlQuery,
-                                      String username, Integer word_id, Integer best_score) {
+                                      String username, Integer word_id, Integer percentage_score, Integer attempts_score) {
         boolean result = false;
         this.connect();
         try {
             PreparedStatement stmt = connection.prepareStatement(sqlQuery);
             stmt.setString(1, username);
-            if(word_id != null && best_score != null) {
+            if(word_id != null && percentage_score != null && attempts_score != null) {
                 stmt.setInt(2, word_id);
-                stmt.setInt(3, best_score);
+                stmt.setInt(3, percentage_score);
+                stmt.setInt(4, attempts_score);
             }
             stmt.executeUpdate();
             stmt.close();
