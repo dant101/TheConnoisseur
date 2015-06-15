@@ -34,6 +34,7 @@ public class InternalDbProvider extends ContentProvider {
     private static final int EXERCISES_ALL = 2;
     private static final int EXERCISES = 3;
     private static final int SCORES = 4;
+    private static final int SCORES_ID = 5;
 
     private static final UriMatcher URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
 
@@ -47,6 +48,7 @@ public class InternalDbProvider extends ContentProvider {
         URI_MATCHER.addURI(InternalDbContract.CONTENT_AUTHORITY, TABLE_EXERCISES, EXERCISES_ALL);
         URI_MATCHER.addURI(InternalDbContract.CONTENT_AUTHORITY, TABLE_EXERCISES + "/*", EXERCISES);
         URI_MATCHER.addURI(InternalDbContract.CONTENT_AUTHORITY, TABLE_SCORES, SCORES);
+        URI_MATCHER.addURI(InternalDbContract.CONTENT_AUTHORITY, TABLE_SCORES + "/*", SCORES_ID);
     }
 
     public InternalDbProvider(Context context) {
@@ -115,12 +117,12 @@ public class InternalDbProvider extends ContentProvider {
                     TABLE_EXERCISES, InternalDbContract.PROJECTION_EXERCISES, selection, null, null, null, sortOrder);
                 break;
 
-            case SCORES:
-                Log.d(TAG, "querying SCORES with EXERCISE_ID");
-                query = InternalDbContract.getExerciseID(uri);
+            case SCORES_ID:
+                Log.d(TAG, "querying SCORES with WORD_ID");
+                query = InternalDbContract.getWordID(uri);
                 String[] args3 = {query};
                 cursor = getDatabase(false).query(
-                    TABLE_SCORES, InternalDbContract.PROJECTION_SCORES, ExerciseScore.EXERCISE_ID + "=?", args3, null, null, null);
+                    TABLE_SCORES, InternalDbContract.PROJECTION_SCORES, ExerciseScore.WORD_ID + "=?", args3, null, null, null);
                 CursorHelper.toString(cursor);
 
         }
@@ -149,6 +151,7 @@ public class InternalDbProvider extends ContentProvider {
             case SCORES:
                 Log.d(TAG, "inserting into Scores...");
                 getDatabase(true).insert(TABLE_SCORES, null, values);
+                break;
         }
         return null;
     }
@@ -160,6 +163,14 @@ public class InternalDbProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        Log.d(TAG, "attempting update operation");
+        switch (URI_MATCHER.match(uri)) {
+            case SCORES_ID:
+                String word_id = InternalDbContract.getWordID(uri);
+                String[] args = {word_id};
+                Log.d(TAG, "Updating score row (with ID: " + word_id + ")");
+                return getDatabase(true).update(TABLE_SCORES, values, ExerciseScore.WORD_ID + "=?", args);
+        }
         return 0;
     }
 }

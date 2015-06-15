@@ -31,6 +31,7 @@
     <!-- Language selection Strings -->
     <string name="language_selection_instruction">Choose your language of choice</string>
     <string name="language_selection">LANGUAGE SELECTION</string>
+    <string name="play_session">PLAY GAME</string>
     <string name="language_selection_desc">Perfect the language of your choice in game mode, or go random and take whatever the Connoisseur throws at you</string>
     <string name="no_languages">Unfortunately no languages are currently available, please contact support</string>
 

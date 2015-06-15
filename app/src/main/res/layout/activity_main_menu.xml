@@ -51,7 +51,7 @@
                     android:id="@+id/language_selection_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/language_selection"
+                    android:text="@string/play_session"
                     android:textSize="@dimen/text_medium"
                     android:textStyle="bold"
                     android:textColor="@color/white"/>

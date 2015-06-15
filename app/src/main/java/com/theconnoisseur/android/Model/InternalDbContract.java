@@ -1,7 +1,6 @@
 package com.theconnoisseur.android.Model;
 
 import android.net.Uri;
-import com.theconnoisseur.android.Model.ExerciseScore;
 
 public class InternalDbContract {
 
@@ -27,12 +26,13 @@ public class InternalDbContract {
             ExerciseContent.LANGUAGE_ID,
             ExerciseContent.LANGUAGE,
             ExerciseContent.LOCALE,
-            ExerciseContent.VIEW_COMMENTS
+            ExerciseContent.VIEW_COMMENTS,
+            ExerciseContent.THRESHOLD
     };
 
     public static final String[] PROJECTION_SCORES = {
             ExerciseScore.USER_ID,
-            ExerciseScore.EXERCISE_ID,
+            ExerciseScore.WORD_ID,
             ExerciseScore.PERCENTAGE_SCORE,
             ExerciseScore.ATTEMPTS_SCORE
     };
@@ -67,11 +67,15 @@ public class InternalDbContract {
         return CONTENT_URI.buildUpon().appendPath(ExerciseContent.EXERICISE_TABLE_NAME).build();
     }
 
-    public static Uri queryForExerciseScore(int exercise_id) {
-        return CONTENT_URI.buildUpon().appendPath(ExerciseScore.EXERCISE_ID).appendPath(String.valueOf(exercise_id)).build();
+    public static Uri queryForExerciseScore(int word_id) {
+        return CONTENT_URI.buildUpon().appendPath(ExerciseScore.SCORE_TABLE_NAME).appendPath(String.valueOf(word_id)).build();
     }
 
-    public static String getExerciseID(Uri uri) {
+    public static Uri updateExerciseScore(int word_id) {
+        return CONTENT_URI.buildUpon().appendPath(ExerciseScore.SCORE_TABLE_NAME).appendPath(String.valueOf(word_id)).build();
+    }
+
+    public static String getWordID(Uri uri) {
         return uri.getLastPathSegment();
     }
 

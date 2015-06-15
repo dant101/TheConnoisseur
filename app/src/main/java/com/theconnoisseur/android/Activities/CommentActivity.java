@@ -22,6 +22,7 @@ import com.theconnoisseur.R;
 import com.theconnoisseur.android.Activities.Interfaces.CursorCallback;
 import com.theconnoisseur.android.Model.Comment;
 import com.theconnoisseur.android.Model.ExerciseContent;
+import com.theconnoisseur.android.Model.GlobalPreferenceString;
 import com.theconnoisseur.android.Model.LanguageSelection;
 
 import java.util.HashMap;
@@ -47,6 +48,7 @@ public class CommentActivity extends Activity implements CursorCallback {
     private ListView mComments;
     private EditText mCommentEditText;
     private Button mPost;
+    private String mUsername;
 
     private int mCommentsFrequency;
 
@@ -96,6 +98,8 @@ public class CommentActivity extends Activity implements CursorCallback {
         mPost = (Button) findViewById(R.id.post);
 
         ContentDownloadHelper.loadImage(getApplicationContext(), mWordIllustration, mImageUri);
+
+        mUsername = PreferenceManager.getDefaultSharedPreferences(this).getString(GlobalPreferenceString.USERNAME_PREF, "Guest");
     }
 
     @Override
@@ -178,10 +182,10 @@ public class CommentActivity extends Activity implements CursorCallback {
             ToastHelper.toast(this, "Sorry, we don't feel your comment was appropriate");
         } else {
             if(mReplying && mReplyingCommentId != 0) {
-                CommentController.getInstance().comment(1, "TestCommenter", mReplyingParentPath + "." + mReplyingCommentId, comment);
+                CommentController.getInstance().comment(1, mUsername, mReplyingParentPath + "." + mReplyingCommentId, comment);
             } else {
                 Log.d(TAG, "Posting a comment");
-                CommentController.getInstance().comment(1, "TestCommenter", comment);
+                CommentController.getInstance().comment(1, mUsername, comment);
             }
             new CursorPreparationTask(this).execute();
         }

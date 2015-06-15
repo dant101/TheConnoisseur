@@ -7,8 +7,6 @@ import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import com.theconnoisseur.R;
 import com.theconnoisseur.android.Activities.Interfaces.CursorCallback;
@@ -19,25 +17,30 @@ import com.theconnoisseur.android.Model.InternalDbContract;
 import com.theconnoisseur.android.Model.LanguageSelection;
 
 import Util.CursorHelper;
-import Voice.VoiceRecogniser;
 
 public class ExerciseActivity extends FragmentActivity implements ExerciseFragment.OnFragmentInteractionListener, CursorCallback, ExerciseContentDownloadCallback {
 
     private static final String TAG = ExerciseContent.class.getSimpleName();
     private static final String TAG_EXERCISE_FRAGMENT = "exercise_fragment";
+    private static final String RESUMING = "resuming";
 
     private int LANGUAGE_ID = 3; //ONLY FOR TESTING
 
     private Cursor mCursor;
+    private boolean mResuming = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_exercise);
 
         if (savedInstanceState == null) {
+            Log.d(TAG, "ExerciseActivity: savedInstanceState is null");
             getFragmentManager().beginTransaction()
                     .add(R.id.container, ExerciseFragment.newInstance(), TAG_EXERCISE_FRAGMENT).commit();
+        } else {
+            mResuming = savedInstanceState.getBoolean(RESUMING);
         }
 
         Intent intent = getIntent();
@@ -56,27 +59,18 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
         }
     }
 
-
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.menu.menu_exercise, menu);
-        return true;
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        Log.d(TAG, "ExerciseActivity: onSaveInstanceState");
+        super.onSaveInstanceState(savedInstanceState);
+
+        savedInstanceState.putBoolean(RESUMING, true);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+    public void onStop() {
+        mResuming = true;
+        super.onStop();
     }
 
     public void goBack(View v) {
@@ -101,7 +95,9 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
         //TODO: work on parent activity given that fragment requests new exercise?
         Fragment fragment = getFragmentManager().findFragmentByTag(TAG_EXERCISE_FRAGMENT);
         if (fragment instanceof ExerciseFragment) {
-            ((ExerciseFragment)fragment).nextExercise(mCursor);
+            ((ExerciseFragment)fragment).nextExercise(mCursor, mResuming);
+            Log.d(TAG, "nextExercise - resuming? " + String.valueOf(mResuming));
+            mResuming = false;
         }
     }
 
@@ -182,7 +178,7 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
             Log.d(TAG, "ExerciseCursorPreparationTask onPostExecute called");
             super.onPostExecute(result);
 
-            CursorHelper.toString(mCursor);
+            //CursorHelper.toString(mCursor);
 
             mCallback.CursorLoaded(mCursor);
         }
