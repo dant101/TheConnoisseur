@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.TransitionDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -23,7 +25,6 @@ import android.widget.TextView;
 
 import com.theconnoisseur.R;
 import com.theconnoisseur.android.Model.ExerciseContent;
-import com.theconnoisseur.android.Model.LanguageSelection;
 import com.theconnoisseur.android.Model.SessionSummaryContent;
 
 import java.io.File;
@@ -43,6 +44,10 @@ import Voice.VoiceRecogniser;
 public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceCallback {
     private static final String TAG = ExerciseFragment.class.getSimpleName();
 
+    private static final int TRANSITION_TIME = 400;
+    private static final int REVERSE_TRANSITION = 600;
+
+    private LinearLayout mBackground;
     private ImageView mLanguageImage;
     private TextView mLanguage;
     private TextView mProgress;
@@ -56,6 +61,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
     private LinearLayout mLivesBig;
     private LinearLayout mLivesSmall;
     private RelativeLayout mScoreFeedback;
+    private FrameLayout mRecordLayout;
     private ImageView mRecord;
     private ImageView mRecordAnim;
     private ImageView mListen;
@@ -72,6 +78,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
     private boolean played = false; //TESTING, Illegal state exception on second playback...
     private boolean mClicked = false;
     private boolean firstAttempt = true;
+    private boolean mBackgroundIsTransitioned= false;
 
     private int mCursorPosition = -1;
     private int mSessionWord = 0;
@@ -117,6 +124,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_exercise, container, false);
 
+        mBackground = (LinearLayout) view.findViewById(R.id.background);
         mLanguageImage = (ImageView) view.findViewById(R.id.language_image);
         mLanguage = (TextView) view.findViewById(R.id.language);
         mProgress = (TextView) view.findViewById(R.id.progess);
@@ -132,6 +140,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         mScoreFeedback = (RelativeLayout) view.findViewById(R.id.score_feedback);
 
         mRecord = (ImageView) view.findViewById(R.id.record_icon);
+        mRecordLayout = (FrameLayout) view.findViewById(R.id.record_layout);
         mRecordAnim = (ImageView) view.findViewById(R.id.record_icon_anim);
         mListen = (ImageView) view.findViewById(R.id.listen_icon);
         mBigLife1 = (ImageView) view.findViewById(R.id.heart_big_1);
@@ -179,9 +188,14 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
 
 
         mRecord.setOnTouchListener(new View.OnTouchListener() {
-
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
+
+                if(mBackgroundIsTransitioned) {
+                    ((TransitionDrawable) mBackground.getBackground()).reverseTransition(REVERSE_TRANSITION);
+                    mBackgroundIsTransitioned = false;
+                }
+
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     mVoiceRecogniser.startListening();
                     mRecordAnim.startAnimation(a);
@@ -342,10 +356,30 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
     }
 
     //UI change as a result of a successful recording attempt
-    private void onSuccess() {
+    private void onSuccessfulAttempt() {
+        Log.d(TAG, "Exercise Fragment: onSuccessfulAttempt");
         mLivesBig.setVisibility(View.GONE);
         mLivesSmall.setVisibility(View.VISIBLE);
-        mWordDescriptionView.setVisibility(View.VISIBLE);;
+        mWordDescriptionView.setVisibility(View.VISIBLE);
+        mLanguageImage.setImageResource(R.drawable.greentick);
+
+        setBackgroundResourceAndAnimate(R.drawable.transition_green);
+    }
+
+    // UI changes as a result of an unsuccessful recording attempt
+    private void onUnSuccessfulAttempt() {
+        Log.d(TAG, "Exercise Fragment: onUnSuccessfulAttempt");
+        mLanguageImage.setImageResource(R.drawable.redcross);
+        setBackgroundResourceAndAnimate(R.drawable.transition_red);
+    }
+
+    // Sets the background and animates, (user feedback)
+    private void setBackgroundResourceAndAnimate(int resource) {
+        mBackground.setBackgroundResource(resource);
+        int pad = (int) getResources().getDimension(R.dimen.normal_padding);
+        mBackground.setPadding(pad, pad, pad, pad);
+        ((TransitionDrawable) mBackground.getBackground()).startTransition(TRANSITION_TIME);
+        mBackgroundIsTransitioned = true;
     }
 
     //UI alterations after first recording attempt by user
@@ -363,6 +397,12 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         mScoreFeedback.setVisibility(View.INVISIBLE);
         mProceed.setVisibility(View.INVISIBLE);
         mRecord.setVisibility(View.VISIBLE);
+        mRecordLayout.setVisibility(View.VISIBLE);
+
+        if(mBackgroundIsTransitioned) {
+            ((TransitionDrawable)mBackground.getBackground()).reverseTransition(REVERSE_TRANSITION);
+            mBackgroundIsTransitioned = false;
+        }
 
         updateLives();
     }
@@ -389,6 +429,8 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
                 break;
             case 0:
                 mRecord.setVisibility(View.GONE);
+                //mRecordAnim.setVisibility(View.GONE);
+                mRecordLayout.setVisibility(View.GONE);
         }
     }
 
@@ -410,6 +452,9 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         if (mCurrentWordBestScore > ExerciseContent.SCORE_PASS) {
             mSessionWordPasses += 1;
         }
+
+        // Reset flag (UI reset)
+        ContentDownloadHelper.loadImage(getActivity(), mLanguageImage, mLanguageFlagUri);
 
     }
 
@@ -455,11 +500,12 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
 
         if (score < ExerciseContent.SCORE_PASS) {
             mPassedWord = true;
+            onUnSuccessfulAttempt();
         } else if (score >= ExerciseContent.SCORE_PASS && score < ExerciseContent.SCORE_CONNOISSEUR) {
             mPassedWord = true;
-            onSuccess();
+            onSuccessfulAttempt();
         } else {
-            onSuccess();
+            onSuccessfulAttempt();
             //Connoisseurship - save score?
         }
         updateLives();

@@ -6,23 +6,15 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Adapter;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
@@ -32,18 +24,14 @@ import com.theconnoisseur.android.Model.Comment;
 import com.theconnoisseur.android.Model.ExerciseContent;
 import com.theconnoisseur.android.Model.LanguageSelection;
 
-import org.w3c.dom.Text;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import Database.CommentOnlineDB;
 import Database.ConnoisseurDatabase;
 import Util.CommentController;
 import Util.ContentDownloadHelper;
 import Util.CursorHelper;
-import Util.ResourceDownloader;
 import Util.ToastHelper;
 
 public class CommentActivity extends Activity implements CursorCallback {
@@ -75,6 +63,9 @@ public class CommentActivity extends Activity implements CursorCallback {
     private String mLanguageName;
 
     private boolean firstQuery = true;
+    private boolean mReplying = false;
+    private int mReplyingCommentId;
+    private String mReplyingParentPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,7 +139,6 @@ public class CommentActivity extends Activity implements CursorCallback {
         adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
             @Override
             public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
-                Log.d(TAG, "settingViewValue: " + String.valueOf(columnIndex));
                 if (view.getId() == R.id.comment_item) {
                     int nesting = cursor.getInt(columnIndex);
                     view.setPadding((int) getResources().getDimension(R.dimen.comment_nesting) * nesting, 0, 0, 0);
@@ -156,7 +146,7 @@ public class CommentActivity extends Activity implements CursorCallback {
                     int comment_id = cursor.getInt(cursor.getColumnIndex(Comment.comment_id));
                     int known_score = mVoteMap.containsKey(comment_id) ? mVoteMap.get(comment_id) : 0;
 
-                    view.findViewById(R.id.reply).setOnClickListener(new replyListener(cursor.getString(cursor.getColumnIndex(Comment.parent_path))));
+                    view.findViewById(R.id.reply).setOnClickListener(new replyListener(cursor.getInt(cursor.getColumnIndex(Comment.comment_id)), cursor.getString(cursor.getColumnIndex(Comment.parent_path)), view.findViewById(R.id.reply)));
                     view.findViewById(R.id.upvote).setOnClickListener(new voteListener(cursor.getInt(cursor.getColumnIndex(Comment.comment_id)), upVoteScore, view.findViewById(R.id.upvote), view.findViewById(R.id.downvote), known_score));
                     view.findViewById(R.id.downvote).setOnClickListener(new voteListener(cursor.getInt(cursor.getColumnIndex(Comment.comment_id)), downVoteScore, view.findViewById(R.id.downvote), view.findViewById(R.id.upvote), known_score));
 
@@ -171,7 +161,6 @@ public class CommentActivity extends Activity implements CursorCallback {
         mComments.setAdapter(mAdapter);
 
         setListeners();
-
     }
 
     private void setListeners() {
@@ -184,33 +173,53 @@ public class CommentActivity extends Activity implements CursorCallback {
     private void postMessage() {
         String comment = mCommentEditText.getText().toString();
         // Process comment for swearing,etc
-        boolean appropriate = true;
+        boolean appropriate = ConnoisseurDatabase.getInstance().getCommentTable().isCommentSafe(comment);
         if (!appropriate) {
-            ToastHelper.toast(this, "Sorry, we don't feel your comment is appropriate");
-            return;
+            ToastHelper.toast(this, "Sorry, we don't feel your comment was appropriate");
+        } else {
+            if(mReplying && mReplyingCommentId != 0) {
+                CommentController.getInstance().comment(1, "TestCommenter", mReplyingParentPath + "." + mReplyingCommentId, comment);
+            } else {
+                Log.d(TAG, "Posting a comment");
+                CommentController.getInstance().comment(1, "TestCommenter", comment);
+            }
+            new CursorPreparationTask(this).execute();
         }
-
-        CommentController.getInstance().comment(1, "TestCommenter", comment);
-        new CursorPreparationTask(this).execute(); //
 
         mCommentEditText.setText("");
         mCommentEditText.clearFocus();
         mComments.requestFocus();
-
     }
 
     private class replyListener implements View.OnClickListener {
-        private String mParentpath;
+        private int mCommentId;
+        private String mParentPath;
+        private View mReply;
 
 
-        public replyListener(String parentpath) {
-            this.mParentpath = parentpath;
+        public replyListener(int comment_id, String parent_path, View reply) {
+            this.mParentPath = parent_path;
+            this.mCommentId = comment_id;
+            this.mReply = reply;
+
+            mReply.setBackgroundColor(getResources().getColor(R.color.transparent));
         }
 
         @Override
         public void onClick(View v) {
-            //TODO: reply - new activity?
-            ToastHelper.toast(getApplicationContext(), "Reply: " + mParentpath);
+            if (mReplying) {
+                mReply.setBackgroundColor(getResources().getColor(R.color.transparent));
+                mCommentEditText.setHint(getResources().getString(R.string.comment_hint_normal));
+                mReplying = false;
+            } else {
+                mReply.setBackgroundColor(getResources().getColor(R.color.comment_blue));
+                mReplyingParentPath = mParentPath;
+                mReplyingCommentId = mCommentId;
+                mCommentEditText.setHint(getResources().getString(R.string.comment_hint_reply));
+                mReplying = true;
+            }
+
+            ToastHelper.toast(getApplicationContext(), "Reply: " + mParentPath);
         }
     }
 
@@ -297,7 +306,7 @@ public class CommentActivity extends Activity implements CursorCallback {
 
             mCallback.CursorLoaded(mCursor);
 
-            CursorHelper.toString(mCursor);
+            //CursorHelper.toString(mCursor);
 
             super.onPostExecute(result);
         }

@@ -72,6 +72,8 @@
 
     <!-- Comments strings -->
     <string name="comments_text">Comment your thoughts!</string>
+    <string name="comment_hint_normal">Post a comment</string>
+    <string name="comment_hint_reply">Post a reply</string>
     <string name="sample_comment">I really thing you need to put a stress on the end of the word to get the right intonation</string>
 
 </resources>

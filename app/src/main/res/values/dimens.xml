@@ -32,7 +32,7 @@
     <!-- ExerciseActivity Activity -->
     <dimen name="language_width">40dp</dimen>
     <dimen name="language_height">40dp</dimen>
-    <dimen name="ring_diameter">60dp</dimen>
+    <dimen name="ring_diameter">50dp</dimen>
     <dimen name="illustration_width">350dp</dimen>
     <dimen name="illustration_height">250dp</dimen>
     <dimen name="microphone_width">80dp</dimen>

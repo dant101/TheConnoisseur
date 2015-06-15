@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
+    android:id="@+id/background"
     android:layout_height="match_parent"
     android:paddingLeft="@dimen/normal_padding"
     android:paddingRight="@dimen/normal_padding"
     android:paddingTop="@dimen/normal_padding"
     android:paddingBottom="0dp"
-    android:background="@drawable/gradient_selector">
+    android:background="@drawable/transition_green">
 
     <ImageButton
         android:layout_width="@dimen/home_icon_width"
@@ -25,9 +26,8 @@
         android:gravity="center|top">
 
         <RelativeLayout
-            android:layout_width="@dimen/ring_diameter"
-            android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/language_image"
@@ -223,6 +223,7 @@
                     android:src="@drawable/ui_listen"/>
 
                 <FrameLayout
+                    android:id="@+id/record_layout"
                     android:layout_margin="@dimen/large_margin"
                     android:layout_width="@dimen/microphone_width"
                     android:layout_height="match_parent"

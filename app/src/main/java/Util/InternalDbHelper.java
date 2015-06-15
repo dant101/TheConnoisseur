@@ -43,7 +43,6 @@ public class InternalDbHelper extends SQLiteOpenHelper {
     private static String EXERCISES_TABLE_CREATE =
             "CREATE TABLE EXERCISES(_id INTEGER PRIMARY KEY AUTOINCREMENT, word TEXT, phonetic TEXT, image_url TEXT, sound_recording TEXT, word_description TEXT, language_id INTEGER, language TEXT, locale TEXT, view_comments TEXT)";
 
-
     //Names of all the columns in the LANGUAGES database - references from LanguageSelection model class
     private static String LANGUAGE_NAME = LanguageSelection.LANGUAGE_NAME;
     private static String LANGUAGE_HEX = LanguageSelection.LANGUAGE_HEX;
@@ -52,10 +51,14 @@ public class InternalDbHelper extends SQLiteOpenHelper {
     private static String LANGUAGES_TABLE_CREATE =
               "CREATE TABLE LANGUAGES(_id INTEGER PRIMARY KEY AUTOINCREMENT, language_name TEXT, language_hex TEXT, language_image_url TEXT)";
 
+    private static String EXERCISE_SCORE_CREATE =
+            "CREATE TABLE SCORES(_id INTEGER PRIMARY KEY, exercise_id TEXT, percentage_score TEXT, attempts_score TEXT)";
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(EXERCISES_TABLE_CREATE);
         db.execSQL(LANGUAGES_TABLE_CREATE);
+        //db.execSQL(EXERCISE_SCORE_CREATE);
     }
 
     @Override

@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.theconnoisseur.android.Model.ExerciseContent;
+import com.theconnoisseur.android.Model.ExerciseScore;
 import com.theconnoisseur.android.Model.InternalDbContract;
 import com.theconnoisseur.android.Model.LanguageSelection;
 
@@ -26,11 +27,13 @@ public class InternalDbProvider extends ContentProvider {
 
     private static final String TABLE_LANGUAGES = LanguageSelection.LANGUAGE_TABLE_NAME;
     private static final String TABLE_EXERCISES = ExerciseContent.EXERICISE_TABLE_NAME;
+    private static final String TABLE_SCORES = ExerciseScore.SCORE_TABLE_NAME;
 
     private static final int LANGUAGES = 0;
     private static final int LANGUAGES_ID = 1;
     private static final int EXERCISES_ALL = 2;
     private static final int EXERCISES = 3;
+    private static final int SCORES = 4;
 
     private static final UriMatcher URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
 
@@ -43,6 +46,7 @@ public class InternalDbProvider extends ContentProvider {
         URI_MATCHER.addURI(InternalDbContract.CONTENT_AUTHORITY, TABLE_LANGUAGES + "/*", LANGUAGES_ID);
         URI_MATCHER.addURI(InternalDbContract.CONTENT_AUTHORITY, TABLE_EXERCISES, EXERCISES_ALL);
         URI_MATCHER.addURI(InternalDbContract.CONTENT_AUTHORITY, TABLE_EXERCISES + "/*", EXERCISES);
+        URI_MATCHER.addURI(InternalDbContract.CONTENT_AUTHORITY, TABLE_SCORES, SCORES);
     }
 
     public InternalDbProvider(Context context) {
@@ -108,8 +112,17 @@ public class InternalDbProvider extends ContentProvider {
             case EXERCISES_ALL:
                 Log.d(TAG, "querying EXERCISES_ALL");
                 cursor = getDatabase(false).query(
-                TABLE_EXERCISES, InternalDbContract.PROJECTION_EXERCISES, selection, null, null, null, sortOrder);
+                    TABLE_EXERCISES, InternalDbContract.PROJECTION_EXERCISES, selection, null, null, null, sortOrder);
                 break;
+
+            case SCORES:
+                Log.d(TAG, "querying SCORES with EXERCISE_ID");
+                query = InternalDbContract.getExerciseID(uri);
+                String[] args3 = {query};
+                cursor = getDatabase(false).query(
+                    TABLE_SCORES, InternalDbContract.PROJECTION_SCORES, ExerciseScore.EXERCISE_ID + "=?", args3, null, null, null);
+                CursorHelper.toString(cursor);
+
         }
 
         return cursor;
@@ -130,9 +143,12 @@ public class InternalDbProvider extends ContentProvider {
                 getDatabase(true).insert(TABLE_LANGUAGES, null, values);
                 break;
             case EXERCISES_ALL:
-                Log.d(TAG, "inserting into Exerises...");
+                Log.d(TAG, "inserting into Exercises...");
                 getDatabase(true).insert(TABLE_EXERCISES, null, values);
                 break;
+            case SCORES:
+                Log.d(TAG, "inserting into Scores...");
+                getDatabase(true).insert(TABLE_SCORES, null, values);
         }
         return null;
     }

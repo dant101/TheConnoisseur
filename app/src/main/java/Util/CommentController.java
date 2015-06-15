@@ -111,7 +111,7 @@ public class CommentController {
         Thread thread = new Thread() {
             public void run() {
                 //TODO: Intelligent way of queuing comments and sending them off when internet access...
-                ConnoisseurDatabase.getInstance().getCommentTable().createComment(word_id, username, comment);
+                ConnoisseurDatabase.getInstance().getCommentTable().createComment(word_id, username, comment, parent_path);
             }
         };
 
