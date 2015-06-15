@@ -31,6 +31,7 @@
     <!-- Language selection Strings -->
     <string name="language_selection_instruction">Choose your language of choice</string>
     <string name="language_selection">LANGUAGE SELECTION</string>
+    <string name="play_session">PLAY GAME</string>
     <string name="language_selection_desc">Perfect the language of your choice in game mode, or go random and take whatever the Connoisseur throws at you</string>
     <string name="no_languages">Unfortunately no languages are currently available, please contact support</string>
 
@@ -72,6 +73,8 @@
 
     <!-- Comments strings -->
     <string name="comments_text">Comment your thoughts!</string>
+    <string name="comment_hint_normal">Post a comment</string>
+    <string name="comment_hint_reply">Post a reply</string>
     <string name="sample_comment">I really thing you need to put a stress on the end of the word to get the right intonation</string>
 
 </resources>

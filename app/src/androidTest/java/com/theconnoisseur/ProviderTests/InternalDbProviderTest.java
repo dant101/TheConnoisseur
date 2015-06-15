@@ -7,6 +7,7 @@ import android.test.ProviderTestCase2;
 import android.test.mock.MockContentResolver;
 
 import com.theconnoisseur.android.Model.ExerciseContent;
+import com.theconnoisseur.android.Model.ExerciseScore;
 import com.theconnoisseur.android.Model.InternalDbContract;
 import com.theconnoisseur.android.Model.LanguageSelection;
 import com.theconnoisseur.android.Provider.InternalDbProvider;
@@ -81,8 +82,52 @@ public class InternalDbProviderTest extends ProviderTestCase2<InternalDbProvider
         assertEquals(23, c.getInt(c.getColumnIndex(ExerciseContent.LANGUAGE_ID)));
         assertEquals("POLISH", c.getString(c.getColumnIndex(ExerciseContent.LANGUAGE)));
         assertEquals("pl", c.getString(c.getColumnIndex(ExerciseContent.LOCALE)));
+        assertEquals(100, c.getInt(c.getColumnIndex(ExerciseContent.THRESHOLD)));
 
         c.close();
+    }
+
+    public void testCanInsertAndRetrieveScores() {
+        mMockResolver.insert(InternalDbContract.insertExerciseScoreUri(), getScoresTestValues());
+
+        Cursor c = mMockResolver.query(InternalDbContract.queryForExerciseScore(1), null, null, null, null);
+        assertEquals(1, c.getCount());
+
+        c.moveToFirst();
+        assertEquals("tomek", c.getString(c.getColumnIndex(ExerciseScore.USER_ID)));
+        assertEquals(1, c.getInt(c.getColumnIndex(ExerciseScore.WORD_ID)));
+        assertEquals(100, c.getInt(c.getColumnIndex(ExerciseScore.PERCENTAGE_SCORE)));
+        assertEquals(10, c.getInt(c.getColumnIndex(ExerciseScore.ATTEMPTS_SCORE)));
+        c.close();
+    }
+
+    public void testCanUpdateScoreValues() {
+        mMockResolver.insert(InternalDbContract.insertExerciseScoreUri(), getScoresTestValues());
+        Cursor c = mMockResolver.query(InternalDbContract.queryForExerciseScore(1), null, null, null, null);
+        assertEquals(1, c.getCount());
+
+        c.moveToFirst();
+        assertEquals(10, c.getInt(c.getColumnIndex(ExerciseScore.ATTEMPTS_SCORE)));
+
+        mMockResolver.update(InternalDbContract.updateExerciseScore(1), getUpdateTestValues(), null, null);
+        c = mMockResolver.query(InternalDbContract.queryForExerciseScore(1), null, null, null, null);
+        c.moveToFirst();
+        assertEquals(20, c.getInt(c.getColumnIndex(ExerciseScore.ATTEMPTS_SCORE)));
+    }
+
+    private ContentValues getScoresTestValues() {
+        ContentValues values = new ContentValues();
+        values.put(ExerciseScore.USER_ID, "tomek");
+        values.put(ExerciseScore.WORD_ID, 1);
+        values.put(ExerciseScore.PERCENTAGE_SCORE, 100);
+        values.put(ExerciseScore.ATTEMPTS_SCORE, 10);
+        return values;
+    }
+
+    private ContentValues getUpdateTestValues() {
+        ContentValues v = new ContentValues();
+        v.put(ExerciseScore.ATTEMPTS_SCORE, 20);
+        return v;
     }
 
     private ContentValues getTestValues(int id) {
@@ -91,7 +136,6 @@ public class InternalDbProviderTest extends ProviderTestCase2<InternalDbProvider
         values.put(LanguageSelection.LANGUAGE_NAME, "FRENCH");
         values.put(LanguageSelection.LANGUAGE_HEX, "002395");
         values.put(LanguageSelection.LANGUAGE_IMAGE_URL, "http://www.see-and-do-france.com/images/French_flag_design.jpg");
-
         return values;
     }
 
@@ -106,6 +150,7 @@ public class InternalDbProviderTest extends ProviderTestCase2<InternalDbProvider
         values.put(ExerciseContent.LANGUAGE_ID, 23);
         values.put(ExerciseContent.LANGUAGE, "POLISH");
         values.put(ExerciseContent.LOCALE, "pl");
+        values.put(ExerciseContent.THRESHOLD, 100);
 
         return values;
     }

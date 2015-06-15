@@ -26,8 +26,18 @@ public class InternalDbContract {
             ExerciseContent.LANGUAGE_ID,
             ExerciseContent.LANGUAGE,
             ExerciseContent.LOCALE,
-            ExerciseContent.VIEW_COMMENTS
+            ExerciseContent.VIEW_COMMENTS,
+            ExerciseContent.THRESHOLD
     };
+
+    public static final String[] PROJECTION_SCORES = {
+            ExerciseScore.USER_ID,
+            ExerciseScore.WORD_ID,
+            ExerciseScore.PERCENTAGE_SCORE,
+            ExerciseScore.ATTEMPTS_SCORE
+    };
+
+
 
     public static Uri queryForLanguages() {
         return CONTENT_URI.buildUpon().appendPath(LanguageSelection.LANGUAGE_TABLE_NAME).build();
@@ -45,12 +55,28 @@ public class InternalDbContract {
         return CONTENT_URI.buildUpon().appendPath(ExerciseContent.EXERICISE_TABLE_NAME).build();
     }
 
+    public static Uri insertExerciseScoreUri() {
+        return CONTENT_URI.buildUpon().appendPath(ExerciseScore.SCORE_TABLE_NAME).build();
+    }
+
     public static Uri queryForWords(int id) {
         return CONTENT_URI.buildUpon().appendPath(ExerciseContent.EXERICISE_TABLE_NAME).appendPath(String.valueOf(id)).build();
     }
 
     public static Uri queryForAllWords() {
         return CONTENT_URI.buildUpon().appendPath(ExerciseContent.EXERICISE_TABLE_NAME).build();
+    }
+
+    public static Uri queryForExerciseScore(int word_id) {
+        return CONTENT_URI.buildUpon().appendPath(ExerciseScore.SCORE_TABLE_NAME).appendPath(String.valueOf(word_id)).build();
+    }
+
+    public static Uri updateExerciseScore(int word_id) {
+        return CONTENT_URI.buildUpon().appendPath(ExerciseScore.SCORE_TABLE_NAME).appendPath(String.valueOf(word_id)).build();
+    }
+
+    public static String getWordID(Uri uri) {
+        return uri.getLastPathSegment();
     }
 
     public static String getId(Uri uri) {

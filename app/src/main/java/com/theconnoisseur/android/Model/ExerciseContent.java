@@ -22,6 +22,7 @@ public class ExerciseContent {
     public static final String LANGUAGE_ID = "language_id";
     public static final String LANGUAGE = "language";
     public static final String LOCALE = "locale";
+    public static final String THRESHOLD = "threshold";
 
     public static final String VIEW_COMMENTS = "view_comments";
 

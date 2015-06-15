@@ -59,6 +59,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="4"
             android:background="@color/white"
+            android:hint="@string/comment_hint_normal"
+            android:textStyle="italic"
             android:padding="@dimen/small_padding"/>
 
         <Button

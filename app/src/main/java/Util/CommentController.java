@@ -69,16 +69,29 @@ public class CommentController {
         comment(word_id, username, "0", comment);
     }
 
-    public void vote(int word_id, int score) {
-        CommentOnlineDB cDb = ConnoisseurDatabase.getInstance().getCommentTable();
-        if (score > 0) {
-            Log.d(TAG, "Voting up comment with id: " + String.valueOf(word_id));
-            cDb.addOneToScore(word_id);
-        } else {
-            Log.d(TAG, "Voting down comment with id: " + String.valueOf(word_id));
-            cDb.subtractOneFromScore(word_id);
-            }
+    /**
+     * Sends vote request to remote database off the UI thread
+     * @param comment_id Unique id of comment in question
+     * @param score Increase in comment score to be added
+     */
+    public void vote(final int comment_id, final int score) {
 
+        class Vote implements Runnable {
+
+            @Override
+            public void run() {
+                CommentOnlineDB cDb = ConnoisseurDatabase.getInstance().getCommentTable();
+                if (score > 0) {
+                    Log.d(TAG, "Voting up comment with id: " + String.valueOf(comment_id));
+                    cDb.addOneToScore(comment_id);
+                } else {
+                    Log.d(TAG, "Voting down comment with id: " + String.valueOf(comment_id));
+                    cDb.subtractOneFromScore(comment_id);
+                }
+            }
+        }
+
+        new Thread(new Vote()).start();
     }
 
 
@@ -98,7 +111,7 @@ public class CommentController {
         Thread thread = new Thread() {
             public void run() {
                 //TODO: Intelligent way of queuing comments and sending them off when internet access...
-                ConnoisseurDatabase.getInstance().getCommentTable().createComment(word_id, username, comment);
+                ConnoisseurDatabase.getInstance().getCommentTable().createComment(word_id, username, comment, parent_path);
             }
         };
 

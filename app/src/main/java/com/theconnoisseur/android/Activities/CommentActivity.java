@@ -2,25 +2,19 @@ package com.theconnoisseur.android.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
+import android.preference.PreferenceManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Adapter;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
@@ -28,16 +22,17 @@ import com.theconnoisseur.R;
 import com.theconnoisseur.android.Activities.Interfaces.CursorCallback;
 import com.theconnoisseur.android.Model.Comment;
 import com.theconnoisseur.android.Model.ExerciseContent;
+import com.theconnoisseur.android.Model.GlobalPreferenceString;
 import com.theconnoisseur.android.Model.LanguageSelection;
 
-import org.w3c.dom.Text;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
-import Database.CommentOnlineDB;
 import Database.ConnoisseurDatabase;
 import Util.CommentController;
 import Util.ContentDownloadHelper;
 import Util.CursorHelper;
-import Util.ResourceDownloader;
 import Util.ToastHelper;
 
 public class CommentActivity extends Activity implements CursorCallback {
@@ -53,11 +48,15 @@ public class CommentActivity extends Activity implements CursorCallback {
     private ListView mComments;
     private EditText mCommentEditText;
     private Button mPost;
+    private String mUsername;
 
     private int mCommentsFrequency;
 
     private Cursor mCursor;
     private SimpleCursorAdapter mAdapter;
+
+    private Map<Integer, Integer> mVoteMap;
+    private static final String VOTE = "vote_";
 
     private int mWordId;
     private String mWord;
@@ -66,6 +65,9 @@ public class CommentActivity extends Activity implements CursorCallback {
     private String mLanguageName;
 
     private boolean firstQuery = true;
+    private boolean mReplying = false;
+    private int mReplyingCommentId;
+    private String mReplyingParentPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +80,8 @@ public class CommentActivity extends Activity implements CursorCallback {
         mImageUri = i.getStringExtra(ExerciseContent.IMAGE_URL);
         mFlagUri = i.getStringExtra(LanguageSelection.LANGUAGE_IMAGE_URL);
         mLanguageName = i.getStringExtra(LanguageSelection.LANGUAGE_NAME);
+
+        mVoteMap = new HashMap<Integer, Integer>();
 
     }
 
@@ -93,7 +97,34 @@ public class CommentActivity extends Activity implements CursorCallback {
         mCommentEditText = (EditText) findViewById(R.id.comment_editText);
         mPost = (Button) findViewById(R.id.post);
 
-        ContentDownloadHelper.loadImage(getApplicationContext(), mFlag, mFlagUri);
+        ContentDownloadHelper.loadImage(getApplicationContext(), mWordIllustration, mImageUri);
+
+        mUsername = PreferenceManager.getDefaultSharedPreferences(this).getString(GlobalPreferenceString.USERNAME_PREF, "Guest");
+    }
+
+    @Override
+    protected void onStop() {
+        // Iterates through set of voted upon comments and updates global shared preferences (enforcing single vote rule)
+        Iterator it = mVoteMap.entrySet().iterator();
+        int entry;
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = prefs.edit();
+
+        while (it.hasNext()) {
+            entry = Integer.valueOf(it.next().toString().split("=")[0]);
+
+            Log.d(TAG, "Entry: " + String.valueOf(entry));
+            //Sends voting request to online db if not voted before
+            if (!prefs.getBoolean(VOTE + String.valueOf(entry), false)) {
+                int vote_score = mVoteMap.get(entry);
+                CommentController.getInstance().vote(entry, vote_score);
+                editor.putBoolean(VOTE + String.valueOf(entry), true);
+            }
+        }
+        editor.apply();
+
+        super.onStop();
     }
 
     @Override
@@ -116,9 +147,12 @@ public class CommentActivity extends Activity implements CursorCallback {
                     int nesting = cursor.getInt(columnIndex);
                     view.setPadding((int) getResources().getDimension(R.dimen.comment_nesting) * nesting, 0, 0, 0);
 
-                    view.findViewById(R.id.reply).setOnClickListener(new replyListener(cursor.getString(cursor.getColumnIndex(Comment.parent_path))));
-                    view.findViewById(R.id.upvote).setOnClickListener(new voteListener(cursor.getInt(cursor.getColumnIndex(Comment.comment_id)), upVoteScore, view.findViewById(R.id.upvote)));
-                    view.findViewById(R.id.downvote).setOnClickListener(new voteListener(cursor.getInt(cursor.getColumnIndex(Comment.comment_id)), downVoteScore, view.findViewById(R.id.downvote)));
+                    int comment_id = cursor.getInt(cursor.getColumnIndex(Comment.comment_id));
+                    int known_score = mVoteMap.containsKey(comment_id) ? mVoteMap.get(comment_id) : 0;
+
+                    view.findViewById(R.id.reply).setOnClickListener(new replyListener(cursor.getInt(cursor.getColumnIndex(Comment.comment_id)), cursor.getString(cursor.getColumnIndex(Comment.parent_path)), view.findViewById(R.id.reply)));
+                    view.findViewById(R.id.upvote).setOnClickListener(new voteListener(cursor.getInt(cursor.getColumnIndex(Comment.comment_id)), upVoteScore, view.findViewById(R.id.upvote), view.findViewById(R.id.downvote), known_score));
+                    view.findViewById(R.id.downvote).setOnClickListener(new voteListener(cursor.getInt(cursor.getColumnIndex(Comment.comment_id)), downVoteScore, view.findViewById(R.id.downvote), view.findViewById(R.id.upvote), known_score));
 
                     return true;
                 }
@@ -131,7 +165,6 @@ public class CommentActivity extends Activity implements CursorCallback {
         mComments.setAdapter(mAdapter);
 
         setListeners();
-
     }
 
     private void setListeners() {
@@ -144,54 +177,96 @@ public class CommentActivity extends Activity implements CursorCallback {
     private void postMessage() {
         String comment = mCommentEditText.getText().toString();
         // Process comment for swearing,etc
-        boolean appropriate = true;
+        boolean appropriate = ConnoisseurDatabase.getInstance().getCommentTable().isCommentSafe(comment);
         if (!appropriate) {
-            ToastHelper.toast(this, "Sorry, we don't feel your comment is appropriate");
-            return;
+            ToastHelper.toast(this, "Sorry, we don't feel your comment was appropriate");
+        } else {
+            if(mReplying && mReplyingCommentId != 0) {
+                CommentController.getInstance().comment(1, mUsername, mReplyingParentPath + "." + mReplyingCommentId, comment);
+            } else {
+                Log.d(TAG, "Posting a comment");
+                CommentController.getInstance().comment(1, mUsername, comment);
+            }
+            new CursorPreparationTask(this).execute();
         }
-
-        CommentController.getInstance().comment(1, "TestCommenter", comment);
-        new CursorPreparationTask(this).execute(); //
 
         mCommentEditText.setText("");
         mCommentEditText.clearFocus();
         mComments.requestFocus();
-
     }
 
     private class replyListener implements View.OnClickListener {
-        private String mParentpath;
+        private int mCommentId;
+        private String mParentPath;
+        private View mReply;
 
 
-        public replyListener(String parentpath) {
-            this.mParentpath = parentpath;
+        public replyListener(int comment_id, String parent_path, View reply) {
+            this.mParentPath = parent_path;
+            this.mCommentId = comment_id;
+            this.mReply = reply;
+
+            mReply.setBackgroundColor(getResources().getColor(R.color.transparent));
         }
 
         @Override
         public void onClick(View v) {
-            //TODO: reply - new activity?
-            ToastHelper.toast(getApplicationContext(), "Reply: " + mParentpath);
+            if (mReplying) {
+                mReply.setBackgroundColor(getResources().getColor(R.color.transparent));
+                mCommentEditText.setHint(getResources().getString(R.string.comment_hint_normal));
+                mReplying = false;
+            } else {
+                mReply.setBackgroundColor(getResources().getColor(R.color.comment_blue));
+                mReplyingParentPath = mParentPath;
+                mReplyingCommentId = mCommentId;
+                mCommentEditText.setHint(getResources().getString(R.string.comment_hint_reply));
+                mReplying = true;
+            }
+
+            ToastHelper.toast(getApplicationContext(), "Reply: " + mParentPath);
         }
     }
 
     /**
      * Listener for voting. Updates the UI, makes online database vote request. (Score value doesn't change)
+     * User can only vote once per comment and only first vote counts
      */
     private class voteListener implements View.OnClickListener {
         private int mCommentId;
         private int mVote;
         private View mView;
+        private View mAlternate;
+        private int mKnownScore;
 
-        public voteListener(int comment_id, int vote, View v) {
+        public voteListener(int comment_id, int vote, View v, View alternate, int known_score) {
             this.mCommentId = comment_id;
             this.mVote = vote;
             this.mView = v;
+            this.mAlternate = alternate;
+            this.mKnownScore = known_score;
+
+            setVisuals();
+        }
+
+        private void setVisuals() {
+            if (mKnownScore == 0) {
+                ((ImageView)mView).setImageResource(R.drawable.arrow_black);
+                ((ImageView)mAlternate).setImageResource(R.drawable.arrow_black);
+            } else  if (mVote == mKnownScore) {
+                ((ImageView)mView).setImageResource(R.drawable.arrow_green);
+                ((ImageView)mAlternate).setImageResource(R.drawable.arrow_black);
+            } else {
+                ((ImageView)mView).setImageResource(R.drawable.arrow_black);
+                ((ImageView)mAlternate).setImageResource(R.drawable.arrow_green);
+            }
         }
 
         @Override
         public void onClick(View v) {
-            ((ImageView)mView).setImageResource(R.drawable.arrow_green);
-            CommentController.getInstance().vote(mCommentId, mVote);
+            mKnownScore = mVote;
+            setVisuals();
+
+            mVoteMap.put(mCommentId, mVote);
         }
     }
 
@@ -235,7 +310,7 @@ public class CommentActivity extends Activity implements CursorCallback {
 
             mCallback.CursorLoaded(mCursor);
 
-            CursorHelper.toString(mCursor);
+            //CursorHelper.toString(mCursor);
 
             super.onPostExecute(result);
         }

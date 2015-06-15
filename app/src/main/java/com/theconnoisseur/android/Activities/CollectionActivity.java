@@ -147,7 +147,7 @@ public class CollectionActivity extends ActionBarActivity implements CursorCallb
     /**
      * Listener class that starts the appropriate CommentActivity for selected word
      */
-    private class viewCommentsListener implements View.OnClickListener {
+    public class viewCommentsListener implements View.OnClickListener {
         private int mWordId;
         private String mWord;
         private String mIllustrationUri;
@@ -169,8 +169,6 @@ public class CollectionActivity extends ActionBarActivity implements CursorCallb
             i.putExtra(ExerciseContent.WORD_ID, mWordId);
             i.putExtra(ExerciseContent.WORD, mWord);
             i.putExtra(ExerciseContent.IMAGE_URL, mIllustrationUri);
-            i.putExtra(LanguageSelection.LANGUAGE_IMAGE_URL, mFlagUri);
-            i.putExtra(LanguageSelection.LANGUAGE_NAME, mFlagText);
 
             Log.d(TAG, "View comments onClick");
 

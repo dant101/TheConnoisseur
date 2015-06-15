@@ -1,13 +1,16 @@
 package com.theconnoisseur.android.Activities;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.TransitionDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -15,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -23,6 +27,9 @@ import android.widget.TextView;
 
 import com.theconnoisseur.R;
 import com.theconnoisseur.android.Model.ExerciseContent;
+import com.theconnoisseur.android.Model.ExerciseScore;
+import com.theconnoisseur.android.Model.GlobalPreferenceString;
+import com.theconnoisseur.android.Model.InternalDbContract;
 import com.theconnoisseur.android.Model.SessionSummaryContent;
 
 import java.io.File;
@@ -42,6 +49,10 @@ import Voice.VoiceRecogniser;
 public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceCallback {
     private static final String TAG = ExerciseFragment.class.getSimpleName();
 
+    private static final int TRANSITION_TIME = 300;
+    private static final int REVERSE_TRANSITION = 600;
+
+    private LinearLayout mBackground;
     private ImageView mLanguageImage;
     private TextView mLanguage;
     private TextView mProgress;
@@ -50,11 +61,10 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
     //private TextView mPhoneticSpelling;
     private TextView mWordDescription;
     private ScrollView mWordDescriptionView;
-    private TextView mScore;
     private ImageView mProceed;
     private LinearLayout mLivesBig;
     private LinearLayout mLivesSmall;
-    private RelativeLayout mScoreFeedback;
+    private FrameLayout mRecordLayout;
     private ImageView mRecord;
     private ImageView mRecordAnim;
     private ImageView mListen;
@@ -65,11 +75,13 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
     private ImageView mSmallLife2;
     private ImageView mSmallLife3;
     private ImageView mSideLogo;
+    private RelativeLayout mCommentsIcon;
 
     private MediaPlayer mMediaPlayer;
     private boolean played = false; //TESTING, Illegal state exception on second playback...
     private boolean mClicked = false;
     private boolean firstAttempt = true;
+    private boolean mBackgroundIsTransitioned= false;
 
     private int mCursorPosition = -1;
     private int mSessionWord = 0;
@@ -83,14 +95,16 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
     private String mSessionBestWord = "";
 
     private String mCurrentWord;
+    private int mCurrentWordId;
     private String mLanguageString;
     private String mWordIllustrationUri;
     private String mLanguageFlagUri;
     private String mLanguageHex;
     private int mLanguageId;
+    private int mThreshold;
 
     private boolean mPassedWord = false;
-    private int mLives = ExerciseContent.MAXIMUM_LIVES;
+    private int mAttempts = ExerciseContent.MAXIMUM_LIVES;
 
     private OnFragmentInteractionListener mListener;
     private VoiceRecogniser mVoiceRecogniser;
@@ -114,6 +128,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_exercise, container, false);
 
+        mBackground = (LinearLayout) view.findViewById(R.id.background);
         mLanguageImage = (ImageView) view.findViewById(R.id.language_image);
         mLanguage = (TextView) view.findViewById(R.id.language);
         mProgress = (TextView) view.findViewById(R.id.progess);
@@ -122,13 +137,12 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         //mPhoneticSpelling = (TextView) view.findViewById(R.id.phonetic_spelling);
         mWordDescription = (TextView) view.findViewById(R.id.word_description);
         mWordDescriptionView = (ScrollView) view.findViewById(R.id.word_description_view);
-        mScore = (TextView) view.findViewById(R.id.score);
         mProceed = (ImageView) view.findViewById(R.id.proceed);
         mLivesBig = (LinearLayout) view.findViewById(R.id.lives_section);
         mLivesSmall = (LinearLayout) view.findViewById(R.id.lives_section_small);
-        mScoreFeedback = (RelativeLayout) view.findViewById(R.id.score_feedback);
 
         mRecord = (ImageView) view.findViewById(R.id.record_icon);
+        mRecordLayout = (FrameLayout) view.findViewById(R.id.record_layout);
         mRecordAnim = (ImageView) view.findViewById(R.id.record_icon_anim);
         mListen = (ImageView) view.findViewById(R.id.listen_icon);
         mBigLife1 = (ImageView) view.findViewById(R.id.heart_big_1);
@@ -138,6 +152,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         mSmallLife2 = (ImageView) view.findViewById(R.id.heart_small_2);
         mSmallLife3 = (ImageView) view.findViewById(R.id.heart_small_3);
         mSideLogo = (ImageView) view.findViewById(R.id.connoisseur_side);
+        mCommentsIcon = (RelativeLayout) view.findViewById(R.id.comments_icon);
 
         setListeners();
         setInitialView();
@@ -155,6 +170,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
                 mListener.nextExercise();
             }
         });
+
         /*
         mRecord.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,9 +190,14 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
 
 
         mRecord.setOnTouchListener(new View.OnTouchListener() {
-
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
+
+                if(mBackgroundIsTransitioned) {
+                    ((TransitionDrawable) mBackground.getBackground()).reverseTransition(REVERSE_TRANSITION);
+                    mBackgroundIsTransitioned = false;
+                }
+
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     mVoiceRecogniser.startListening();
                     mRecordAnim.startAnimation(a);
@@ -241,13 +262,16 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
      * Shifts screen to next exercise by loading the next word from the cursor
      * @param c
      */
-    public void nextExercise(Cursor c) {
+    public void nextExercise(Cursor c, boolean resuming) {
         if (c == null) { return; }
-        mCursorPosition += 1;
-        mSessionWord += 1;
+        if (!resuming) {
+            mCursorPosition += 1;
+            mSessionWord += 1;
+        }
+
         mCurrentWordBestScore = 0;
 
-        mLives = ExerciseContent.MAXIMUM_LIVES;
+        mAttempts = ExerciseContent.MAXIMUM_LIVES;
         firstAttempt = true;
 
         //CursorHelper.toString(c); //Testing
@@ -268,10 +292,12 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
 
         //mWord.setText(c.getString(c.getColumnIndex(ExerciseContent.WORD)));
         mCurrentWord = c.getString(c.getColumnIndex(ExerciseContent.WORD));
+        mCurrentWordId = c.getInt(c.getColumnIndex(ExerciseContent.WORD_ID));
         //mPhoneticSpelling.setText(c.getString(c.getColumnIndex(ExerciseContent.PHONETIC)));
 
         mWordIllustrationUri = c.getString(c.getColumnIndex(ExerciseContent.IMAGE_URL));
         mLanguageId = c.getInt(c.getColumnIndex(ExerciseContent.LANGUAGE_ID));
+        mThreshold = c.getInt(c.getColumnIndex(ExerciseContent.THRESHOLD));
 
         ContentDownloadHelper.loadImage(getActivity(), mWordIllustration, mWordIllustrationUri);
         setSoundFile(c.getString(c.getColumnIndex(ExerciseContent.SOUND_RECORDING)));
@@ -336,16 +362,35 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
     }
 
     //UI change as a result of a successful recording attempt
-    private void onSuccess() {
+    private void onSuccessfulAttempt() {
+        Log.d(TAG, "Exercise Fragment: onSuccessfulAttempt");
         mLivesBig.setVisibility(View.GONE);
         mLivesSmall.setVisibility(View.VISIBLE);
-        mWordDescriptionView.setVisibility(View.VISIBLE);;
+        mWordDescriptionView.setVisibility(View.VISIBLE);
+        mLanguageImage.setImageResource(R.drawable.greentick);
+
+        setBackgroundResourceAndAnimate(R.drawable.transition_green);
+    }
+
+    // UI changes as a result of an unsuccessful recording attempt
+    private void onUnSuccessfulAttempt() {
+        Log.d(TAG, "Exercise Fragment: onUnSuccessfulAttempt");
+        mLanguageImage.setImageResource(R.drawable.redcross);
+        setBackgroundResourceAndAnimate(R.drawable.transition_red);
+    }
+
+    // Sets the background and animates, (user feedback)
+    private void setBackgroundResourceAndAnimate(int resource) {
+        mBackground.setBackgroundResource(resource);
+        int pad = (int) getResources().getDimension(R.dimen.normal_padding);
+        mBackground.setPadding(pad, pad, pad, pad);
+        ((TransitionDrawable) mBackground.getBackground()).startTransition(TRANSITION_TIME);
+        mBackgroundIsTransitioned = true;
     }
 
     //UI alterations after first recording attempt by user
     private void afterFirstAttempt() {
         Log.d(TAG, "afterFirstAttempt");
-        mScoreFeedback.setVisibility(View.VISIBLE);
         mProceed.setVisibility(View.VISIBLE);
     }
 
@@ -354,9 +399,14 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         mLivesBig.setVisibility(View.VISIBLE);
         mLivesSmall.setVisibility(View.INVISIBLE);
         mWordDescriptionView.setVisibility(View.GONE);
-        mScoreFeedback.setVisibility(View.INVISIBLE);
         mProceed.setVisibility(View.INVISIBLE);
         mRecord.setVisibility(View.VISIBLE);
+        mRecordLayout.setVisibility(View.VISIBLE);
+
+        if(mBackgroundIsTransitioned) {
+            ((TransitionDrawable)mBackground.getBackground()).reverseTransition(REVERSE_TRANSITION);
+            mBackgroundIsTransitioned = false;
+        }
 
         updateLives();
     }
@@ -370,7 +420,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         mSmallLife2.setImageResource(R.drawable.heart_green_black);
         mSmallLife3.setImageResource(R.drawable.heart_green_black);
 
-        switch(mLives) {
+        switch(mAttempts) {
             case 3:
                 mBigLife3.setImageResource(R.drawable.heart_green_large);
                 mSmallLife3.setImageResource(R.drawable.heart_green_small);
@@ -383,6 +433,8 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
                 break;
             case 0:
                 mRecord.setVisibility(View.GONE);
+                //mRecordAnim.setVisibility(View.GONE);
+                mRecordLayout.setVisibility(View.GONE);
         }
     }
 
@@ -404,6 +456,12 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         if (mCurrentWordBestScore > ExerciseContent.SCORE_PASS) {
             mSessionWordPasses += 1;
         }
+
+        //Save word performance in internal db
+        saveWordPerformance();
+
+        // Reset flag (UI reset)
+        ContentDownloadHelper.loadImage(getActivity(), mLanguageImage, mLanguageFlagUri);
 
     }
 
@@ -435,31 +493,49 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         int score = Math.round(a * 100);
         Log.d(TAG, "Pronunciation Score: " + String.valueOf(score));
 
-        if (score == -100) {
-            //TODO: retry message?
-            mScore.setText("0%");
-        } else {
-            mScore.setText(String.valueOf(score) + "%");
-        }
-
-        mLives -= 1;
+        mAttempts -= 1;
 
         //Updates current word best score
         mCurrentWordBestScore = score > mCurrentWordBestScore ? score : mCurrentWordBestScore;
 
-        if (score < ExerciseContent.SCORE_PASS) {
+        if (score < mThreshold) {
             mPassedWord = true;
-        } else if (score >= ExerciseContent.SCORE_PASS && score < ExerciseContent.SCORE_CONNOISSEUR) {
-            mPassedWord = true;
-            onSuccess();
+            onUnSuccessfulAttempt();
         } else {
-            onSuccess();
-            //Connoisseurship - save score?
+            mPassedWord = true;
+            onSuccessfulAttempt();
         }
         updateLives();
 
         Log.d(TAG, "Cumulative score: " + String.valueOf(mSessionCumulativeScore) + ". BestCurrent: " + String.valueOf(mCurrentWordBestScore));
     }
+
+    public void viewComments() {
+        Intent i = new Intent(getActivity(), CommentActivity.class);
+        i.putExtra(ExerciseContent.WORD_ID, mCurrentWordId);
+        i.putExtra(ExerciseContent.WORD, mCurrentWord);
+        i.putExtra(ExerciseContent.IMAGE_URL, mWordIllustrationUri);
+
+        Log.d(TAG, "View comments onClick (from exercise fragment)");
+
+        startActivity(i);
+    }
+
+    private void saveWordPerformance() {
+        String username = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(GlobalPreferenceString.USERNAME_PREF, "Guest");
+        ContentValues v = new ContentValues();
+        v.put(ExerciseScore.USER_ID, username);
+        v.put(ExerciseScore.WORD_ID, mCurrentWordId);
+        v.put(ExerciseScore.PERCENTAGE_SCORE, mCurrentWordBestScore);
+        v.put(ExerciseScore.ATTEMPTS_SCORE, mAttempts);
+        if (getActivity().getContentResolver().update(InternalDbContract.updateExerciseScore(mCurrentWordId), v, null, null) == 0) {
+            Log.d(TAG, "ExerciseFragment: inserting scores for word_id = " + String.valueOf(mCurrentWordId));
+            getActivity().getContentResolver().insert(InternalDbContract.insertExerciseScoreUri(), v);
+        } else {
+            Log.d(TAG, "ExerciseFragment: updated scores for word_id = " + String.valueOf(mCurrentWordId));
+        }
+    }
+
 
     /**
      * This interface must be implemented by activities that contain this

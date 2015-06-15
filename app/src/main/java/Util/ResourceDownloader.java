@@ -69,6 +69,7 @@ public class ResourceDownloader {
             values.put(ExerciseContent.LANGUAGE_ID, row.getLanguage_id());
             values.put(ExerciseContent.LANGUAGE, row.getLanguage());
             values.put(ExerciseContent.LOCALE, row.getLocale());
+            values.put(ExerciseContent.THRESHOLD, row.getThreshold());
             values.put(ExerciseContent.VIEW_COMMENTS, "");
 
             context.getContentResolver().insert(InternalDbContract.insertExercisesUri(), values);
