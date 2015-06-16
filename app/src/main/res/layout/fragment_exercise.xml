@@ -202,16 +202,37 @@
                 android:orientation="horizontal"
                 android:layout_marginBottom="@dimen/small_margin"
                 android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true"
-                android:clipChildren="false">
+                android:layout_centerHorizontal="true">
 
-                <ImageView
+                <FrameLayout
+                    android:id="@+id/listen_layout"
                     android:layout_margin="@dimen/normal_margin"
-                    android:id="@+id/listen_icon"
-                    android:onClick="playRecording"
                     android:layout_width="@dimen/microphone_width"
                     android:layout_height="match_parent"
-                    android:src="@drawable/ui_listen"/>
+                    android:onClick="playRecording"
+                    android:clipChildren="false"
+                    android:clipToPadding="false">
+
+                    <ImageView
+                        android:id="@+id/listen_icon"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ui_listen"/>
+
+                    <ImageView
+                        android:id="@+id/listen_icon_anim"
+                        android:layout_margin="@dimen/microphone_anim_margin"
+                        android:layout_width="@dimen/microphone_anim_width"
+                        android:layout_height="fill_parent"
+                        android:src="@drawable/ui_listen_anim"/>
+
+                    <ImageView
+                        android:id="@+id/listen_icon_record"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:src="@drawable/ui_listen_icon" />
+
+                </FrameLayout>
 
                 <FrameLayout
                     android:id="@+id/record_layout"
@@ -221,21 +242,24 @@
                     android:clipChildren="false"
                     android:clipToPadding="false">
 
+                    <ImageView
+                        android:id="@+id/record_icon"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:src="@drawable/ui_record" />
 
                     <ImageView
                         android:id="@+id/record_icon_anim"
-                        android:visibility="invisible"
                         android:layout_margin="@dimen/microphone_anim_margin"
                         android:layout_width="@dimen/microphone_anim_width"
                         android:layout_height="fill_parent"
                         android:src="@drawable/ui_record_anim"/>
 
                     <ImageView
-                        android:id="@+id/record_icon"
-                        android:visibility="visible"
+                        android:id="@+id/record_icon_mic"
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
-                        android:src="@drawable/ui_record" />
+                        android:src="@drawable/ui_record_icon" />
 
                 </FrameLayout>
 

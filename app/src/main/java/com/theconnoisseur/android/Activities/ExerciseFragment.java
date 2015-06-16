@@ -17,6 +17,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -68,6 +69,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
     private ImageView mRecord;
     private ImageView mRecordAnim;
     private ImageView mListen;
+    private ImageView mListenAnim;
     private ImageView mBigLife1;
     private ImageView mBigLife2;
     private ImageView mBigLife3;
@@ -145,6 +147,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         mRecordLayout = (FrameLayout) view.findViewById(R.id.record_layout);
         mRecordAnim = (ImageView) view.findViewById(R.id.record_icon_anim);
         mListen = (ImageView) view.findViewById(R.id.listen_icon);
+        mListenAnim = (ImageView) view.findViewById(R.id.listen_icon_anim);
         mBigLife1 = (ImageView) view.findViewById(R.id.heart_big_1);
         mBigLife2 = (ImageView) view.findViewById(R.id.heart_big_2);
         mBigLife3 = (ImageView) view.findViewById(R.id.heart_big_3);
@@ -159,8 +162,6 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
 
         return view;
     }
-
-    private long startAnimTime;
 
     private void setListeners() {
         mProceed.setOnClickListener(new View.OnClickListener() {
@@ -186,8 +187,8 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         });
         */
 
-        final Animation a = AnimationUtils.loadAnimation(getActivity(), R.anim.growfade);
-
+        final Animation grow = AnimationUtils.loadAnimation(getActivity(), R.anim.grow);
+        final Animation shrink = AnimationUtils.loadAnimation(getActivity(), R.anim.shrink);
 
         mRecord.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -200,21 +201,11 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
 
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     mVoiceRecogniser.startListening();
-                    mRecordAnim.startAnimation(a);
-                    startAnimTime = System.currentTimeMillis();
+                    mRecordAnim.startAnimation(grow);
                     return true;
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     mVoiceRecogniser.stopListening();
-
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            mRecordAnim.clearAnimation();
-                        }
-                    }, a.getDuration() -
-                            (System.currentTimeMillis() - startAnimTime) % a.getDuration());
-
+                    mRecordAnim.startAnimation(shrink);
                     return true;
                 } else {
                     return false;
@@ -256,6 +247,30 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
                 e.printStackTrace();
             }
         }
+
+        final Animation grow = AnimationUtils.loadAnimation(getActivity(), R.anim.grow);
+        final Animation shrink = AnimationUtils.loadAnimation(getActivity(), R.anim.shrink);
+
+        grow.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mListenAnim.startAnimation(shrink);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        mListenAnim.startAnimation(grow);
+
     }
 
     /**
