@@ -1,7 +1,9 @@
 package com.theconnoisseur.android.Activities;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +16,8 @@ import android.widget.TextView;
 
 import com.theconnoisseur.R;
 import com.theconnoisseur.android.Model.ExerciseContent;
+import com.theconnoisseur.android.Model.ExerciseScore;
+import com.theconnoisseur.android.Model.InternalDbContract;
 import com.theconnoisseur.android.Model.SessionSummaryContent;
 
 import java.net.URISyntaxException;
@@ -24,8 +28,10 @@ public class SessionSummary extends ActionBarActivity {
     public static final String TAG = SessionSummary.class.getSimpleName();
 
     private int mAverageScore;
-    private int mWorstScore;
-    private int mBestScore;
+    private int mWorstScore; //worst attempts performance
+    private int mWorstWordId;
+    private int mBestWordId;
+    private int mBestScore; //best attempts performance
     private int mSessionNumber;
     private int mSessionAttempts;
     private String mWorstWord;
@@ -46,6 +52,7 @@ public class SessionSummary extends ActionBarActivity {
     private ImageView mShareLink;
     private TextView mPersonalHighlightText;
     private TextView mBestScoreTextView;
+    private TextView mBestWorstTextView;
     private TextView mBestWordTextView;
     private ImageView mBestWordLanguage;
     private TextView mWorstScoreTextView;
@@ -53,6 +60,13 @@ public class SessionSummary extends ActionBarActivity {
     private ImageView mWorstWordLanguage;
     private ImageView mConnoisseurImage;
     private Button mPlayNewSession;
+
+    private ImageView mHeartBest1;
+    private ImageView mHeartBest2;
+    private ImageView mHeartBest3;
+    private ImageView mHeartWorst1;
+    private ImageView mHeartWorst2;
+    private ImageView mHeartWorst3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,11 +80,18 @@ public class SessionSummary extends ActionBarActivity {
         mTongueType = (TextView) findViewById(R.id.tongue_type);
         mTongueDescription = (TextView) findViewById(R.id.tongue_description);
         mBestWordTextView = (TextView) findViewById(R.id.best_word);
+        mBestWorstTextView = (TextView) findViewById(R.id.best_worst_text);
         mBestWordLanguage = (ImageView) findViewById(R.id.best_word_language);
         mWorstWordTextView = (TextView) findViewById(R.id.worst_word);
         mWorstWordLanguage = (ImageView) findViewById(R.id.worst_word_language);
         mConnoisseurImage = (ImageView) findViewById(R.id.connoisseur_image);
         mPlayNewSession = (Button) findViewById(R.id.play_new_session);
+        mHeartBest1 = (ImageView) findViewById(R.id.heart_best_1);
+        mHeartBest2 = (ImageView) findViewById(R.id.heart_best_2);
+        mHeartBest3 = (ImageView) findViewById(R.id.heart_best_3);
+        mHeartWorst1 = (ImageView) findViewById(R.id.heart_worst_1);
+        mHeartWorst2 = (ImageView) findViewById(R.id.heart_worst_2);
+        mHeartWorst3 = (ImageView) findViewById(R.id.heart_worst_3);
 
         //Get all relevant information from intent
         Intent i = getIntent();
@@ -79,6 +100,8 @@ public class SessionSummary extends ActionBarActivity {
         mWorstScore = i.getIntExtra(SessionSummaryContent.WORST_SCORE, 0);
         mBestScore = i.getIntExtra(SessionSummaryContent.BEST_SCORE, 0);
         mWorstWord = i.getStringExtra(SessionSummaryContent.WORST_WORD);
+        mWorstWordId = i.getIntExtra(SessionSummaryContent.WORST_WORD_ID, 0);
+        mBestWordId = i.getIntExtra(SessionSummaryContent.BEST_WORD_ID, 0);
         mBestWord = i.getStringExtra(SessionSummaryContent.BEST_WORD);
         mFlagUri = i.getStringExtra(SessionSummaryContent.LANGUAGE_FLAG_URI);
         mWordsPassed = i.getIntExtra(SessionSummaryContent.WORDS_PASSED, 0);
@@ -88,6 +111,8 @@ public class SessionSummary extends ActionBarActivity {
         mLanguageHex = i.getStringExtra(SessionSummaryContent.LANGUAGE_HEX);
         mSessionNumber = i.getIntExtra(SessionSummaryContent.SESSION_NUMBER, 1);
         mSessionAttempts = i.getIntExtra(SessionSummaryContent.SESSION_ATTEMPTS, 15);
+
+        setBestWorstWords();
     }
 
     @Override
@@ -130,9 +155,36 @@ public class SessionSummary extends ActionBarActivity {
             mLanguage.setTextColor(Color.parseColor(mLanguageHex));
             mSession.setTextColor(Color.parseColor(mLanguageHex));
             mScore.setTextColor(Color.parseColor(mLanguageHex));
+            mBestWorstTextView.setTextColor(Color.parseColor(mLanguageHex));
         } catch (IllegalArgumentException e) {
             Log.d(TAG, "Illegal Hex was provided for language - check database value!");
             e.printStackTrace();
+        }
+        //Set custom font
+        Typeface plantin = Typeface.createFromAsset(getAssets(), "fonts/Plantin_Light.ttf");
+        mTongueType.setTypeface(plantin);
+
+    }
+
+    private void setBestWorstWords() {
+
+        mHeartBest1.setImageResource(R.drawable.heart_black_large); mHeartBest2.setImageResource(R.drawable.heart_black_large);
+        mHeartBest3.setImageResource(R.drawable.heart_black_large); mHeartWorst1.setImageResource(R.drawable.heart_green_black);
+        mHeartWorst2.setImageResource(R.drawable.heart_green_black); mHeartWorst3.setImageResource(R.drawable.heart_green_black);
+
+        setHearts(mBestScore, mHeartBest1, mHeartBest2, mHeartBest3);
+        setHearts(mWorstScore, mHeartWorst1, mHeartWorst2, mHeartWorst3);
+    }
+
+    private void setHearts(int remaining, ImageView heart1, ImageView heart2, ImageView heart3) {
+        switch (remaining) {
+            case 0:
+            case 1:
+                heart1.setImageResource(R.drawable.heart_green_small);
+            case 2:
+                heart2.setImageResource(R.drawable.heart_green_small);
+            case 3:
+                heart3.setImageResource(R.drawable.heart_green_small);
         }
     }
 

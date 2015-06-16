@@ -26,7 +26,8 @@
             android:layout_height="@dimen/comment_icon_width"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/ic_forum_black_24dp"/>
+            android:onClick="viewComments"
+            android:src="@drawable/comments_icon"/>
 
         </RelativeLayout>
 
@@ -171,21 +172,21 @@
                 android:layout_width="@dimen/hearts_width"
                 android:layout_height="match_parent"
                 android:padding="@dimen/normal_padding"
-                android:src="@drawable/heart_green_black"/>
+                android:src="@drawable/heart_black_large"/>
 
             <ImageView
                 android:id="@+id/heart_big_2"
                 android:layout_width="@dimen/hearts_width"
                 android:layout_height="match_parent"
                 android:padding="@dimen/normal_padding"
-                android:src="@drawable/heart_green_black"/>
+                android:src="@drawable/heart_black_large"/>
 
             <ImageView
                 android:id="@+id/heart_big_3"
                 android:layout_width="@dimen/hearts_width"
                 android:layout_height="match_parent"
                 android:padding="@dimen/normal_padding"
-                android:src="@drawable/heart_green_black"/>
+                android:src="@drawable/heart_black_large"/>
 
         </LinearLayout>
 
@@ -220,7 +221,6 @@
                     android:layout_height="match_parent"
                     android:clipChildren="false"
                     android:clipToPadding="false">
-
 
                     <ImageView
                         android:id="@+id/record_icon_anim"
