@@ -103,6 +103,18 @@ public class LoginOnlineDB extends OnlineDB {
         }
     }
 
+    /*Returns a list of all users who's username is or starts with the given string*/
+    public List<LoginOnlineDBFormat> getUser(String username) {
+        //using a different selectQuery format here to prevent SQLInjections
+        String query = "SELECT * " +
+                    "FROM login " +
+                    "WHERE username LIKE ? " +
+                    "ORDER BY username";
+        username = username + "%";
+        List<List<String>> queryResult = database.loginQuery(query, this.allArguments, username);
+        return format(queryResult,LoginOnlineDBFormat.class);
+    }
+
     @Override
     <LoginOnlineDBFormat> List<LoginOnlineDBFormat> format(List<List<String>> queryResult,
                                                            Class<LoginOnlineDBFormat> cls) {

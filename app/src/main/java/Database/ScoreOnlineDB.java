@@ -71,6 +71,16 @@ public class ScoreOnlineDB extends OnlineDB {
         return null;
     }
 
+    /*Returns a all scores and attempts to a username*/
+    public List<ScoreOnlineDBFormat> getAllScoreAndAttempts(String username) {
+        String query = "SELECT * " +
+                "FROM score " +
+                "WHERE username = ?";
+
+        List<List<String>> queryResult = database.scoreQuery(query, this.allArguments, username);
+        return format(queryResult,ScoreOnlineDBFormat.class);
+    }
+
     @Override
     <ScoreOnlineDBFormat> List<ScoreOnlineDBFormat> format(List<List<String>> queryResult, Class<ScoreOnlineDBFormat> cls) {
         List<ScoreOnlineDBFormat> result = new ArrayList<>();
