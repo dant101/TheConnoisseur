@@ -15,4 +15,5 @@ public class SessionSummaryContent {
     public static final String LANGUAGE_HEX = "language_hex";
 
     public static final String SESSION_NUMBER = "session_number";
+    public static final String SESSION_ATTEMPTS = "session_attempts";
 }

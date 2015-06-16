@@ -48,9 +48,9 @@
     <string name="performance_1">Barbarian</string>
     <string name="performance_2">Tourist</string>
     <string name="performance_3">Connoisseur</string>
-    <string name="connoisseur_description">(Average accuracy of 75% or above)</string>
-    <string name="tourist_description">(Average accuracy of 50% - 75%)</string>
-    <string name="barbarian_description">(Average accuracy of below 50%)</string>
+    <string name="connoisseur_description">(Average number of attempts = 1)</string>
+    <string name="tourist_description">(Average number of attempts between 1 and 2)</string>
+    <string name="barbarian_description">(Average number of attempts greater than 2)</string>
     <string name="personal_highlights_text">YOUR PERSONAL HIGHLIGHTS\n Performance based on the accuracy of your annunciation</string>
     <string name="play_new_session">PLAY NEW SESSION</string>
 

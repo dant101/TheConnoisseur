@@ -27,6 +27,7 @@ public class SessionSummary extends ActionBarActivity {
     private int mWorstScore;
     private int mBestScore;
     private int mSessionNumber;
+    private int mSessionAttempts;
     private String mWorstWord;
     private String mBestWord;
     private String mFlagUri;
@@ -86,6 +87,7 @@ public class SessionSummary extends ActionBarActivity {
         mLanguageId = i.getIntExtra(SessionSummaryContent.LANGUAGE_ID, -1);
         mLanguageHex = i.getStringExtra(SessionSummaryContent.LANGUAGE_HEX);
         mSessionNumber = i.getIntExtra(SessionSummaryContent.SESSION_NUMBER, 1);
+        mSessionAttempts = i.getIntExtra(SessionSummaryContent.SESSION_ATTEMPTS, 15);
     }
 
     @Override
@@ -107,15 +109,16 @@ public class SessionSummary extends ActionBarActivity {
     }
 
     private void setTongueLevel() {
-        if (mAverageScore < ExerciseContent.SCORE_PASS) {
+        float average = (float) mSessionAttempts / ExerciseActivity.EXERCISES_PER_SESSION;
+        if (average >= ExerciseContent.AVERAGE_TOURIST) {
             mConnoisseurImage.setImageResource(R.drawable.face_barbarian);
             mTongueType.setText(R.string.performance_1);
             mTongueDescription.setText(R.string.barbarian_description);
-        } else if (mAverageScore >= ExerciseContent.SCORE_PASS && mAverageScore < ExerciseContent.SCORE_CONNOISSEUR) {
+        } else if (average < ExerciseContent.AVERAGE_TOURIST && average > ExerciseContent.AVERAGE_CONNOISSEUR) {
             mConnoisseurImage.setImageResource(R.drawable.face_tourist);
             mTongueType.setText(R.string.performance_2);
             mTongueDescription.setText(R.string.tourist_description);
-        } else if (mAverageScore >= ExerciseContent.SCORE_CONNOISSEUR) {
+        } else if (mAverageScore <= ExerciseContent.AVERAGE_CONNOISSEUR) {
             mConnoisseurImage.setImageResource(R.drawable.face_connoisseur);
             mTongueType.setText(R.string.performance_3);
             mTongueDescription.setText(R.string.connoisseur_description);

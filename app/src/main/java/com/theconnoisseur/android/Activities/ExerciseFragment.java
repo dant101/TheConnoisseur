@@ -22,7 +22,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -78,7 +77,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
     private ImageView mSmallLife2;
     private ImageView mSmallLife3;
     private ImageView mSideLogo;
-    private RelativeLayout mCommentsIcon;
+    private ImageView mCommentsIcon;
 
     private MediaPlayer mMediaPlayer;
     private boolean played = false; //TESTING, Illegal state exception on second playback...
@@ -107,7 +106,9 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
     private int mThreshold;
 
     private boolean mPassedWord = false;
-    private int mAttempts = ExerciseContent.MAXIMUM_LIVES;
+    private int mAttemptsRemaining = ExerciseContent.MAXIMUM_LIVES;
+    private int mAttempts = 0;
+    private int mSessionAttempts = 0;
 
     private OnFragmentInteractionListener mListener;
     private VoiceRecogniser mVoiceRecogniser;
@@ -155,7 +156,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         mSmallLife2 = (ImageView) view.findViewById(R.id.heart_small_2);
         mSmallLife3 = (ImageView) view.findViewById(R.id.heart_small_3);
         mSideLogo = (ImageView) view.findViewById(R.id.connoisseur_side);
-        mCommentsIcon = (RelativeLayout) view.findViewById(R.id.comments_icon);
+        mCommentsIcon = (ImageView) view.findViewById(R.id.comments_icon);
 
         setListeners();
         setInitialView();
@@ -274,7 +275,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
 
         mCurrentWordBestScore = 0;
 
-        mAttempts = ExerciseContent.MAXIMUM_LIVES;
+        mAttemptsRemaining = ExerciseContent.MAXIMUM_LIVES;
         firstAttempt = true;
 
         //CursorHelper.toString(c); //Testing
@@ -371,6 +372,9 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         mLivesSmall.setVisibility(View.VISIBLE);
         mWordDescriptionView.setVisibility(View.VISIBLE);
         mLanguageImage.setImageResource(R.drawable.greentick);
+        mRecordLayout.setVisibility(View.GONE);
+        mListen.setVisibility(View.GONE);
+        mProceed.setVisibility(View.VISIBLE);
 
         setBackgroundResourceAndAnimate(R.drawable.transition_green);
     }
@@ -394,7 +398,6 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
     //UI alterations after first recording attempt by user
     private void afterFirstAttempt() {
         Log.d(TAG, "afterFirstAttempt");
-        mProceed.setVisibility(View.VISIBLE);
     }
 
     //Initial UI settings (see story board)
@@ -402,8 +405,9 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         mLivesBig.setVisibility(View.VISIBLE);
         mLivesSmall.setVisibility(View.INVISIBLE);
         mWordDescriptionView.setVisibility(View.GONE);
-        mProceed.setVisibility(View.INVISIBLE);
-        mRecord.setVisibility(View.VISIBLE);
+        mProceed.setVisibility(View.GONE);
+        mListen.setVisibility(View.VISIBLE);
+        //mRecord.setVisibility(View.VISIBLE);
         mRecordLayout.setVisibility(View.VISIBLE);
 
         if(mBackgroundIsTransitioned) {
@@ -423,7 +427,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         mSmallLife2.setImageResource(R.drawable.heart_green_black);
         mSmallLife3.setImageResource(R.drawable.heart_green_black);
 
-        switch(mAttempts) {
+        switch(mAttemptsRemaining) {
             case 3:
                 mBigLife3.setImageResource(R.drawable.heart_green_large);
                 mSmallLife3.setImageResource(R.drawable.heart_green_small);
@@ -435,9 +439,11 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
                 mSmallLife1.setImageResource(R.drawable.heart_green_small);
                 break;
             case 0:
-                mRecord.setVisibility(View.GONE);
-                //mRecordAnim.setVisibility(View.GONE);
                 mRecordLayout.setVisibility(View.GONE);
+                mListen.setVisibility(View.GONE);
+                mProceed.setVisibility(View.VISIBLE);
+
+                mAttempts += 1; //TODO: rethink attempts/hearts...
         }
     }
 
@@ -458,7 +464,15 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         //Main number of words passed
         if (mCurrentWordBestScore > mThreshold) {
             mSessionWordPasses += 1;
+            Log.d(TAG, "mSessionword passes now: " + String.valueOf(mSessionWordPasses));
         }
+
+        //Set attempts at this pronunciation
+        mAttempts = ExerciseContent.MAXIMUM_LIVES - mAttemptsRemaining;
+        mSessionAttempts += mAttempts;
+
+        Log.d(TAG, "mAttempts = " +String.valueOf(mAttempts));
+        Log.d(TAG, "mSessionAttempts now: " + String.valueOf(mSessionAttempts));
 
         //Save word performance in internal db
         saveWordPerformance();
@@ -485,6 +499,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         intent.putExtra(SessionSummaryContent.LANGUAGE_ID, mLanguageId);
         intent.putExtra(SessionSummaryContent.LANGUAGE_HEX, mLanguageHex);
         intent.putExtra(SessionSummaryContent.SESSION_NUMBER, session_number);
+        intent.putExtra(SessionSummaryContent.SESSION_ATTEMPTS, mSessionAttempts);
 
         mVoiceRecogniser.destroyVoiceRecogniser();
 
@@ -498,7 +513,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         int score = Math.round(a * 100);
         Log.d(TAG, "Pronunciation Score: " + String.valueOf(score));
 
-        mAttempts -= 1;
+        mAttemptsRemaining -= 1;
 
         //Updates current word best score
         mCurrentWordBestScore = score > mCurrentWordBestScore ? score : mCurrentWordBestScore;
@@ -532,13 +547,13 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
      */
     private void saveWordPerformance() {
         Cursor score = getActivity().getContentResolver().query(InternalDbContract.queryForExerciseScore(mCurrentWordId), null, null, null, null);
+        String username = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(GlobalPreferenceString.USERNAME_PREF, "Guest");
+        ContentValues v = new ContentValues();
+        v.put(ExerciseScore.USER_ID, username);
+        v.put(ExerciseScore.WORD_ID, mCurrentWordId);
+
         if (score.moveToFirst()) {
             boolean shouldUpdate = false;
-            String username = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(GlobalPreferenceString.USERNAME_PREF, "Guest");
-            ContentValues v = new ContentValues();
-            v.put(ExerciseScore.USER_ID, username);
-            v.put(ExerciseScore.WORD_ID, mCurrentWordId);
-
             if (score.getInt(score.getColumnIndex(ExerciseScore.PERCENTAGE_SCORE)) < mCurrentWordBestScore) {
                 v.put(ExerciseScore.PERCENTAGE_SCORE, mCurrentWordBestScore);
                 shouldUpdate = true;
@@ -550,16 +565,21 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
             }
 
             if (shouldUpdate) {
-                if (getActivity().getContentResolver().update(InternalDbContract.updateExerciseScore(mCurrentWordId), v, null, null) == 0) {
-                    Log.d(TAG, "ExerciseFragment: inserting scores for word_id = " + String.valueOf(mCurrentWordId));
-                    getActivity().getContentResolver().insert(InternalDbContract.insertExerciseScoreUri(), v);
-                } else {
-                    Log.d(TAG, "ExerciseFragment: updated scores for word_id = " + String.valueOf(mCurrentWordId));
-                }
+                getActivity().getContentResolver().update(InternalDbContract.updateExerciseScore(mCurrentWordId), v, null, null);
 
                 //Initiates online database update
                 new Thread(new ScoreUpdate(username, mCurrentWordId, mAttempts, mCurrentWordBestScore)).start();
             }
+
+        } else {
+            //Insert new row
+            v.put(ExerciseScore.PERCENTAGE_SCORE, mCurrentWordBestScore);
+            v.put(ExerciseScore.ATTEMPTS_SCORE, mAttempts);
+            Log.d(TAG, "ExerciseFragment: inserting scores for word_id = " + String.valueOf(mCurrentWordId));
+            getActivity().getContentResolver().insert(InternalDbContract.insertExerciseScoreUri(), v);
+
+            //Initiates online database update
+            new Thread(new ScoreUpdate(username, mCurrentWordId, mAttempts, mCurrentWordBestScore)).start();
         }
     }
 
@@ -595,6 +615,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
 
         public ScoreUpdate(String username, int word_id, int attempts, int percentage) {
             this.username = username; this.word_id = word_id; this.attempts = attempts; this.percentage = percentage;
+            Log.d(TAG, "Online database score update: word_id(" + String.valueOf(word_id)+"), attempts(" + String.valueOf(attempts) + ")");
         }
 
         @Override

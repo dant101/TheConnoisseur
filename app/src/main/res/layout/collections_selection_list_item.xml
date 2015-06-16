@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/collection_list_item"
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/small_padding"
@@ -15,12 +16,14 @@
         android:background="@color/grey">
 
         <LinearLayout
+            android:layout_gravity="center"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
+            android:layout_weight="2"
             android:orientation="vertical">
 
             <TextView
+                android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/item_order"
@@ -32,18 +35,28 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/small_margin"
                 android:id="@+id/item_date"
+                android:visibility="gone"
                 android:text="23/05/2015"/>
 
         </LinearLayout>
 
+        <ImageView
+            android:id="@+id/star"
+            android:layout_width="@dimen/star_width"
+            android:layout_height="@dimen/star_width"
+            android:layout_gravity="center"
+            android:visibility="invisible"
+            android:src="@drawable/star_icon"/>
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:gravity="center"
+            android:layout_weight="5"
+            android:layout_gravity="center"
             android:orientation="vertical">
 
             <TextView
+                android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/language_text"
@@ -51,11 +64,13 @@
                 android:textStyle="bold"/>
 
             <TextView
+                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginTop="@dimen/vsmall_margin"
                 android:id="@+id/item_score"
-                android:text="Score: 10/10"/>
+                android:textColor="@color/orange"/>
 
         </LinearLayout>
 

@@ -14,6 +14,8 @@ import com.theconnoisseur.android.Model.ExerciseScore;
 import com.theconnoisseur.android.Model.InternalDbContract;
 import com.theconnoisseur.android.Model.LanguageSelection;
 
+import java.net.URI;
+
 import Util.CursorHelper;
 import Util.InternalDbHelper;
 
@@ -124,7 +126,7 @@ public class InternalDbProvider extends ContentProvider {
                 cursor = getDatabase(false).query(
                     TABLE_SCORES, InternalDbContract.PROJECTION_SCORES, ExerciseScore.WORD_ID + "=?", args3, null, null, null);
                 CursorHelper.toString(cursor);
-
+                break;
         }
 
         return cursor;

@@ -17,6 +17,7 @@
     <dimen name="text_small">15dp</dimen>
     <dimen name="text_medium">25dp</dimen>
     <dimen name="text_large">40dp</dimen>
+    <dimen name="settings_icon_width">40dp</dimen>
 
     <dimen name="vsmall_padding">3dp</dimen>
     <dimen name="small_padding">5dp</dimen>
@@ -61,6 +62,9 @@
     <!-- LanguageSelection Activity -->
     <dimen name="flag_width">30dp</dimen>
     <dimen name="flag_height">20dp</dimen>
+
+    <!-- CollectionSelectionActivity -->
+    <dimen name="star_width">20dp</dimen>
 
     <!-- Collections Activity -->
     <dimen name="collections_flag_width">40dp</dimen>
