@@ -1,9 +1,12 @@
 package com.theconnoisseur.android.Activities;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,12 +18,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.facebook.FacebookSdk;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 import com.theconnoisseur.R;
 import com.theconnoisseur.android.Model.ExerciseContent;
 import com.theconnoisseur.android.Model.ExerciseScore;
 import com.theconnoisseur.android.Model.InternalDbContract;
 import com.theconnoisseur.android.Model.SessionSummaryContent;
 
+import java.io.File;
+import java.net.URI;
 import java.net.URISyntaxException;
 
 import Util.ContentDownloadHelper;
@@ -118,6 +126,45 @@ public class SessionSummary extends ActionBarActivity {
         mSessionAttempts = i.getIntExtra(SessionSummaryContent.SESSION_ATTEMPTS, 15);
 
         setBestWorstWords();
+
+        setupShareButton(mConnoisseurImage);
+
+    }
+
+    private void setupShareButton(ImageView button) {
+
+        final SessionSummary activity = this;
+        FacebookSdk.sdkInitialize(activity);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                ShareDialog shareDialog = new ShareDialog(activity);
+
+                if (ShareDialog.canShow(ShareLinkContent.class)) {
+
+                    String person;
+                    float average = (float) mSessionAttempts / ExerciseActivity.EXERCISES_PER_SESSION;
+                    if (average >= ExerciseContent.AVERAGE_TOURIST) {
+                        person = "Barbarian";
+                    } else if (average < ExerciseContent.AVERAGE_TOURIST && average > ExerciseContent.AVERAGE_CONNOISSEUR) {
+                        person = "Tourist";
+                    } else {
+                        person = "Connoisseur";
+                    }
+
+                    ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                            .setContentTitle("I'm a " + person)
+                            .setContentDescription(
+                                    "Check out The Connoisseur! I averaged " + average+1 + " attempts, can you beat me?")
+                            .setContentUrl(Uri.parse("https://www.facebook.com/pages/The-Connoisseur/1429322337391434"))
+                            .build();
+
+                    shareDialog.show(linkContent);
+                }
+            }
+        });
     }
 
     @Override

@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 import com.theconnoisseur.android.Controller.ContentDownloadController;
 
 import Util.ContentSample;
@@ -31,6 +33,17 @@ public class BaseActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        // Logs 'install' and 'app activate' App Events.
+        AppEventsLogger.activateApp(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        // Logs 'app deactivate' App Event.
+        AppEventsLogger.deactivateApp(this);
     }
 }
 
