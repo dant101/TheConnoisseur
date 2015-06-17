@@ -8,9 +8,9 @@ android {
         applicationId "com.theconnoisseur"
         minSdkVersion 15
         targetSdkVersion 21
-        versionCode 14
+        versionCode 16
 
-        versionName "1.13"
+        versionName "1.15"
     }
     buildTypes {
         release {

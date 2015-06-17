@@ -15,6 +15,7 @@ import com.theconnoisseur.android.Controller.ContentDownloadController;
 import com.theconnoisseur.android.Model.ExerciseContent;
 import com.theconnoisseur.android.Model.InternalDbContract;
 import com.theconnoisseur.android.Model.LanguageSelection;
+import com.theconnoisseur.android.Model.SessionSummaryContent;
 
 import Util.CursorHelper;
 
@@ -92,6 +93,25 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
         if (fragment instanceof ExerciseFragment) {
             ((ExerciseFragment)fragment).playRecording();
         }
+    }
+
+    public void demoSummary(View v) {
+        Intent intent = new Intent(this, SessionSummary.class);
+
+        intent.putExtra(SessionSummaryContent.BEST_SCORE, 0);
+        intent.putExtra(SessionSummaryContent.BEST_WORD, "Veranda");
+        intent.putExtra(SessionSummaryContent.WORST_SCORE, 2);
+        intent.putExtra(SessionSummaryContent.WORST_WORD, "Maestro");
+        intent.putExtra(SessionSummaryContent.LANGUAGE_FLAG_URI, "http://www.doc.ic.ac.uk/project/2014/271/g1427115/images/flags/3-italian.png");
+        intent.putExtra(SessionSummaryContent.WORDS_PASSED, 5);
+        intent.putExtra(SessionSummaryContent.TOTAL_WORDS, 5);
+        intent.putExtra(SessionSummaryContent.LANGUAGE, "Italian");
+        intent.putExtra(SessionSummaryContent.LANGUAGE_ID, 3);
+        intent.putExtra(SessionSummaryContent.LANGUAGE_HEX, "#009246");
+        intent.putExtra(SessionSummaryContent.SESSION_NUMBER, 23);
+        intent.putExtra(SessionSummaryContent.SESSION_ATTEMPTS, 0);
+
+        startActivity(intent);
     }
 
     public void nextExercise() {

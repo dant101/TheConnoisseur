@@ -2,6 +2,7 @@ package com.theconnoisseur.android.Activities;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -24,6 +25,8 @@ import com.theconnoisseur.android.Model.ExerciseScore;
 import com.theconnoisseur.android.Model.InternalDbContract;
 import com.theconnoisseur.android.Model.LanguageSelection;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -96,7 +99,7 @@ public class CollectionSelectionActivity extends ActionBarActivity implements Cu
                     }
 
                     double sigma = 0.01;
-                    if(mAverageScores.containsKey(language_id) && mAverageScores.get(language_id) < ExerciseContent.AVERAGE_CONNOISSEUR + sigma) {
+                    if(mAverageScores.containsKey(language_id) && mAverageScores.get(language_id) < ExerciseContent.AVERAGE_CONNOISSEUR + sigma + 1) {
                         Log.d(TAG, "score: " + String.valueOf(mAverageScores.get(language_id)));
                         view.findViewById(R.id.star).setVisibility(View.VISIBLE);
                     } else {
@@ -113,10 +116,6 @@ public class CollectionSelectionActivity extends ActionBarActivity implements Cu
         collections.setAdapter(adapter);
 
         setListeners();
-    }
-
-    public void commentTest(View v) {
-        startActivity(new Intent(this, CommentActivity.class));
     }
 
     private void setListeners() {

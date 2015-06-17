@@ -111,6 +111,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
     private String mWordIllustrationUri;
     private String mLanguageFlagUri;
     private String mLanguageHex;
+    private String mSoundLocation;
     private int mLanguageId;
     private int mThreshold;
 
@@ -247,48 +248,6 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
     }
 
     /**
-     * Plays the exercise sound recording
-     */
-    public void playRecording() {
-        if (mMediaPlayer != null && !played) {
-            try {
-
-                mMediaPlayer.prepare();
-                mMediaPlayer.start();
-                played = true;
-
-            } catch (IOException e) {
-                Log.d(TAG, "Unable to prepare sound recording");
-                e.printStackTrace();
-            }
-        }
-
-        final Animation grow = AnimationUtils.loadAnimation(getActivity(), R.anim.grow);
-        final Animation shrink = AnimationUtils.loadAnimation(getActivity(), R.anim.shrink);
-
-        grow.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                mListenAnim.startAnimation(shrink);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-
-        mListenAnim.startAnimation(grow);
-
-    }
-
-    /**
      * Shifts screen to next exercise by loading the next word from the cursor
      * @param c
      */
@@ -330,7 +289,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         mThreshold = c.getInt(c.getColumnIndex(ExerciseContent.THRESHOLD));
 
         ContentDownloadHelper.loadImage(getActivity(), mWordIllustration, mWordIllustrationUri);
-        setSoundFile(c.getString(c.getColumnIndex(ExerciseContent.SOUND_RECORDING)));
+        mSoundLocation = c.getString(c.getColumnIndex(ExerciseContent.SOUND_RECORDING));
 
         String word = c.getString(c.getColumnIndex(ExerciseContent.WORD));
         String locale = c.getString(c.getColumnIndex(ExerciseContent.LOCALE));
@@ -363,32 +322,54 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
     }
 
     /**
-     * Prepares the sound file for playing
-     * @param path
+     * Prepares and Plays the exercise sound recording
      */
-    private void setSoundFile(String path) {
-        if (path == null) { Log.d(TAG, "SoundPath is null"); return; }
+    public void playRecording() {
+        if (mSoundLocation != null) {
 
-        played = false;
-        path = path.replace(File.separator, "");
+            String path = mSoundLocation.replace(File.separator, "");
 
-        try {
-            MediaPlayer mediaPlayer = new MediaPlayer();
-            mediaPlayer.setDataSource(getActivity().getFilesDir()+ "/" + path);
-            mMediaPlayer = mediaPlayer;
+            try {
+                mMediaPlayer = new MediaPlayer();
+                mMediaPlayer.setDataSource(getActivity().getFilesDir()+ "/" + path);
+                mMediaPlayer.prepare();
+                mMediaPlayer.start();
 
-            mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {mp.release(); Log.d(TAG, "MediaPlayer onCompletion!");
-                }
-            });
+                Log.d(TAG, "mediaPlayer set with source: " + getActivity().getFilesDir() + path);
 
-            Log.d(TAG, "mediaPlayer set with source: " + getActivity().getFilesDir() + path);
+                mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {mp.release(); Log.d(TAG, "MediaPlayer onCompletion!");
+                    }
+                });
 
-        } catch (IOException e) {
-            Log.d(TAG, "setSoundFile - cannot setDataSource: --getActivity().getFilesDir()-- " + path);
-            e.printStackTrace();
+            } catch (IOException e) {
+                Log.d(TAG, "Unable to prepare sound recording");
+                e.printStackTrace();
+            }
+        } else {
+            Log.d(TAG, "SoundPath is null"); return;
         }
+
+        final Animation grow = AnimationUtils.loadAnimation(getActivity(), R.anim.grow);
+        final Animation shrink = AnimationUtils.loadAnimation(getActivity(), R.anim.shrink);
+
+        grow.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mListenAnim.startAnimation(shrink);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+
+        mListenAnim.startAnimation(grow);
     }
 
     //UI change as a result of a successful recording attempt

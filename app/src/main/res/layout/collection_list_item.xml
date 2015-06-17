@@ -19,6 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:padding="@dimen/xlarge_padding"
             android:id="@+id/word_image"
             android:layout_gravity="center"
             android:src="@drawable/matryoshka"/>
@@ -29,7 +30,6 @@
             android:id="@+id/word_description"
             android:gravity="center"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/large_margin"
             android:text="@string/description_sample"/>
 
         <RelativeLayout

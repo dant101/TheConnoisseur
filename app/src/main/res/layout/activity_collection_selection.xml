@@ -29,7 +29,6 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/collection_icon_height"
             android:layout_gravity="center"
-            android:onClick="commentTest"
             android:src="@drawable/collection_logo_large"/>
 
         <TextView

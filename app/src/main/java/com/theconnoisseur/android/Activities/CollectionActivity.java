@@ -2,6 +2,7 @@ package com.theconnoisseur.android.Activities;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -20,8 +21,14 @@ import com.theconnoisseur.R;
 import com.theconnoisseur.android.Activities.Interfaces.CursorCallback;
 import com.theconnoisseur.android.Model.Comment;
 import com.theconnoisseur.android.Model.ExerciseContent;
+import com.theconnoisseur.android.Model.ExerciseScore;
 import com.theconnoisseur.android.Model.InternalDbContract;
 import com.theconnoisseur.android.Model.LanguageSelection;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 import Util.ContentDownloadHelper;
 import Util.ToastHelper;
@@ -34,9 +41,13 @@ public class CollectionActivity extends ActionBarActivity implements CursorCallb
     private String mLanguageName;
 
     private TextView mLanguage;
+    private TextView mScore;
     private ListView mListView;
     private Cursor mCursor;
     private Adapter mAdapter;
+
+    // Set of mastered words
+    private Set<Integer> mMastered;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +68,7 @@ public class CollectionActivity extends ActionBarActivity implements CursorCallb
         new CursorPreparationTask(this).execute();
 
         mListView = (ListView) findViewById(R.id.word_list);
+        mScore = (TextView) findViewById(R.id.language_score);
         mLanguage = (TextView) findViewById(R.id.language);
 
         if (mImage_url != null) {
@@ -92,17 +104,15 @@ public class CollectionActivity extends ActionBarActivity implements CursorCallb
         startActivity(new Intent(CollectionActivity.this, CollectionSelectionActivity.class));
     }
 
-    public void viewComments(View v) {
-        //
-    }
-
     @Override
     public void CursorLoaded(Cursor c) {
         this.mCursor = c;
 
+        getMasteredWords();
+
         ListView word_list = (ListView) findViewById(R.id.word_list);
 
-        String[] from = new String[] {ExerciseContent.IMAGE_URL, ExerciseContent.WORD_DESCRIPTION, ExerciseContent.VIEW_COMMENTS};
+        String[] from = new String[] {ExerciseContent.IMAGE_URL, ExerciseContent.WORD_DESCRIPTION, ExerciseContent.WORD_ID};
         int[] to = new int[] {R.id.word_image, R.id.word_description, R.id.collection_list_item};
 
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.collection_list_item, c, from, to, BIND_IMPORTANT);
@@ -111,16 +121,15 @@ public class CollectionActivity extends ActionBarActivity implements CursorCallb
         adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
             @Override
             public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
-                if(view.getId() == R.id.word_image) {
-                    ContentDownloadHelper.loadImage(getApplicationContext(), (ImageView) view, cursor.getString(columnIndex));
-                    return true;
-                }
-
-                Log.d(TAG, "setting View binder in CollectionActivity");
 
                 if(view.getId() == R.id.collection_list_item) {
 
-                    Log.d(TAG, "inside view.getID() == R.id.collection_list_item");
+                    // Sets view to invisible if user has not mastered it
+//                    int word_id = cursor.getInt(columnIndex);
+//                    if (!mMastered.contains(word_id)) {
+//                        view.setVisibility(View.GONE);
+//                        return true;
+//                    }
 
                     // set listener for 'view_comment' textView
                     view.findViewById(R.id.view_comments).setOnClickListener(new viewCommentsListener(
@@ -128,8 +137,19 @@ public class CollectionActivity extends ActionBarActivity implements CursorCallb
                             cursor.getString(cursor.getColumnIndex(ExerciseContent.WORD)),
                             cursor.getString(cursor.getColumnIndex(ExerciseContent.IMAGE_URL)),
                             mImage_url, mLanguageName));
+
+
+                    // Sets recording onClick listener
+                    view.findViewById(R.id.listen_icon).setOnClickListener(new recordingListener(cursor.getString(cursor.getColumnIndex(ExerciseContent.SOUND_RECORDING))));
+
                     return true;
                 }
+
+                if(view.getId() == R.id.word_image) {
+                    ContentDownloadHelper.loadImage(getApplicationContext(), (ImageView) view, cursor.getString(columnIndex));
+                    return true;
+                }
+
                 return false;
             }
         });
@@ -143,6 +163,30 @@ public class CollectionActivity extends ActionBarActivity implements CursorCallb
     private void setListeners() {
         //TODO: page listeners?
     }
+
+    // Calculates the user's mastered words - affects UI
+    private void getMasteredWords() {
+        if (mCursor == null) {return; }
+
+        mMastered = new HashSet<Integer>();
+
+        //Cycles through exercises and puts into mMastered words which user has mastered (0 attempts required)
+        if (mCursor.moveToFirst()) {
+            do {
+                int word_id = mCursor.getInt(mCursor.getColumnIndex(ExerciseContent.WORD_ID));
+                Cursor score = getContentResolver().query(InternalDbContract.queryForExerciseScore(word_id), null, null, null, null);
+                if (score.moveToFirst()) {
+                    if (score.getInt(score.getColumnIndex(ExerciseScore.ATTEMPTS_SCORE)) == 0) {
+                        mMastered.add(word_id);
+                    }
+                }
+            } while (mCursor.moveToNext());
+        }
+        mCursor.moveToFirst();
+
+        mScore.setText("Mastered " + String.valueOf(mMastered.size()) + " words");
+    }
+
 
     /**
      * Listener class that starts the appropriate CommentActivity for selected word
@@ -173,6 +217,40 @@ public class CollectionActivity extends ActionBarActivity implements CursorCallb
             Log.d(TAG, "View comments onClick");
 
             startActivity(i);
+        }
+    }
+
+
+    // Listener class for playing a recording
+    private class recordingListener implements View.OnClickListener {
+        private String path;
+
+        public recordingListener(String path) {
+            this.path = path;
+        }
+
+        @Override
+        public void onClick(View v) {
+            path = path.replace(File.separator, "");
+
+            try {
+                MediaPlayer mp = new MediaPlayer();
+                mp.setDataSource(getApplicationContext().getFilesDir()+ "/" + path);
+                mp.prepare();
+                mp.start();
+
+                Log.d(TAG, "mediaPlayer set with source: " + getApplicationContext().getFilesDir() + path);
+
+                mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {mp.release(); Log.d(TAG, "MediaPlayer onCompletion!");
+                    }
+                });
+
+            } catch (IOException e) {
+                Log.d(TAG, "Unable to prepare sound recording");
+                e.printStackTrace();
+            }
         }
     }
 
