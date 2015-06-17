@@ -30,6 +30,9 @@ public class ExerciseContent {
     public static final int SCORE_PASS = 50;
     public static final int SCORE_CONNOISSEUR = 75;
 
+    public static final int AVERAGE_CONNOISSEUR = 1;
+    public static final int AVERAGE_TOURIST = 2;
+
     private int word_id;
     private String word;
     private String phonetic;

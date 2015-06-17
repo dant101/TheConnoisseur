@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.ArrayMap;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,12 +15,17 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 import com.theconnoisseur.R;
 import com.theconnoisseur.android.Activities.Interfaces.CursorCallback;
 import com.theconnoisseur.android.Model.ExerciseContent;
+import com.theconnoisseur.android.Model.ExerciseScore;
 import com.theconnoisseur.android.Model.InternalDbContract;
 import com.theconnoisseur.android.Model.LanguageSelection;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import Util.ContentDownloadHelper;
 import Util.CursorHelper;
@@ -31,6 +37,7 @@ public class CollectionSelectionActivity extends ActionBarActivity implements Cu
     private Cursor mCursor;
     private Adapter mAdapter;
     private ListView mListView;
+    private Map<Integer, Float> mAverageScores;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,29 +55,6 @@ public class CollectionSelectionActivity extends ActionBarActivity implements Cu
         mListView = (ListView) findViewById(R.id.collections_list);
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_collection, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     public void goBack(View v) {
         startActivity(new Intent(CollectionSelectionActivity.this, MainMenuActivity.class));
     }
@@ -79,11 +63,13 @@ public class CollectionSelectionActivity extends ActionBarActivity implements Cu
     public void CursorLoaded(Cursor c) {
         this.mCursor = c;
 
+        getAverageScores();
+
         ListView collections = (ListView) findViewById(R.id.collections_list);
 
         //TODO: alter database to include scores and dates
-        String[] from = new String[] {LanguageSelection.LANGUAGE_NAME, LanguageSelection.LANGUAGE_IMAGE_URL, LanguageSelection.LANGUAGE_ID};
-        int[] to = new int[] {R.id.language_text, R.id.language_image, R.id.item_order};
+        String[] from = new String[] {LanguageSelection.LANGUAGE_NAME, LanguageSelection.LANGUAGE_IMAGE_URL, LanguageSelection.LANGUAGE_ID, LanguageSelection.LANGUAGE_ID};
+        int[] to = new int[] {R.id.language_text, R.id.language_image, R.id.item_order, R.id.collection_list_item};
 
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(this , R.layout.collections_selection_list_item, c, from, to, BIND_IMPORTANT);
 
@@ -95,6 +81,28 @@ public class CollectionSelectionActivity extends ActionBarActivity implements Cu
                     ContentDownloadHelper.loadImage(getApplicationContext(), (ImageView) view, cursor.getString(columnIndex));
                     return true;
                 }
+
+                if (view.getId() == R.id.collection_list_item) {
+                    int language_id = cursor.getInt(columnIndex);
+                    Log.d(TAG, "Language_id: " + String.valueOf(language_id));
+                    if (mAverageScores.containsKey(language_id)) {
+                        float average_best_score = mAverageScores.get(language_id);
+                        Log.d(TAG, "average_best_score" + String.valueOf(average_best_score));
+
+                        ((TextView)view.findViewById(R.id.item_score)).setText("Average score: " + String.format("%.1f", average_best_score));
+                        (view.findViewById(R.id.item_score)).setVisibility(View.VISIBLE);
+                    }
+
+                    double sigma = 0.01;
+                    if(mAverageScores.containsKey(language_id) && mAverageScores.get(language_id) < ExerciseContent.AVERAGE_CONNOISSEUR + sigma) {
+                        Log.d(TAG, "score: " + String.valueOf(mAverageScores.get(language_id)));
+                        view.findViewById(R.id.star).setVisibility(View.VISIBLE);
+                    } else {
+                        view.findViewById(R.id.star).setVisibility(View.INVISIBLE);
+                    }
+                    return true;
+                }
+
                 return false;
             }
         });
@@ -138,6 +146,37 @@ public class CollectionSelectionActivity extends ActionBarActivity implements Cu
 
     }
 
+    private void getAverageScores() {
+        mAverageScores = new HashMap<Integer, Float>();
+        if (!mCursor.moveToFirst()) { return; }
+        do {
+            int language_id = mCursor.getInt(mCursor.getColumnIndex(LanguageSelection.LANGUAGE_ID));
+            Cursor exercises = getContentResolver().query(InternalDbContract.queryForWords(language_id), null, null, null, null);
+            int number_exercises = 0;
+            int cummulative_attempt_score = 0;
+
+            if (!exercises.moveToFirst()) { continue; }
+            do {
+                int word_id = exercises.getInt(exercises.getColumnIndex(ExerciseContent.WORD_ID));
+                Cursor word_score = getContentResolver().query(InternalDbContract.queryForExerciseScore(word_id), null, null, null, null);
+
+                if (!word_score.moveToFirst()) { continue; }
+
+                int attempt_score = word_score.getInt(word_score.getColumnIndex(ExerciseScore.ATTEMPTS_SCORE));
+                number_exercises += 1;
+                cummulative_attempt_score += attempt_score;
+
+                word_score.close();
+            } while (exercises.moveToNext());
+            exercises.close();
+
+            float average_score = (float)cummulative_attempt_score / number_exercises;
+            mAverageScores.put(language_id, average_score);
+            Log.d(TAG, "putting into mAverageScores: language_id = " + String.valueOf(language_id) + ", average_score = " + String.valueOf(average_score));
+
+        } while (mCursor.moveToNext());
+    }
+
     private class CursorPreparationTask extends AsyncTask<Void, Void, Void> {
 
         CursorCallback mCallback;
@@ -150,7 +189,6 @@ public class CollectionSelectionActivity extends ActionBarActivity implements Cu
         @Override
         protected Void doInBackground(Void... params) {
             mCursor = getContentResolver().query(InternalDbContract.queryForLanguages(), null, null, null, null);
-            ResourceDownloader.downloadComments(1);
 
             return null;
         }

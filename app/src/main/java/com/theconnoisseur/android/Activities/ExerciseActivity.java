@@ -25,6 +25,7 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
     private static final String RESUMING = "resuming";
 
     private int LANGUAGE_ID = 3; //ONLY FOR TESTING
+    public static final int EXERCISES_PER_SESSION = 5;
 
     private Cursor mCursor;
     private boolean mResuming = false;
@@ -45,11 +46,6 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
 
         Intent intent = getIntent();
         LANGUAGE_ID = intent.getIntExtra(ExerciseContent.LANGUAGE_ID, LANGUAGE_ID);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
 
         //Calls download task and leaves callback to setup cursor.
         // Otherwise, initiate cursor immediately (if data already downloaded)
@@ -57,6 +53,12 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
             // Loads the exercise cursor for specific set of exercises
             new ExerciseCursorPreparationTask(this).execute(LANGUAGE_ID);
         }
+    }
+
+    @Override
+    protected void onStart() {
+        Log.d(TAG, "ExerciseActivity onStart()");
+        super.onStart();
     }
 
     @Override
@@ -69,6 +71,7 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
 
     @Override
     public void onStop() {
+        Log.d(TAG, "ExerciseActivity onStop()");
         mResuming = true;
         super.onStop();
     }
@@ -166,7 +169,7 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
         protected Void doInBackground(Integer... ids) {
             if(ids[0] != null) {
                 int languages_id = ids[0];
-                mCursor = getContentResolver().query(InternalDbContract.queryForWords(languages_id), null, null, null, null);
+                mCursor = getContentResolver().query(InternalDbContract.queryForWords(languages_id), null, null, null, "RANDOM() LIMIT " + String.valueOf(EXERCISES_PER_SESSION));
             } else {
                 Log.d(TAG, "No language_id identified for query!");
             }

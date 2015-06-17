@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="@dimen/normal_margin">
+        android:layout_marginTop="@dimen/small_margin">
 
         <ImageView
             android:layout_width="@dimen/title_width"
@@ -146,26 +146,57 @@
 
         <LinearLayout
             android:visibility="visible"
+            android:orientation="horizontal"
             android:onClick="voiceRecogniserTest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:padding="@dimen/normal_margin"
-            android:layout_marginTop="@dimen/large_margin"
-            android:layout_marginBottom="@dimen/large_margin"
-            android:background="@color/flag_blue">
+            android:padding="@dimen/normal_padding">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/large_margin"
                 android:text="VOICE RECOGNISER TEST"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_medium"
+                android:textSize="18dp"
                 android:textStyle="bold"/>
 
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="@dimen/settings_icon_width"
+                android:layout_weight="1"
+                android:layout_marginLeft="@dimen/large_margin"
+                android:src="@drawable/voice_test_icon"/>
 
-            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:visibility="visible"
+            android:orientation="horizontal"
+            android:onClick="voiceRecogniserTest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/normal_margin">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/large_margin"
+                android:text="LOGOUT"
+                android:textSize="18dp"
+                android:textStyle="bold"/>
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="@dimen/settings_icon_width"
+                android:layout_weight="1"
+                android:layout_marginLeft="@dimen/large_margin"
+                android:src="@drawable/settings_icon"/>
+
+        </LinearLayout>
 
 
         </LinearLayout>

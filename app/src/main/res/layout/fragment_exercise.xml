@@ -9,12 +9,29 @@
     android:paddingBottom="0dp"
     android:background="@drawable/transition_green">
 
-    <ImageButton
-        android:layout_width="@dimen/home_icon_width"
-        android:layout_height="@dimen/home_icon_width"
-        android:src="@drawable/ui_back"
-        android:background="@android:color/transparent"
-        android:onClick="goBack"/>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <ImageButton
+            android:layout_width="@dimen/home_icon_width"
+            android:layout_height="@dimen/home_icon_width"
+            android:src="@drawable/ui_back"
+            android:background="@android:color/transparent"
+            android:onClick="goBack"/>
+
+        <ImageView
+            android:id="@+id/comments_icon"
+            android:layout_width="@dimen/comment_icon_width"
+            android:layout_height="@dimen/comment_icon_width"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:onClick="viewComments"
+            android:src="@drawable/comments_icon"/>
+
+        </RelativeLayout>
+
+
 
     <LinearLayout
         android:layout_width="0dp"
@@ -123,7 +140,8 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/hearts_height"
+            android:layout_height="0dp"
+            android:layout_weight="2"
             android:id="@+id/word_description_view"
             android:visibility="gone"
             android:layout_margin="@dimen/vsmall_margin"
@@ -154,21 +172,21 @@
                 android:layout_width="@dimen/hearts_width"
                 android:layout_height="match_parent"
                 android:padding="@dimen/normal_padding"
-                android:src="@drawable/heart_green_black"/>
+                android:src="@drawable/heart_black_large"/>
 
             <ImageView
                 android:id="@+id/heart_big_2"
                 android:layout_width="@dimen/hearts_width"
                 android:layout_height="match_parent"
                 android:padding="@dimen/normal_padding"
-                android:src="@drawable/heart_green_black"/>
+                android:src="@drawable/heart_black_large"/>
 
             <ImageView
                 android:id="@+id/heart_big_3"
                 android:layout_width="@dimen/hearts_width"
                 android:layout_height="match_parent"
                 android:padding="@dimen/normal_padding"
-                android:src="@drawable/heart_green_black"/>
+                android:src="@drawable/heart_black_large"/>
 
         </LinearLayout>
 
@@ -178,23 +196,6 @@
             android:layout_height="0dp"
             android:layout_weight="3"
             android:orientation="horizontal">
-
-            <RelativeLayout
-                android:id="@+id/comments_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:onClick="viewComments"
-                android:gravity="center"
-                android:visibility="visible">
-
-                <ImageView
-                    android:layout_width="@dimen/comment_icon_width"
-                    android:layout_height="@dimen/comment_icon_width"
-                    android:src="@drawable/ic_forum_black_24dp"/>
-
-            </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -263,16 +264,15 @@
 
                 </FrameLayout>
 
-            </LinearLayout>
+                <ImageView
+                    android:id="@+id/proceed"
+                    android:layout_width="@dimen/microphone_width"
+                    android:layout_height="@dimen/microphone_width"
+                    android:layout_gravity="center"
+                    android:visibility="gone"
+                    android:src="@drawable/ui_next"/>
 
-            <ImageView
-                android:id="@+id/proceed"
-                android:layout_width="@dimen/proceed_diameter"
-                android:layout_height="@dimen/proceed_diameter"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:visibility="invisible"
-                android:src="@drawable/ui_next"/>
+            </LinearLayout>
 
             </RelativeLayout>
 

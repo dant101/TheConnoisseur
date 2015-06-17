@@ -14,6 +14,8 @@ import com.theconnoisseur.android.Model.ExerciseScore;
 import com.theconnoisseur.android.Model.InternalDbContract;
 import com.theconnoisseur.android.Model.LanguageSelection;
 
+import java.net.URI;
+
 import Util.CursorHelper;
 import Util.InternalDbHelper;
 
@@ -96,7 +98,7 @@ public class InternalDbProvider extends ContentProvider {
                 String[] args = {query};
                 Log.d(TAG, "querying LANGUAGES with LANGUAGE_ID");
                 cursor = getDatabase(false).query(
-                        TABLE_LANGUAGES, InternalDbContract.PROJECTION_LANGUAGES, LanguageSelection.LANGUAGE_ID + "=?", args, null, null, null);
+                        TABLE_LANGUAGES, InternalDbContract.PROJECTION_LANGUAGES, LanguageSelection.LANGUAGE_ID + "=?", args, null, null, sortOrder);
                 break;
 
             case EXERCISES:
@@ -107,8 +109,8 @@ public class InternalDbProvider extends ContentProvider {
                 cursor = getDatabase(false).query(
                         TABLE_EXERCISES, InternalDbContract.PROJECTION_EXERCISES, ExerciseContent.LANGUAGE_ID + "=?", args2, null, null, sortOrder);
 
-                Log.d(TAG, "query: "+ query);
-                CursorHelper.toString(cursor);
+                Log.d(TAG, "query: "+ query + "(sort order: " + sortOrder + ")");
+                //CursorHelper.toString(cursor);
                 break;
 
             case EXERCISES_ALL:
@@ -124,7 +126,7 @@ public class InternalDbProvider extends ContentProvider {
                 cursor = getDatabase(false).query(
                     TABLE_SCORES, InternalDbContract.PROJECTION_SCORES, ExerciseScore.WORD_ID + "=?", args3, null, null, null);
                 CursorHelper.toString(cursor);
-
+                break;
         }
 
         return cursor;
