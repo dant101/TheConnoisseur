@@ -167,26 +167,67 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/heart_big_1"
+            <FrameLayout
                 android:layout_width="@dimen/hearts_width"
                 android:layout_height="match_parent"
-                android:padding="@dimen/normal_padding"
-                android:src="@drawable/heart_black_large"/>
+                android:padding="@dimen/normal_padding">
 
-            <ImageView
-                android:id="@+id/heart_big_2"
-                android:layout_width="@dimen/hearts_width"
-                android:layout_height="match_parent"
-                android:padding="@dimen/normal_padding"
-                android:src="@drawable/heart_black_large"/>
+                <ImageView
+                    android:id="@+id/heart_big_1_black"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    android:src="@drawable/heart_black_large"/>
 
-            <ImageView
-                android:id="@+id/heart_big_3"
+                <ImageView
+                    android:id="@+id/heart_big_1_green"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/heart_green_large"/>
+
+            </FrameLayout>
+
+            <FrameLayout
                 android:layout_width="@dimen/hearts_width"
                 android:layout_height="match_parent"
-                android:padding="@dimen/normal_padding"
-                android:src="@drawable/heart_black_large"/>
+                android:padding="@dimen/normal_padding">
+
+                <ImageView
+                    android:id="@+id/heart_big_2_black"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    android:src="@drawable/heart_black_large"/>
+
+                <ImageView
+                    android:id="@+id/heart_big_2_green"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/heart_green_large"/>
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="@dimen/hearts_width"
+                android:layout_height="match_parent"
+                android:padding="@dimen/normal_padding">
+
+                <ImageView
+                    android:id="@+id/heart_big_3_black"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    android:src="@drawable/heart_black_large"/>
+
+                <ImageView
+                    android:id="@+id/heart_big_3_green"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/heart_green_large"/>
+
+            </FrameLayout>
+
+
 
         </LinearLayout>
 
