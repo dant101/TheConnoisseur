@@ -75,6 +75,10 @@ public class InternalDbContract {
         return CONTENT_URI.buildUpon().appendPath(ExerciseScore.SCORE_TABLE_NAME).appendPath(String.valueOf(word_id)).build();
     }
 
+    public static Uri deleteExerciseScore(String username) {
+        return CONTENT_URI.buildUpon().appendPath(ExerciseScore.SCORE_TABLE_NAME).appendPath(ExerciseScore.DELETE).appendPath(username).build();
+    }
+
     public static String getWordID(Uri uri) {
         return uri.getLastPathSegment();
     }

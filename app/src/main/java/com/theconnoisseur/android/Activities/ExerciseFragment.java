@@ -389,6 +389,8 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         Log.d(TAG, "Exercise Fragment: onUnSuccessfulAttempt");
         mLanguageImage.setImageResource(R.drawable.cross_wrong);
         setBackgroundResourceAndAnimate(R.drawable.transition_red);
+
+        mAttemptsRemaining -= 1;
     }
 
     // Sets the background and animates, (user feedback)
@@ -447,8 +449,6 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
                 mRecordLayout.setVisibility(View.GONE);
                 mListen.setVisibility(View.GONE);
                 mProceed.setVisibility(View.VISIBLE);
-
-                mAttempts += 1; //TODO: rethink attempts/hearts...
         }
     }
 
@@ -457,28 +457,33 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         //Maintain cumulative score for average calculation
         mSessionCumulativeScore += mCurrentWordBestScore;
 
-
         //Set attempts at this pronunciation
         mAttempts = ExerciseContent.MAXIMUM_LIVES - mAttemptsRemaining;
         mSessionAttempts += mAttempts;
 
-        //Maintain best and worst scores/words
+        Log.d(TAG, "mAttemptsRemaining: " + String.valueOf(mAttemptsRemaining) + ". mAttempts: " + String.valueOf(mAttempts));
+
+        //Track best scores/words
         if (mAttempts <= mSessionBestScore) {
             mSessionBestScore = mAttempts;
             mSessionBestWord = mCurrentWord;
             mSessionBestWordId = mCurrentWordId;
-        } else if (mAttempts > mSessionWorstScore) {
+        }
+
+        //Track best scores/words
+        if (mAttempts > mSessionWorstScore) {
             mSessionWorstScore = mAttempts;
             mSessionWorstWord = mCurrentWord;
             mSessionWorstWordId = mCurrentWordId;
         }
 
         //Main number of words passed
-        if (mCurrentWordBestScore > mThreshold) {
+        if (mCurrentWordBestScore >= mThreshold) {
             mSessionWordPasses += 1;
             Log.d(TAG, "mSessionword passes now: " + String.valueOf(mSessionWordPasses));
         }
 
+        Log.d(TAG, "mCurrentWordBestScore: " + String.valueOf(mCurrentWordBestScore) + ". mThreshold: " + String.valueOf(mThreshold));
         Log.d(TAG, "mAttempts = " +String.valueOf(mAttempts));
         Log.d(TAG, "mSessionAttempts now: " + String.valueOf(mSessionAttempts));
 
@@ -525,8 +530,6 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
 
         //Updates current word best score
         mCurrentWordBestScore = score > mCurrentWordBestScore ? score : mCurrentWordBestScore;
-
-        mAttemptsRemaining -= 1;
 
         if (score < mThreshold) {
             mPassedWord = true;

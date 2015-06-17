@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.theconnoisseur.R;
+import com.theconnoisseur.android.Controller.ContentDownloadController;
 import com.theconnoisseur.android.Model.GlobalPreferenceString;
 
 import Database.ConnoisseurDatabase;
@@ -83,9 +84,14 @@ public class LoginActivity extends Activity {
         if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(GlobalPreferenceString.SIGNED_IN_PREF, false)) {
             mUsername = PreferenceManager.getDefaultSharedPreferences(this).getString(GlobalPreferenceString.USERNAME_PREF, "-- Username not found! --");
             mEmail = PreferenceManager.getDefaultSharedPreferences(this).getString(GlobalPreferenceString.EMAIL_PREF, "-- Email not found! --");
-            Log.d(TAG, "User already logged in: Username(" + mUsername + ") Email(" + mEmail + ")");
 
-            startMainMenuActivity();
+            if (ConnoisseurDatabase.getInstance().getLoginTable().login(mUsername, mPassword)) {
+                Log.d(TAG, "User already logged in: Username(" + mUsername + ") Email(" + mEmail + ")");
+                startMainMenuActivity();
+            } else {
+                Log.d(TAG, "Couldn't log user in: Username(" + mUsername + ") Email(" + mEmail + ")");
+                ToastHelper.toast(this, "Sorry, we couldn't log you in at this time");
+            }
         }
     }
 
@@ -163,6 +169,8 @@ public class LoginActivity extends Activity {
 
     // User elects to skip the account creation/login step
     public void skipEnterDetails(View v) {
+        mUsername = GlobalPreferenceString.GUEST; //TODO: give unique guest username?
+        setUserSessionDetails();
         startMainMenuActivity();
     }
 
@@ -187,9 +195,10 @@ public class LoginActivity extends Activity {
             //Logging in
             if(ConnoisseurDatabase.getInstance().getLoginTable().login(mUsername, mPassword)) {
                 //Successful user sign in
+                Log.d(TAG, "Successfully signed in user: Username(" + mUsername + ") Email(" + mEmail + ")");
                 mFeedbackPassword.setImageResource(R.drawable.greentick);
                 setUserSessionDetails();
-                Log.d(TAG, "Successfully signed in user: Username(" + mUsername + ") Email(" + mEmail + ")");
+                syncUserInformation(mUsername);
                 startMainMenuActivity();
             } else {
                 //Unable to login in user
@@ -214,6 +223,10 @@ public class LoginActivity extends Activity {
     private void startMainMenuActivity() {
         //UI visual feedback?
         startActivity(new Intent(LoginActivity.this, MainMenuActivity.class));
+    }
+
+    private void syncUserInformation(String username) {
+        new Thread(new ContentDownloadController.syncUserInformation(this, username)).start();
     }
 
 

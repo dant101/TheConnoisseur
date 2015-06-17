@@ -3,6 +3,7 @@ package com.theconnoisseur.android.Model;
 
 public class ExerciseScore {
     public static final String SCORE_TABLE_NAME = "scores";
+    public static final String DELETE = "delete";
 
     public static final String QUERY_BY_LANGUAGE_ID = "language_id";
 

@@ -18,6 +18,7 @@
             android:layout_gravity="center"/>
 
         <ImageButton
+            android:visibility="gone"
             android:layout_width="@dimen/home_icon_width"
             android:layout_height="@dimen/home_icon_width"
             android:layout_marginTop="-40dp"
@@ -172,9 +173,10 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/logout"
             android:visibility="visible"
             android:orientation="horizontal"
-            android:onClick="voiceRecogniserTest"
+            android:onClick="onSelection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/normal_margin">

@@ -90,12 +90,12 @@ public class InternalDbProviderTest extends ProviderTestCase2<InternalDbProvider
     public void testCanInsertAndRetrieveScores() {
         mMockResolver.insert(InternalDbContract.insertExerciseScoreUri(), getScoresTestValues());
 
-        Cursor c = mMockResolver.query(InternalDbContract.queryForExerciseScore(1), null, null, null, null);
+        Cursor c = mMockResolver.query(InternalDbContract.queryForExerciseScore(9), null, null, null, null);
         assertEquals(1, c.getCount());
 
         c.moveToFirst();
-        assertEquals("tomek", c.getString(c.getColumnIndex(ExerciseScore.USER_ID)));
-        assertEquals(1, c.getInt(c.getColumnIndex(ExerciseScore.WORD_ID)));
+        assertEquals("tomekS", c.getString(c.getColumnIndex(ExerciseScore.USER_ID)));
+        assertEquals(9, c.getInt(c.getColumnIndex(ExerciseScore.WORD_ID)));
         assertEquals(100, c.getInt(c.getColumnIndex(ExerciseScore.PERCENTAGE_SCORE)));
         assertEquals(10, c.getInt(c.getColumnIndex(ExerciseScore.ATTEMPTS_SCORE)));
         c.close();
@@ -103,22 +103,32 @@ public class InternalDbProviderTest extends ProviderTestCase2<InternalDbProvider
 
     public void testCanUpdateScoreValues() {
         mMockResolver.insert(InternalDbContract.insertExerciseScoreUri(), getScoresTestValues());
-        Cursor c = mMockResolver.query(InternalDbContract.queryForExerciseScore(1), null, null, null, null);
-        assertEquals(1, c.getCount());
+        Cursor c = mMockResolver.query(InternalDbContract.queryForExerciseScore(9), null, null, null, null);
+        assertEquals(2, c.getCount());
 
         c.moveToFirst();
         assertEquals(10, c.getInt(c.getColumnIndex(ExerciseScore.ATTEMPTS_SCORE)));
 
-        mMockResolver.update(InternalDbContract.updateExerciseScore(1), getUpdateTestValues(), null, null);
-        c = mMockResolver.query(InternalDbContract.queryForExerciseScore(1), null, null, null, null);
+        mMockResolver.update(InternalDbContract.updateExerciseScore(9), getUpdateTestValues(), null, null);
+        c = mMockResolver.query(InternalDbContract.queryForExerciseScore(9), null, null, null, null);
         c.moveToFirst();
         assertEquals(20, c.getInt(c.getColumnIndex(ExerciseScore.ATTEMPTS_SCORE)));
     }
 
+    public void testCanDeleteScoreValues() {
+        mMockResolver.insert(InternalDbContract.insertExerciseScoreUri(), getScoresTestValues());
+        Cursor c = mMockResolver.query(InternalDbContract.queryForExerciseScore(9), null, null, null, null);
+        assertEquals(1, c.getCount());
+
+        mMockResolver.delete(InternalDbContract.deleteExerciseScore("tomekS"), null, null);
+        c = mMockResolver.query(InternalDbContract.queryForExerciseScore(9), null, null,null,null);
+        assertEquals(0, c.getCount());
+    }
+
     private ContentValues getScoresTestValues() {
         ContentValues values = new ContentValues();
-        values.put(ExerciseScore.USER_ID, "tomek");
-        values.put(ExerciseScore.WORD_ID, 1);
+        values.put(ExerciseScore.USER_ID, "tomekS");
+        values.put(ExerciseScore.WORD_ID, 9);
         values.put(ExerciseScore.PERCENTAGE_SCORE, 100);
         values.put(ExerciseScore.ATTEMPTS_SCORE, 10);
         return values;

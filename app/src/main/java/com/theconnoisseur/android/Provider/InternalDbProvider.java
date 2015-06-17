@@ -37,6 +37,7 @@ public class InternalDbProvider extends ContentProvider {
     private static final int EXERCISES = 3;
     private static final int SCORES = 4;
     private static final int SCORES_ID = 5;
+    private static final int SCORES_DELETE = 6;
 
     private static final UriMatcher URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
 
@@ -50,6 +51,7 @@ public class InternalDbProvider extends ContentProvider {
         URI_MATCHER.addURI(InternalDbContract.CONTENT_AUTHORITY, TABLE_EXERCISES, EXERCISES_ALL);
         URI_MATCHER.addURI(InternalDbContract.CONTENT_AUTHORITY, TABLE_EXERCISES + "/*", EXERCISES);
         URI_MATCHER.addURI(InternalDbContract.CONTENT_AUTHORITY, TABLE_SCORES, SCORES);
+        URI_MATCHER.addURI(InternalDbContract.CONTENT_AUTHORITY, TABLE_SCORES + "/" + ExerciseScore.DELETE + "/*", SCORES_DELETE);
         URI_MATCHER.addURI(InternalDbContract.CONTENT_AUTHORITY, TABLE_SCORES + "/*", SCORES_ID);
     }
 
@@ -160,6 +162,15 @@ public class InternalDbProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
+        Log.d(TAG, "attempting delete operation");
+        Log.d(TAG, "incoming URI: " + uri.toString());
+        switch(URI_MATCHER.match(uri)) {
+            case SCORES_DELETE:
+                String username = InternalDbContract.getId(uri);
+                String[] args = {username};
+                Log.d(TAG, "deleting score rows (with username: "+ username +")");
+                return getDatabase(true).delete(TABLE_SCORES, ExerciseScore.USER_ID + " = ? ", args);
+        }
         return 0;
     }
 

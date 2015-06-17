@@ -89,8 +89,10 @@ public class CollectionSelectionActivity extends ActionBarActivity implements Cu
                         float average_best_score = mAverageScores.get(language_id);
                         Log.d(TAG, "average_best_score" + String.valueOf(average_best_score));
 
-                        ((TextView)view.findViewById(R.id.item_score)).setText("Average score: " + String.format("%.1f", average_best_score));
-                        (view.findViewById(R.id.item_score)).setVisibility(View.VISIBLE);
+                        ((TextView)view.findViewById(R.id.item_score)).setText("Average attempts: " + String.format("%.1f", average_best_score));
+                        view.findViewById(R.id.item_score).setVisibility(View.VISIBLE);
+                    } else {
+                        view.findViewById(R.id.item_score).setVisibility(View.GONE);
                     }
 
                     double sigma = 0.01;
@@ -162,15 +164,19 @@ public class CollectionSelectionActivity extends ActionBarActivity implements Cu
 
                 if (!word_score.moveToFirst()) { continue; }
 
-                int attempt_score = word_score.getInt(word_score.getColumnIndex(ExerciseScore.ATTEMPTS_SCORE));
+                // Database currently tracks 'attempts' to mean incorrect attempts before successful pronunciation - hence the +1
+                int attempt_score = word_score.getInt(word_score.getColumnIndex(ExerciseScore.ATTEMPTS_SCORE)) + 1;
                 number_exercises += 1;
                 cummulative_attempt_score += attempt_score;
+
+                Log.d(TAG, "#exercises: " + String.valueOf(number_exercises) + ". Cummulative score: " + String.valueOf(cummulative_attempt_score));
 
                 word_score.close();
             } while (exercises.moveToNext());
             exercises.close();
 
             float average_score = (float)cummulative_attempt_score / number_exercises;
+            if (average_score == 0) { continue; }
             mAverageScores.put(language_id, average_score);
             Log.d(TAG, "putting into mAverageScores: language_id = " + String.valueOf(language_id) + ", average_score = " + String.valueOf(average_score));
 

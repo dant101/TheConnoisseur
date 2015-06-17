@@ -1,7 +1,9 @@
 package com.theconnoisseur.android.Activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +14,8 @@ import android.widget.TextView;
 
 import com.theconnoisseur.R;
 import com.theconnoisseur.android.Activities.Testing.VoiceRecogniserTestActivity;
+import com.theconnoisseur.android.Model.GlobalPreferenceString;
+import com.theconnoisseur.android.Model.InternalDbContract;
 
 import Voice.VoiceRecogniser;
 
@@ -42,28 +46,6 @@ public class MainMenuActivity extends ActionBarActivity {
         super.onStart();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     public void goBack(View v) {
         //startActivity(new Intent(MainMenuActivity.this, LoginActivity.class));
     }
@@ -82,8 +64,24 @@ public class MainMenuActivity extends ActionBarActivity {
             case R.id.collection_selection:
                 startActivity(new Intent(MainMenuActivity.this, CollectionSelectionActivity.class));
                 break;
+            case R.id.logout:
+                logOut();
+                break;
 
             //Adventures button?
         }
+    }
+
+    private void logOut() {
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+        editor.putBoolean(GlobalPreferenceString.SIGNED_IN_PREF, false);
+        editor.commit();
+
+        String username = PreferenceManager.getDefaultSharedPreferences(this).getString(GlobalPreferenceString.USERNAME_PREF, GlobalPreferenceString.GUEST);
+
+        // Delete stored best scores/attempts
+        getContentResolver().delete(InternalDbContract.deleteExerciseScore(username), null,null);
+
+        startActivity(new Intent(MainMenuActivity.this, LoginActivity.class));
     }
 }

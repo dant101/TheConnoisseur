@@ -19,6 +19,7 @@ public class ContentDownloadController {
 
     private static final String PREF_KEY_LAST_CHECK = "last_check";
     private static final String PREF_KEY_LANGUAGE_DOWNLOADED = "language_downloaded_";
+    private static final String PREF_KEY_LANGUAGE_LAST_CHECK = "language_last_check_";
     private static final int DOWNLOAD_QUANTUM = 86400000; // Millis in a day
 
     private static ContentDownloadController sInstance = null;
@@ -79,12 +80,13 @@ public class ContentDownloadController {
 
     /**
      * Returns whether exercises for a given language should be downloaded
-     * TODO: what if we change the words on the database? decision to be made here.
+     * If last exercise fetching occurred more than DOWNLOAD_QUANTUM millis, requery.
      * @param language_id The id of the language whose words we are deciding whether to download
      * @return
      */
     private boolean shouldFetchExercise(int language_id) {
-        return !PreferenceManager.getDefaultSharedPreferences(mContext).getBoolean(PREF_KEY_LANGUAGE_DOWNLOADED + String.valueOf(language_id), false);
+        long lastDownload = PreferenceManager.getDefaultSharedPreferences(mContext).getLong(PREF_KEY_LANGUAGE_LAST_CHECK + String.valueOf(language_id), 0);
+        return (System.currentTimeMillis() - lastDownload) > (DOWNLOAD_QUANTUM);
     }
 
     /**
@@ -138,7 +140,7 @@ public class ContentDownloadController {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putBoolean(PREF_KEY_LANGUAGE_DOWNLOADED + String.valueOf(language_id), true);
+            editor.putLong(PREF_KEY_LANGUAGE_LAST_CHECK + String.valueOf(language_id), System.currentTimeMillis());
             editor.commit();
 
             if (mContext instanceof ExerciseContentDownloadCallback) {
@@ -146,7 +148,22 @@ public class ContentDownloadController {
                 ((ExerciseContentDownloadCallback) mContext).ExerciseDownloaded();
             }
 
-            Log.d(TAG, "Preference boolean for language_id " + String.valueOf(language_id) + " set to true");
+            Log.d(TAG, "Preference time (long) for language_id " + String.valueOf(language_id) + " set to " + String.valueOf(System.currentTimeMillis()));
+        }
+    }
+
+    public static class syncUserInformation implements Runnable {
+        String username;
+        Context context;
+
+        public syncUserInformation(Context context, String username) {
+            this.username = username;
+            this.context = context;
+        }
+
+        @Override
+        public void run() {
+            ResourceDownloader.downloadUserScores(context, username);
         }
     }
 

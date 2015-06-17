@@ -8,6 +8,7 @@ import android.util.Log;
 import com.theconnoisseur.android.Activities.ExerciseActivity;
 import com.theconnoisseur.android.Model.Comment;
 import com.theconnoisseur.android.Model.ExerciseContent;
+import com.theconnoisseur.android.Model.ExerciseScore;
 import com.theconnoisseur.android.Model.InternalDbContract;
 import com.theconnoisseur.android.Model.LanguageSelection;
 
@@ -18,6 +19,7 @@ import Database.CommentOnlineDBFormat;
 import Database.ConnoisseurDatabase;
 import Database.ExerciseOnlineDBFormat;
 import Database.LanguageOnlineDBFormat;
+import Database.ScoreOnlineDBFormat;
 
 /**
  * Executes high level actions with domain specific effects. I.e. download & store all languages/ all words.
@@ -83,5 +85,24 @@ public class ResourceDownloader {
         Log.d(TAG, "querying comments from remote database");
 
         return ConnoisseurDatabase.getInstance().getCommentTable().getCommentsByWordId(word_id);
+    }
+
+    public static void downloadUserScores(Context context, String username) {
+        List<ScoreOnlineDBFormat> rows = ConnoisseurDatabase.getInstance().getScoreTable().getAllScoreAndAttempts(username);
+
+        for (ScoreOnlineDBFormat row : rows) {
+            ContentValues values = new ContentValues();
+
+            values.put(ExerciseScore.USER_ID, row.getUsername());
+            values.put(ExerciseScore.WORD_ID, row.getWord_id());
+            values.put(ExerciseScore.ATTEMPTS_SCORE, row.getAttempts_score());
+            values.put(ExerciseScore.PERCENTAGE_SCORE, row.getPercentage_score());
+
+            Log.d(TAG, "Entry: " + row.getUsername() + ". " + String.valueOf(row.getWord_id()) + ". " + String.valueOf(row.getAttempts_score())+ ". " + String.valueOf(row.getPercentage_score()));
+
+            if (context.getApplicationContext().getContentResolver().update(InternalDbContract.updateExerciseScore(row.getWord_id()), values, null, null) == 0) {
+                context.getApplicationContext().getContentResolver().insert(InternalDbContract.insertExerciseScoreUri(), values);
+            }
+        }
     }
 }

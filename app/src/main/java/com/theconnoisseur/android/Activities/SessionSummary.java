@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.theconnoisseur.R;
@@ -61,6 +62,8 @@ public class SessionSummary extends ActionBarActivity {
     private ImageView mConnoisseurImage;
     private Button mPlayNewSession;
 
+    private LinearLayout mBestWordLayout;
+    private LinearLayout mWorstWordLayout;
     private ImageView mHeartBest1;
     private ImageView mHeartBest2;
     private ImageView mHeartBest3;
@@ -86,6 +89,8 @@ public class SessionSummary extends ActionBarActivity {
         mWorstWordLanguage = (ImageView) findViewById(R.id.worst_word_language);
         mConnoisseurImage = (ImageView) findViewById(R.id.connoisseur_image);
         mPlayNewSession = (Button) findViewById(R.id.play_new_session);
+        mBestWordLayout = (LinearLayout) findViewById(R.id.best_word_layout);
+        mWorstWordLayout = (LinearLayout) findViewById(R.id.worst_word_layout);
         mHeartBest1 = (ImageView) findViewById(R.id.heart_best_1);
         mHeartBest2 = (ImageView) findViewById(R.id.heart_best_2);
         mHeartBest3 = (ImageView) findViewById(R.id.heart_best_3);
@@ -169,22 +174,29 @@ public class SessionSummary extends ActionBarActivity {
     private void setBestWorstWords() {
 
         mHeartBest1.setImageResource(R.drawable.heart_black_large); mHeartBest2.setImageResource(R.drawable.heart_black_large);
-        mHeartBest3.setImageResource(R.drawable.heart_black_large); mHeartWorst1.setImageResource(R.drawable.heart_green_black);
-        mHeartWorst2.setImageResource(R.drawable.heart_green_black); mHeartWorst3.setImageResource(R.drawable.heart_green_black);
+        mHeartBest3.setImageResource(R.drawable.heart_black_large); mHeartWorst1.setImageResource(R.drawable.heart_black_large);
+        mHeartWorst2.setImageResource(R.drawable.heart_black_large); mHeartWorst3.setImageResource(R.drawable.heart_black_large);
 
         setHearts(mBestScore, mHeartBest1, mHeartBest2, mHeartBest3);
         setHearts(mWorstScore, mHeartWorst1, mHeartWorst2, mHeartWorst3);
+
+        Log.d(TAG, "bestscore: " + String.valueOf(mBestScore) + ". worstscore " + String.valueOf(mWorstScore));
+
+        if(mWorstScore == 0) {
+            mWorstWordLayout.setVisibility(View.GONE);
+        }
     }
 
-    private void setHearts(int remaining, ImageView heart1, ImageView heart2, ImageView heart3) {
-        switch (remaining) {
+    private void setHearts(int attempts, ImageView heart1, ImageView heart2, ImageView heart3) {
+        switch (attempts) {
             case 0:
-            case 1:
-                heart1.setImageResource(R.drawable.heart_green_small);
-            case 2:
-                heart2.setImageResource(R.drawable.heart_green_small);
-            case 3:
                 heart3.setImageResource(R.drawable.heart_green_small);
+            case 1:
+                heart2.setImageResource(R.drawable.heart_green_small);
+            case 2:
+                heart1.setImageResource(R.drawable.heart_green_small);
+            case 3:
+                // No attempts left
         }
     }
 
