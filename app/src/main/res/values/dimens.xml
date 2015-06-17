@@ -37,8 +37,8 @@
     <dimen name="illustration_width">350dp</dimen>
     <dimen name="illustration_height">250dp</dimen>
     <dimen name="microphone_width">80dp</dimen>
-    <dimen name="microphone_anim_width">50dp</dimen>
-    <dimen name="microphone_anim_margin">15dp</dimen>
+    <dimen name="microphone_anim_width">40dp</dimen>
+    <dimen name="microphone_anim_margin">20dp</dimen>
     <dimen name="accuracy_diameter">40dp</dimen>
     <dimen name="proceed_diameter">50dp</dimen>
     <dimen name="hearts_height_small">30dp</dimen>
