@@ -205,7 +205,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
 
-                if(mBackgroundIsTransitioned) {
+                if (mBackgroundIsTransitioned) {
                     ((TransitionDrawable) mBackground.getBackground()).reverseTransition(REVERSE_TRANSITION);
                     mBackgroundIsTransitioned = false;
                 }
@@ -437,11 +437,20 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
             mBackgroundIsTransitioned = false;
         }
 
-        updateLives();
+        initLives();
+    }
+
+    private void initLives() {
+        mBigLife3.setImageResource(R.drawable.heart_green_large);
+        mSmallLife3.setImageResource(R.drawable.heart_green_small);
+        mBigLife2.setImageResource(R.drawable.heart_green_large);
+        mSmallLife2.setImageResource(R.drawable.heart_green_small);
+        mBigLife1.setImageResource(R.drawable.heart_green_large);
+        mSmallLife1.setImageResource(R.drawable.heart_green_small);
     }
 
     private void updateLives() {
-
+/*
         mBigLife1.setImageResource(R.drawable.heart_black_large);
         mBigLife2.setImageResource(R.drawable.heart_black_large);
         mBigLife3.setImageResource(R.drawable.heart_black_large);
@@ -467,6 +476,28 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
 
                 mAttempts += 1; //TODO: rethink attempts/hearts...
         }
+
+        */
+
+        switch(mAttemptsRemaining) {
+            case 2:
+                mBigLife3.setImageResource(R.drawable.heart_black_large);
+                mSmallLife3.setImageResource(R.drawable.heart_green_black);
+                break;
+            case 1:
+                mBigLife2.setImageResource(R.drawable.heart_black_large);
+                mSmallLife2.setImageResource(R.drawable.heart_green_black);
+                break;
+            case 0:
+                mBigLife1.setImageResource(R.drawable.heart_black_large);
+                mSmallLife1.setImageResource(R.drawable.heart_green_black);
+                mRecordLayout.setVisibility(View.GONE);
+                mListenLayout.setVisibility(View.GONE);
+                mProceed.setVisibility(View.VISIBLE);
+                break;
+        }
+
+        mAttempts += 1;
     }
 
     // House keeping as we move onto the next word in a session
