@@ -10,7 +10,6 @@ import android.graphics.drawable.TransitionDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -69,10 +68,15 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
     private FrameLayout mRecordLayout;
     private ImageView mRecord;
     private ImageView mRecordAnim;
+    private FrameLayout mListenLayout;
     private ImageView mListen;
-    private ImageView mBigLife1;
-    private ImageView mBigLife2;
-    private ImageView mBigLife3;
+    private ImageView mListenAnim;
+    private ImageView mBigLife1g;
+    private ImageView mBigLife1b;
+    private ImageView mBigLife2g;
+    private ImageView mBigLife2b;
+    private ImageView mBigLife3g;
+    private ImageView mBigLife3b;
     private ImageView mSmallLife1;
     private ImageView mSmallLife2;
     private ImageView mSmallLife3;
@@ -154,9 +158,14 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         mRecordLayout = (FrameLayout) view.findViewById(R.id.record_layout);
         mRecordAnim = (ImageView) view.findViewById(R.id.record_icon_anim);
         mListen = (ImageView) view.findViewById(R.id.listen_icon);
-        mBigLife1 = (ImageView) view.findViewById(R.id.heart_big_1);
-        mBigLife2 = (ImageView) view.findViewById(R.id.heart_big_2);
-        mBigLife3 = (ImageView) view.findViewById(R.id.heart_big_3);
+        mListenLayout = (FrameLayout) view.findViewById(R.id.listen_layout);
+        mListenAnim = (ImageView) view.findViewById(R.id.listen_icon_anim);
+        mBigLife1g = (ImageView) view.findViewById(R.id.heart_big_1_green);
+        mBigLife1b = (ImageView) view.findViewById(R.id.heart_big_1_black);
+        mBigLife2g = (ImageView) view.findViewById(R.id.heart_big_2_green);
+        mBigLife2b = (ImageView) view.findViewById(R.id.heart_big_2_black);
+        mBigLife3g = (ImageView) view.findViewById(R.id.heart_big_3_green);
+        mBigLife3b = (ImageView) view.findViewById(R.id.heart_big_3_black);
         mSmallLife1 = (ImageView) view.findViewById(R.id.heart_small_1);
         mSmallLife2 = (ImageView) view.findViewById(R.id.heart_small_2);
         mSmallLife3 = (ImageView) view.findViewById(R.id.heart_small_3);
@@ -168,8 +177,6 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
 
         return view;
     }
-
-    private long startAnimTime;
 
     private void setListeners() {
         mProceed.setOnClickListener(new View.OnClickListener() {
@@ -195,35 +202,25 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         });
         */
 
-        final Animation a = AnimationUtils.loadAnimation(getActivity(), R.anim.growfade);
-
+        final Animation grow = AnimationUtils.loadAnimation(getActivity(), R.anim.grow);
+        final Animation shrink = AnimationUtils.loadAnimation(getActivity(), R.anim.shrink);
 
         mRecord.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
 
-                if(mBackgroundIsTransitioned) {
+                if (mBackgroundIsTransitioned) {
                     ((TransitionDrawable) mBackground.getBackground()).reverseTransition(REVERSE_TRANSITION);
                     mBackgroundIsTransitioned = false;
                 }
 
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     mVoiceRecogniser.startListening();
-                    mRecordAnim.startAnimation(a);
-                    startAnimTime = System.currentTimeMillis();
+                    mRecordAnim.startAnimation(grow);
                     return true;
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     mVoiceRecogniser.stopListening();
-
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            mRecordAnim.clearAnimation();
-                        }
-                    }, a.getDuration() -
-                            (System.currentTimeMillis() - startAnimTime) % a.getDuration());
-
+                    mRecordAnim.startAnimation(shrink);
                     return true;
                 } else {
                     return false;
@@ -265,6 +262,30 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
                 e.printStackTrace();
             }
         }
+
+        final Animation grow = AnimationUtils.loadAnimation(getActivity(), R.anim.grow);
+        final Animation shrink = AnimationUtils.loadAnimation(getActivity(), R.anim.shrink);
+
+        grow.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mListenAnim.startAnimation(shrink);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        mListenAnim.startAnimation(grow);
+
     }
 
     /**
@@ -378,7 +399,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         mWordDescriptionView.setVisibility(View.VISIBLE);
         mLanguageImage.setImageResource(R.drawable.tick_correct);
         mRecordLayout.setVisibility(View.GONE);
-        mListen.setVisibility(View.GONE);
+        mListenLayout.setVisibility(View.GONE);
         mProceed.setVisibility(View.VISIBLE);
 
         setBackgroundResourceAndAnimate(R.drawable.transition_green);
@@ -413,7 +434,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         mLivesSmall.setVisibility(View.INVISIBLE);
         mWordDescriptionView.setVisibility(View.GONE);
         mProceed.setVisibility(View.GONE);
-        mListen.setVisibility(View.VISIBLE);
+        mListenLayout.setVisibility(View.VISIBLE);
         //mRecord.setVisibility(View.VISIBLE);
         mRecordLayout.setVisibility(View.VISIBLE);
 
@@ -422,35 +443,55 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
             mBackgroundIsTransitioned = false;
         }
 
-        updateLives();
+        initLives();
+    }
+
+    private void initLives() {
+        mBigLife3g.clearAnimation();
+        mBigLife3g.setVisibility(View.VISIBLE);
+        mBigLife3b.setVisibility(View.GONE);
+        mSmallLife3.setImageResource(R.drawable.heart_green_small);
+
+        mBigLife2g.clearAnimation();
+        mBigLife2g.setVisibility(View.VISIBLE);
+        mBigLife2b.setVisibility(View.GONE);
+        mSmallLife2.setImageResource(R.drawable.heart_green_small);
+        
+        mBigLife1g.clearAnimation();
+        mBigLife1g.setVisibility(View.VISIBLE);
+        mBigLife1b.setVisibility(View.GONE);
+        mSmallLife1.setImageResource(R.drawable.heart_green_small);
     }
 
     private void updateLives() {
 
-        mBigLife1.setImageResource(R.drawable.heart_black_large);
-        mBigLife2.setImageResource(R.drawable.heart_black_large);
-        mBigLife3.setImageResource(R.drawable.heart_black_large);
-        mSmallLife1.setImageResource(R.drawable.heart_green_black);
-        mSmallLife2.setImageResource(R.drawable.heart_green_black);
-        mSmallLife3.setImageResource(R.drawable.heart_green_black);
+        final Animation anim = AnimationUtils.loadAnimation(getActivity(), R.anim.fade);
 
         switch(mAttemptsRemaining) {
-            case 3:
-                mBigLife3.setImageResource(R.drawable.heart_green_large);
-                mSmallLife3.setImageResource(R.drawable.heart_green_small);
             case 2:
-                mBigLife2.setImageResource(R.drawable.heart_green_large);
-                mSmallLife2.setImageResource(R.drawable.heart_green_small);
+                mBigLife3b.setVisibility(View.VISIBLE);
+                mBigLife3g.startAnimation(anim);
+                mSmallLife3.setImageResource(R.drawable.heart_green_black);
+                break;
             case 1:
-                mBigLife1.setImageResource(R.drawable.heart_green_large);
-                mSmallLife1.setImageResource(R.drawable.heart_green_small);
+                mBigLife2b.setVisibility(View.VISIBLE);
+                mBigLife2g.startAnimation(anim);
+                mSmallLife2.setImageResource(R.drawable.heart_green_black);
                 break;
             case 0:
+                mBigLife1b.setVisibility(View.VISIBLE);
+                mBigLife1g.startAnimation(anim);
+                mSmallLife1.setImageResource(R.drawable.heart_green_black);
+
                 mRecordLayout.setVisibility(View.GONE);
-                mListen.setVisibility(View.GONE);
+                mListenLayout.setVisibility(View.GONE);
                 mProceed.setVisibility(View.VISIBLE);
+                break;
         }
+
+        mAttempts += 1;
     }
+
 
     // House keeping as we move onto the next word in a session
     private void concludeWordAttempt() {
