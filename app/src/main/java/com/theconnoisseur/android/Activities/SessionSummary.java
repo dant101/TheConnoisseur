@@ -51,6 +51,7 @@ public class SessionSummary extends ActionBarActivity {
     private int mTotalWords;
     private int mLanguageId;
     private String mLanguageHex;
+    private String mTongueString;
 
     private ImageView mLanguageImage;
     private TextView mLanguage;
@@ -126,45 +127,6 @@ public class SessionSummary extends ActionBarActivity {
         mSessionAttempts = i.getIntExtra(SessionSummaryContent.SESSION_ATTEMPTS, 15);
 
         setBestWorstWords();
-
-        setupShareButton(mConnoisseurImage);
-
-    }
-
-    private void setupShareButton(ImageView button) {
-
-        final SessionSummary activity = this;
-        FacebookSdk.sdkInitialize(activity);
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                ShareDialog shareDialog = new ShareDialog(activity);
-
-                if (ShareDialog.canShow(ShareLinkContent.class)) {
-
-                    String person;
-                    float average = (float) mSessionAttempts / ExerciseActivity.EXERCISES_PER_SESSION;
-                    if (average >= ExerciseContent.AVERAGE_TOURIST) {
-                        person = "Barbarian";
-                    } else if (average < ExerciseContent.AVERAGE_TOURIST && average > ExerciseContent.AVERAGE_CONNOISSEUR) {
-                        person = "Tourist";
-                    } else {
-                        person = "Connoisseur";
-                    }
-
-                    ShareLinkContent linkContent = new ShareLinkContent.Builder()
-                            .setContentTitle("I'm a " + person)
-                            .setContentDescription(
-                                    "Check out The Connoisseur! I averaged " + average+1 + " attempts, can you beat me?")
-                            .setContentUrl(Uri.parse("https://www.facebook.com/pages/The-Connoisseur/1429322337391434"))
-                            .build();
-
-                    shareDialog.show(linkContent);
-                }
-            }
-        });
     }
 
     @Override
@@ -183,6 +145,7 @@ public class SessionSummary extends ActionBarActivity {
 
         setTongueLevel();
         setTextColour();
+        setupShareButton(mConnoisseurImage);
     }
 
     private void setTongueLevel() {
@@ -190,16 +153,46 @@ public class SessionSummary extends ActionBarActivity {
         if (average >= ExerciseContent.AVERAGE_TOURIST) {
             mConnoisseurImage.setImageResource(R.drawable.face_barbarian);
             mTongueType.setText(R.string.performance_1);
+            mTongueString = getResources().getString(R.string.performance_1);
             mTongueDescription.setText(R.string.barbarian_description);
         } else if (average < ExerciseContent.AVERAGE_TOURIST && average > ExerciseContent.AVERAGE_CONNOISSEUR) {
             mConnoisseurImage.setImageResource(R.drawable.face_tourist);
             mTongueType.setText(R.string.performance_2);
+            mTongueString = getResources().getString(R.string.performance_2);
             mTongueDescription.setText(R.string.tourist_description);
         } else if (mAverageScore <= ExerciseContent.AVERAGE_CONNOISSEUR) {
             mConnoisseurImage.setImageResource(R.drawable.face_connoisseur);
             mTongueType.setText(R.string.performance_3);
+            mTongueString = getResources().getString(R.string.performance_3);
             mTongueDescription.setText(R.string.connoisseur_description);
         }
+    }
+
+
+    private void setupShareButton(ImageView button) {
+
+        final SessionSummary activity = this;
+        FacebookSdk.sdkInitialize(activity);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                ShareDialog shareDialog = new ShareDialog(activity);
+
+                if (ShareDialog.canShow(ShareLinkContent.class)) {
+
+                    ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                            .setContentTitle("I'm a " + mTongueString)
+                            .setContentDescription(
+                                    "Check out The Connoisseur! I averaged " + mAverageScore+1 + " attempts, can you beat me?")
+                            .setContentUrl(Uri.parse("https://www.facebook.com/pages/The-Connoisseur/1429322337391434"))
+                            .build();
+
+                    shareDialog.show(linkContent);
+                }
+            }
+        });
     }
 
     private void setTextColour() {
