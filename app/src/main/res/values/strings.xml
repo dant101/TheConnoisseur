@@ -8,6 +8,7 @@
     <string name="home">Home</string>
     <string name="the">THE</string>
     <string name="connoisseur_phonetic">Con-nois-seur</string>
+    <string name="facebook_app_id">810582959049392</string>
 
     <!-- Login -->
     <string name="login_email_prompt">Enter your email</string>

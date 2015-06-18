@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.TransitionDrawable;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.preference.PreferenceManager;
@@ -24,6 +25,12 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookActivity;
+import com.facebook.FacebookSdk;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareButton;
+import com.facebook.share.widget.ShareDialog;
 import com.theconnoisseur.R;
 import com.theconnoisseur.android.Model.ExerciseContent;
 import com.theconnoisseur.android.Model.ExerciseScore;
@@ -135,6 +142,8 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
     }
 
     @Override
@@ -187,21 +196,6 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
                 mListener.nextExercise();
             }
         });
-
-        /*
-        mRecord.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mClicked = !mClicked;
-                if (mClicked) {
-                    mVoiceRecogniser.startListening();
-                    mClicked = !mClicked;
-                } else {
-                    mVoiceRecogniser.stopListening();
-                }
-            }
-        });
-        */
 
         final Animation grow = AnimationUtils.loadAnimation(getActivity(), R.anim.grow);
         final Animation shrink = AnimationUtils.loadAnimation(getActivity(), R.anim.shrink);
