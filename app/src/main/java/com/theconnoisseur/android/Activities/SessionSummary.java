@@ -79,6 +79,8 @@ public class SessionSummary extends ActionBarActivity {
     private ImageView mHeartWorst2;
     private ImageView mHeartWorst3;
 
+    private ImageView mShareButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,6 +107,7 @@ public class SessionSummary extends ActionBarActivity {
         mHeartWorst1 = (ImageView) findViewById(R.id.heart_worst_1);
         mHeartWorst2 = (ImageView) findViewById(R.id.heart_worst_2);
         mHeartWorst3 = (ImageView) findViewById(R.id.heart_worst_3);
+        mShareButton = (ImageView) findViewById(R.id.share_button);
 
         //Get all relevant information from intent
         Intent i = getIntent();
@@ -127,7 +130,7 @@ public class SessionSummary extends ActionBarActivity {
 
         setBestWorstWords();
 
-        setupShareButton(mConnoisseurImage);
+        setupShareButton(mShareButton);
 
     }
 
