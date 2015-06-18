@@ -673,4 +673,5 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
     }
 
 
+
 }
