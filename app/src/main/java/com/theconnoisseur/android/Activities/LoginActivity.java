@@ -84,6 +84,7 @@ public class LoginActivity extends Activity {
         if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(GlobalPreferenceString.SIGNED_IN_PREF, false)) {
             mUsername = PreferenceManager.getDefaultSharedPreferences(this).getString(GlobalPreferenceString.USERNAME_PREF, "-- Username not found! --");
             mEmail = PreferenceManager.getDefaultSharedPreferences(this).getString(GlobalPreferenceString.EMAIL_PREF, "-- Email not found! --");
+            mPassword = PreferenceManager.getDefaultSharedPreferences(this).getString(GlobalPreferenceString.PASSWORD_PREF, "-- Password not found --");
 
             if (ConnoisseurDatabase.getInstance().getLoginTable().login(mUsername, mPassword)) {
                 Log.d(TAG, "User already logged in: Username(" + mUsername + ") Email(" + mEmail + ")");
@@ -176,11 +177,11 @@ public class LoginActivity extends Activity {
 
     // Enters the user's details, creating a new account or signing in with an existing one
     public void enterDetails(View v) {
-        mEmail = mEditEmail.getText().toString();
         mUsername = mEditUsername.getText().toString();
         mPassword = mEditPassword.getText().toString();
 
         if(mCreatingNewAccount) {
+            mEmail = mEditEmail.getText().toString();
             if(ConnoisseurDatabase.getInstance().getLoginTable().create(mUsername, mPassword, mEmail)) {
                 //Successful new user account creation
                 setUserSessionDetails();
@@ -215,6 +216,7 @@ public class LoginActivity extends Activity {
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(GlobalPreferenceString.EMAIL_PREF, mEmail);
         editor.putString(GlobalPreferenceString.USERNAME_PREF, mUsername);
+        editor.putString(GlobalPreferenceString.PASSWORD_PREF, mPassword);
         editor.putBoolean(GlobalPreferenceString.SIGNED_IN_PREF, true);
         editor.commit();
     }

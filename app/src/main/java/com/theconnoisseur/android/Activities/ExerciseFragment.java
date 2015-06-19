@@ -22,6 +22,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -89,6 +90,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
     private ImageView mSmallLife3;
     private ImageView mSideLogo;
     private ImageView mCommentsIcon;
+    private ProgressBar mSpinner;
 
     private MediaPlayer mMediaPlayer;
     private boolean played = false; //TESTING, Illegal state exception on second playback...
@@ -181,6 +183,10 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         mSmallLife3 = (ImageView) view.findViewById(R.id.heart_small_3);
         mSideLogo = (ImageView) view.findViewById(R.id.connoisseur_side);
         mCommentsIcon = (ImageView) view.findViewById(R.id.comments_icon);
+        mSpinner = (ProgressBar) view.findViewById(R.id.loading_spinner);
+
+        //Background is invisible until first exercise is ready - via callback
+        mBackground.setVisibility(View.GONE);
 
         setListeners();
         setInitialView();
@@ -246,6 +252,9 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
      * @param c
      */
     public void nextExercise(Cursor c, boolean resuming) {
+        mBackground.setVisibility(View.VISIBLE);
+        mSpinner.setVisibility(View.GONE);
+
         if (c == null) { return; }
         if (!resuming) {
             mCursorPosition += 1;

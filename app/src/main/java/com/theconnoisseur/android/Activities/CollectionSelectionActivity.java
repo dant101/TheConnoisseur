@@ -87,8 +87,10 @@ public class CollectionSelectionActivity extends ActionBarActivity implements Cu
 
                 if (view.getId() == R.id.collection_list_item) {
                     int language_id = cursor.getInt(columnIndex);
+                    double sigma = 0.01;
+
                     Log.d(TAG, "Language_id: " + String.valueOf(language_id));
-                    if (mAverageScores.containsKey(language_id)) {
+                    if (mAverageScores.containsKey(language_id) && mAverageScores.get(language_id) > sigma) {
                         float average_best_score = mAverageScores.get(language_id);
                         Log.d(TAG, "average_best_score" + String.valueOf(average_best_score));
 
@@ -98,7 +100,6 @@ public class CollectionSelectionActivity extends ActionBarActivity implements Cu
                         view.findViewById(R.id.item_score).setVisibility(View.GONE);
                     }
 
-                    double sigma = 0.01;
                     if(mAverageScores.containsKey(language_id) && mAverageScores.get(language_id) < ExerciseContent.AVERAGE_CONNOISSEUR + sigma + 1) {
                         Log.d(TAG, "score: " + String.valueOf(mAverageScores.get(language_id)));
                         view.findViewById(R.id.star).setVisibility(View.VISIBLE);
