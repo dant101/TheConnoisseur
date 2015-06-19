@@ -99,8 +99,11 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:layout_margin="@dimen/small_margin"
-            android:text="@string/connoisseur_description"
+            android:layout_marginLeft="-10dp"
+            android:layout_marginRight="-10dp"
+            android:layout_marginTop="@dimen/small_margin"
+            android:layout_marginBottom="@dimen/small_margin"
+            android:text="@string/tourist_description"
             android:textStyle="bold|italic"/>
 
         <TextView
@@ -237,7 +240,7 @@
             android:layout_margin="@dimen/small_margin"/>
 
         <LinearLayout
-            android:visibility="gone"
+            android:visibility="visible"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="4"
