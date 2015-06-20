@@ -80,4 +80,7 @@
     <string name="sample_comment">I really thing you need to put a stress on the end of the word to get the right intonation</string>
     <string name="title_activity_friend_search">FriendSearch</string>
 
+    <!-- Friends strings -->
+    <string name="search_hint"></string>
+
 </resources>
