@@ -1,5 +1,6 @@
 package com.theconnoisseur.android.Provider;
 
+import android.app.SearchManager;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
@@ -38,6 +39,7 @@ public class InternalDbProvider extends ContentProvider {
     private static final int SCORES = 4;
     private static final int SCORES_ID = 5;
     private static final int SCORES_DELETE = 6;
+    private static final int FRIEND_SEARCH = 7;
 
     private static final UriMatcher URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
 
@@ -53,6 +55,7 @@ public class InternalDbProvider extends ContentProvider {
         URI_MATCHER.addURI(InternalDbContract.CONTENT_AUTHORITY, TABLE_SCORES, SCORES);
         URI_MATCHER.addURI(InternalDbContract.CONTENT_AUTHORITY, TABLE_SCORES + "/" + ExerciseScore.DELETE + "/*", SCORES_DELETE);
         URI_MATCHER.addURI(InternalDbContract.CONTENT_AUTHORITY, TABLE_SCORES + "/*", SCORES_ID);
+        URI_MATCHER.addURI(InternalDbContract.CONTENT_AUTHORITY, SearchManager.SUGGEST_URI_PATH_QUERY + "/*", FRIEND_SEARCH);
     }
 
     public InternalDbProvider(Context context) {
@@ -129,6 +132,10 @@ public class InternalDbProvider extends ContentProvider {
                     TABLE_SCORES, InternalDbContract.PROJECTION_SCORES, ExerciseScore.WORD_ID + "=?", args3, null, null, null);
                 CursorHelper.toString(cursor);
                 break;
+
+            case FRIEND_SEARCH:
+                Log.d(TAG, "querying FRIENDS with user query");
+                //
         }
 
         return cursor;

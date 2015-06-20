@@ -50,6 +50,10 @@ public class MainMenuActivity extends ActionBarActivity {
         //startActivity(new Intent(MainMenuActivity.this, LoginActivity.class));
     }
 
+    public void friendSearchActivity(View v) {
+        startActivity(new Intent(this, FriendSearch.class));
+    }
+
     public void voiceRecogniserTest(View v) {
         startActivity(new Intent(MainMenuActivity.this, VoiceRecogniserTestActivity.class));
     }
@@ -73,14 +77,17 @@ public class MainMenuActivity extends ActionBarActivity {
     }
 
     private void logOut() {
-        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
-        editor.putBoolean(GlobalPreferenceString.SIGNED_IN_PREF, false);
-        editor.commit();
-
         String username = PreferenceManager.getDefaultSharedPreferences(this).getString(GlobalPreferenceString.USERNAME_PREF, GlobalPreferenceString.GUEST);
 
         // Delete stored best scores/attempts
         getContentResolver().delete(InternalDbContract.deleteExerciseScore(username), null,null);
+
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+        editor.putBoolean(GlobalPreferenceString.SIGNED_IN_PREF, false);
+        editor.putString(GlobalPreferenceString.PASSWORD_PREF, "");
+        editor.putString(GlobalPreferenceString.USERNAME_PREF, "");
+        editor.putString(GlobalPreferenceString.EMAIL_PREF, "");
+        editor.commit();
 
         startActivity(new Intent(MainMenuActivity.this, LoginActivity.class));
     }

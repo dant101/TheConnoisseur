@@ -103,13 +103,17 @@
 
         <activity
             android:name=".android.Activities.FriendSearch"
-            android:label="@string/title_activity_friend_search" >
+            android:label="@string/title_activity_friend_search"
+            android:launchMode="singleTop">
 
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
+            <intent-filter >
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
             <meta-data android:name="android.app.searchable"
-                        android:resource="@xml/friend_search" />
+                       android:resource="@xml/friend_search" />
 
         </activity>
 

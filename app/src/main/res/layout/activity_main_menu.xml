@@ -11,6 +11,7 @@
         android:layout_marginTop="@dimen/small_margin">
 
         <ImageView
+            android:onClick="friendSearchActivity"
             android:layout_width="@dimen/title_width"
             android:layout_height="wrap_content"
             android:src="@drawable/logo_2_horizontal"
