@@ -19,6 +19,7 @@ public class ConnoisseurDatabase {
     private LoginOnlineDB loginTable = new LoginOnlineDB(database);
     private CommentOnlineDB commentTable = new CommentOnlineDB(database);
     private ScoreOnlineDB scoreTable = new ScoreOnlineDB(database);
+    private FriendsOnlineDB friendsTable = new FriendsOnlineDB(database);
 
     private static ConnoisseurDatabase connoisseurDatabase = null;
 
@@ -46,4 +47,6 @@ public class ConnoisseurDatabase {
     }
 
     public ScoreOnlineDB getScoreTable() { return scoreTable; }
+
+    public FriendsOnlineDB getFriendsTable() { return friendsTable; }
 }

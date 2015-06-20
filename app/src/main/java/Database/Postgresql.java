@@ -267,5 +267,57 @@ public class Postgresql implements Database {
         }
     }
 
+    public boolean createFriendQuery(String sqlQuery,
+                                    String username, String friend_username, Boolean confirmed) {
+        boolean result = false;
+        this.connect();
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sqlQuery);
+            stmt.setString(1, username);
+            stmt.setString(2, friend_username);
+            if(confirmed != null) {
+                stmt.setBoolean(3, confirmed);
+            }
+            stmt.executeUpdate();
+            stmt.close();
+            result = true;
+        } catch (Exception e){
+            e.printStackTrace();
+        } finally {
+            this.disconnect();
+            return result;
+        }
+    }
 
+    /*We need a special scoreQuery to prevent user from doing SQLInjection*/
+    public List<List<String>> selectFriendsQuery(String sqlQuery, List<String> arguments,
+                                                 String username, String friend_username) {
+        this.connect();
+        List<List<String>> result = new ArrayList<>();
+
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sqlQuery);
+            stmt.setString(1, username);
+            if(friend_username != null) {
+                stmt.setString(2, friend_username);
+            }
+            ResultSet rs = stmt.executeQuery();
+            //Loop over all the rows
+            while (rs.next()) {
+                //For each row get the different values needed
+                List<String> row = new ArrayList<>();
+                for(String arg : arguments) {
+                    row.add(rs.getString(arg));
+                }
+                result.add(row);
+            }
+            rs.close();
+            stmt.close();
+        } catch (Exception e){
+            e.printStackTrace();
+        } finally {
+            this.disconnect();
+            return result;
+        }
+    }
 }
