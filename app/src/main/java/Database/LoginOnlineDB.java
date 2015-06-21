@@ -51,7 +51,6 @@ public class LoginOnlineDB extends OnlineDB {
      */
     public boolean create(String username, String password, String email) {
         boolean result = false;
-
         String query = "INSERT INTO login(username, password, salt) " +
                 "VALUES (?, ?, ?)";
 

@@ -8,5 +8,9 @@
         <item>es</item>
         <item>en-GB</item>
         <item>pl</item>
+        <item>zh</item>
+        <item>ja</item>
+        <item>ar</item>
+        <item>iw</item>
     </string-array>
 </resources>

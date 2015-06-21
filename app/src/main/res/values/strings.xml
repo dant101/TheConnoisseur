@@ -14,6 +14,7 @@
     <string name="login_email_prompt">Enter your email</string>
     <string name="login_username_prompt">Enter your username</string>
     <string name="signup_username_prompt">Pick a username</string>
+    <string name="confirm_password_prompt">Confirm your password</string>
     <string name="login_password_prompt">Enter your password</string>
     <string name="signup_password_prompt">Think of a password</string>
     <string name="create_account">Create Account</string>
@@ -22,7 +23,7 @@
     <string name="not_unique_email">There already is a user using this email address</string>
     <string name="not_unique_username">Sorry, someone has already picked that username</string>
     <string name="not_existing_username">Sorry, no such username exists</string>
-    <string name="wrong_password">That password does not match the username</string>
+    <string name="wrong_password">That\'s the wrong password for this username</string>
 
     <!-- Main Menu Strings -->
     <string name="main_menu">MAIN MENU</string>

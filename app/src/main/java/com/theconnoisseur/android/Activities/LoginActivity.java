@@ -3,11 +3,13 @@ package com.theconnoisseur.android.Activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.StrictMode;
 import android.graphics.Bitmap;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,19 +35,20 @@ import Util.ToastHelper;
 public class LoginActivity extends Activity {
     public static final String TAG = LoginActivity.class.getSimpleName();
 
-    private EditText mEditEmail;
     private EditText mEditUsername;
     private EditText mEditPassword;
+    private EditText mEditPasswordConfirm;
     private Button mEnterDetails;
     private TextView mLogin;
 
-    private ImageView mFeedbackEmail;
     private ImageView mFeedbackUsername;
     private ImageView mFeedbackPassword;
+    private ImageView mFeedbackPasswordConfirmation;
 
     private String mEmail;
     private String mUsername;
     private String mPassword;
+    private String mPasswordConfirm;
 
     private boolean mCreatingNewAccount = true;
 
@@ -65,15 +68,20 @@ public class LoginActivity extends Activity {
 
         automaticLogin();
 
-        mEditEmail = (EditText) findViewById(R.id.email);
+        mEditPasswordConfirm = (EditText) findViewById(R.id.password_confirm);
         mEditUsername = (EditText) findViewById(R.id.username);
         mEditPassword = (EditText) findViewById(R.id.password);
         mEnterDetails = (Button) findViewById(R.id.enter_details);
         mLogin = (TextView) findViewById(R.id.login);
 
-        mFeedbackEmail = (ImageView) findViewById(R.id.feedback_email);
         mFeedbackUsername = (ImageView) findViewById(R.id.feedback_username);
         mFeedbackPassword = (ImageView) findViewById(R.id.feedback_password);
+        mFeedbackPasswordConfirmation = (ImageView) findViewById(R.id.feedback_password_confirmation);
+
+        mEditPassword.setTypeface(Typeface.DEFAULT);
+        mEditPasswordConfirm.setTypeface(Typeface.DEFAULT);
+        mEditPassword.setTransformationMethod(new PasswordTransformationMethod());
+        mEditPasswordConfirm.setTransformationMethod(new PasswordTransformationMethod());
 
         setListeners();
     }
@@ -98,33 +106,6 @@ public class LoginActivity extends Activity {
 
     //Defines the specific screen element behaviours regarding touch events - in particular, email/username validation
     private void setListeners() {
-        mEditEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus) {
-                    String input = ((EditText) v).getText().toString();
-                    if(input.isEmpty()) { return; }
-                    boolean unique = ConnoisseurDatabase.getInstance().getLoginTable().isEmailUnique(input);
-                    boolean valid = ConnoisseurDatabase.getInstance().getLoginTable().isEmailUnique(input);
-
-                    if(unique && valid) {
-                        mFeedbackEmail.setImageResource(R.drawable.greentick);
-                    } else {
-                        mFeedbackEmail.setImageResource(R.drawable.redcross);
-                        if (!unique) {
-                            ToastHelper.toast(getApplicationContext(), getString(R.string.not_unique_email), Toast.LENGTH_LONG);
-                        }
-                        if(!valid) {
-                            ToastHelper.toast(getApplicationContext(), getString(R.string.invalid_email), Toast.LENGTH_LONG);
-                        }
-                    }
-                    mFeedbackEmail.setVisibility(View.VISIBLE);
-                } else {
-                    mFeedbackEmail.setVisibility(View.INVISIBLE);
-                }
-            }
-        });
-
         mEditUsername.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -135,17 +116,17 @@ public class LoginActivity extends Activity {
 
                     if(mCreatingNewAccount) {
                         if(unique) {
-                            mFeedbackUsername.setImageResource(R.drawable.greentick);
+                            mFeedbackUsername.setImageResource(R.drawable.tick_correct);
                         } else {
-                            mFeedbackUsername.setImageResource(R.drawable.redcross);
+                            mFeedbackUsername.setImageResource(R.drawable.cross_wrong);
                             ToastHelper.toast(getApplicationContext(), getString(R.string.not_unique_username), Toast.LENGTH_LONG);
                         }
                     } else { //If user is logging in
                         if(unique) {
-                            mFeedbackUsername.setImageResource(R.drawable.redcross);
+                            mFeedbackUsername.setImageResource(R.drawable.cross_wrong);
                             ToastHelper.toast(getApplicationContext(), getString(R.string.not_existing_username), Toast.LENGTH_LONG);
                         } else {
-                            mFeedbackUsername.setImageResource(R.drawable.greentick);
+                            mFeedbackUsername.setImageResource(R.drawable.tick_correct);
                         }
                     }
                     mFeedbackUsername.setVisibility(View.VISIBLE);
@@ -159,10 +140,33 @@ public class LoginActivity extends Activity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    mFeedbackPassword.setImageResource(R.drawable.redcross);
+                    if (mEditPassword.length() > 0) {
+                        //Other password requirements?
+                        mFeedbackPassword.setImageResource(R.drawable.tick_correct);
+                    } else {
+                        mFeedbackPassword.setImageResource(R.drawable.cross_wrong);
+                    }
                     mFeedbackPassword.setVisibility(View.VISIBLE);
+
                 } else {
                     mFeedbackPassword.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
+        mEditPasswordConfirm.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus) {
+                    if(mEditPassword.length() > 0 && mEditPassword.getText().toString().equals(mEditPasswordConfirm.getText().toString())) {
+                        mFeedbackPasswordConfirmation.setImageResource(R.drawable.tick_correct);
+                    } else {
+                        mFeedbackPasswordConfirmation.setImageResource(R.drawable.cross_wrong);
+                        ToastHelper.toast(getApplicationContext(), "Your passwords don't match");
+                    }
+                    mFeedbackPasswordConfirmation.setVisibility(View.VISIBLE);
+                } else {
+                    mFeedbackPasswordConfirmation.setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -179,32 +183,39 @@ public class LoginActivity extends Activity {
     public void enterDetails(View v) {
         mUsername = mEditUsername.getText().toString();
         mPassword = mEditPassword.getText().toString();
+        mPasswordConfirm = mEditPasswordConfirm.getText().toString();
 
         if(mCreatingNewAccount) {
-            mEmail = mEditEmail.getText().toString();
-            if(ConnoisseurDatabase.getInstance().getLoginTable().create(mUsername, mPassword, mEmail)) {
-                //Successful new user account creation
-                setUserSessionDetails();
-                Log.d(TAG, "Created new user account: Username(" + mUsername + ") Email(" + mEmail + ")");
+            mEmail = ""; //No emails for now
 
-                startMainMenuActivity();
+            if (mPassword.equals(mPasswordConfirm)) {
+                if(ConnoisseurDatabase.getInstance().getLoginTable().create(mUsername, mPassword, mEmail)) {
+                    //Successful new user account creation
+                    setUserSessionDetails();
+                    Log.d(TAG, "Created new user account: Username(" + mUsername + ") Email(" + mEmail + ")");
+
+                    startMainMenuActivity();
+                } else {
+                    //Unable to create account
+                    Log.d(TAG, "Failed to create new account");
+                }
+
             } else {
-                //Unable to create account
-                Log.d(TAG, "Failed to create new account");
+                ToastHelper.toast(getApplicationContext(), "Your passwords do not match");
             }
         } else {
             //Logging in
             if(ConnoisseurDatabase.getInstance().getLoginTable().login(mUsername, mPassword)) {
                 //Successful user sign in
                 Log.d(TAG, "Successfully signed in user: Username(" + mUsername + ") Email(" + mEmail + ")");
-                mFeedbackPassword.setImageResource(R.drawable.greentick);
+                mFeedbackPassword.setImageResource(R.drawable.tick_correct);
                 setUserSessionDetails();
                 syncUserInformation(mUsername);
                 startMainMenuActivity();
             } else {
                 //Unable to login in user
                 Log.d(TAG, "Failed to sign in with user credentials");
-                mFeedbackPassword.setImageResource(R.drawable.redcross);
+                mFeedbackPassword.setImageResource(R.drawable.cross_wrong);
                 ToastHelper.toast(getApplicationContext(), getString(R.string.wrong_password), Toast.LENGTH_LONG);
             }
         }
@@ -214,7 +225,6 @@ public class LoginActivity extends Activity {
     private void setUserSessionDetails() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(GlobalPreferenceString.EMAIL_PREF, mEmail);
         editor.putString(GlobalPreferenceString.USERNAME_PREF, mUsername);
         editor.putString(GlobalPreferenceString.PASSWORD_PREF, mPassword);
         editor.putBoolean(GlobalPreferenceString.SIGNED_IN_PREF, true);
@@ -237,16 +247,16 @@ public class LoginActivity extends Activity {
         mCreatingNewAccount = !mCreatingNewAccount;
 
         if(mCreatingNewAccount) {
-            mEditEmail.setVisibility(View.VISIBLE);
-            mFeedbackEmail.setVisibility(View.INVISIBLE);
+            mEditPasswordConfirm.setVisibility(View.VISIBLE);
+            mFeedbackPasswordConfirmation.setVisibility(View.INVISIBLE);
             mEditUsername.setHint(R.string.signup_username_prompt);
             mEditPassword.setHint(R.string.signup_password_prompt);
             mEnterDetails.setText(R.string.create_account);
             mLogin.setText(R.string.login);
 
         } else {
-            mEditEmail.setVisibility(View.GONE);
-            mFeedbackEmail.setVisibility(View.GONE);
+            mEditPasswordConfirm.setVisibility(View.GONE);
+            mFeedbackPasswordConfirmation.setVisibility(View.GONE);
             mEditUsername.setHint(R.string.login_username_prompt);
             mEditPassword.setHint(R.string.login_password_prompt);
             mEnterDetails.setText(R.string.login);

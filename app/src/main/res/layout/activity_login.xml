@@ -22,40 +22,11 @@
         android:layout_margin="@dimen/normal_margin">
 
         <EditText
-            android:id="@+id/email"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="@string/login_email_prompt"
-            android:textStyle="italic"
-            android:gravity="center"
-            android:layout_margin="@dimen/normal_margin"/>
-
-        <ImageView
-            android:id="@+id/feedback_email"
-            android:visibility="invisible"
-            android:layout_width="@dimen/feedback_length"
-            android:layout_height="@dimen/feedback_length"
-            android:src="@drawable/greentick"/>
-
-    </LinearLayout>
-
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_margin="@dimen/normal_margin">
-
-        <EditText
             android:id="@+id/username"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="@string/signup_username_prompt"
-            android:textStyle="italic"
             android:gravity="center"
             android:layout_margin="@dimen/normal_margin"/>
 
@@ -64,10 +35,9 @@
             android:visibility="invisible"
             android:layout_width="@dimen/feedback_length"
             android:layout_height="@dimen/feedback_length"
-            android:src="@drawable/greentick"/>
+            android:src="@drawable/tick_correct"/>
 
     </LinearLayout>
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -82,7 +52,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="@string/signup_password_prompt"
-            android:textStyle="italic"
             android:gravity="center"
             android:layout_margin="@dimen/normal_margin"/>
 
@@ -91,11 +60,34 @@
             android:visibility="invisible"
             android:layout_width="@dimen/feedback_length"
             android:layout_height="@dimen/feedback_length"
-            android:src="@drawable/greentick"/>
+            android:src="@drawable/tick_correct"/>
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_margin="@dimen/normal_margin">
 
+        <EditText
+            android:id="@+id/password_confirm"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/confirm_password_prompt"
+            android:gravity="center"
+            android:layout_margin="@dimen/normal_margin"/>
+
+        <ImageView
+            android:id="@+id/feedback_password_confirmation"
+            android:visibility="invisible"
+            android:layout_width="@dimen/feedback_length"
+            android:layout_height="@dimen/feedback_length"
+            android:src="@drawable/tick_correct"/>
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/enter_details"

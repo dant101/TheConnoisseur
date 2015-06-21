@@ -26,6 +26,8 @@ import com.theconnoisseur.android.Model.FriendContent;
 import com.theconnoisseur.android.Model.GlobalPreferenceString;
 import com.theconnoisseur.android.Model.InternalDbContract;
 
+import Database.ConnoisseurDatabase;
+
 public class FriendSearch extends ActionBarActivity implements FriendListsInterface {
     public static final String TAG = FriendSearch.class.getSimpleName();
 
