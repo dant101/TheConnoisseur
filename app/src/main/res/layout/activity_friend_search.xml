@@ -24,9 +24,16 @@
         <SearchView
             android:id="@+id/friend_search"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/small_margin">
 
         </SearchView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/pending_friends"
+            android:textStyle="bold"/>
 
         <ListView
             android:id="@+id/pending_friends_list"
@@ -39,7 +46,15 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/grey"/>
+            android:background="@color/grey"
+            android:layout_marginTop="@dimen/small_margin"
+            android:layout_marginBottom="@dimen/small_margin"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/your_friends"
+            android:textStyle="bold"/>
 
         <ListView
             android:id="@+id/friends_list"

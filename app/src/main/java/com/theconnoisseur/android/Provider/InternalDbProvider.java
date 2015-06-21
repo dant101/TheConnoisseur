@@ -17,6 +17,7 @@ import com.theconnoisseur.android.Model.LanguageSelection;
 
 import java.net.URI;
 
+import Database.ConnoisseurDatabase;
 import Util.CursorHelper;
 import Util.InternalDbHelper;
 

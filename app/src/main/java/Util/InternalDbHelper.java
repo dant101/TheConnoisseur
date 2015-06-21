@@ -54,11 +54,15 @@ public class InternalDbHelper extends SQLiteOpenHelper {
     private static String EXERCISE_SCORE_CREATE =
             "CREATE TABLE SCORES(_id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, word_id TEXT, percentage_score INTEGER, attempts_score INTEGER)";
 
+    private static String USERNAME_LIST_CREATE =
+            "CREATE TABLE USERNAMES(_id INTEGER PRIMARY KEY AUTOINCREMENT, SUGGEST_COLUMN_TEXT_1 TEXT)";
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(EXERCISES_TABLE_CREATE);
         db.execSQL(LANGUAGES_TABLE_CREATE);
         db.execSQL(EXERCISE_SCORE_CREATE);
+        db.execSQL(USERNAME_LIST_CREATE);
     }
 
     @Override

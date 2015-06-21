@@ -82,8 +82,7 @@
     <!-- Friend Search strings -->
     <string name="search_hint">Search for friends</string>
     <string name="title_activity_friend_search">FriendSearch</string>
-
-    <!-- Friends strings -->
-    <string name="search_hint"></string>
+    <string name="your_friends">Your friends</string>
+    <string name="pending_friends">People who have added you</string>
 
 </resources>
