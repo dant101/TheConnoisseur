@@ -16,8 +16,8 @@ public class LoginOnlineDBFormat {
         this.id = Integer.parseInt(list.get(0));
         this.username = list.get(1);
         this.password = list.get(2);
-        this.email = list.get(3);
-        this.salt = Integer.parseInt(list.get(4));
+        this.salt = Integer.parseInt(list.get(3));
+        this.email = list.get(4);
     }
 
     public int getId() {
