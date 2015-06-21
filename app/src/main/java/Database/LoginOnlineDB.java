@@ -18,8 +18,8 @@ public class LoginOnlineDB extends OnlineDB {
         allArguments.add("id");
         allArguments.add("username");
         allArguments.add("password");
-        allArguments.add("email");
         allArguments.add("salt");
+        allArguments.add("email");
     }
 
     /* Tries to login returning true if success*/
@@ -51,16 +51,15 @@ public class LoginOnlineDB extends OnlineDB {
      */
     public boolean create(String username, String password, String email) {
         boolean result = false;
+        String query = "INSERT INTO login(username, password, salt) " +
+                "VALUES (?, ?, ?)";
 
-        String query = "INSERT INTO login(username, password, email, salt) " +
-                "VALUES (?, ?, ?, ?)";
-
-        //check that username and email are not taken
+        //check that username is not taken
         if(isUserNameUnique(username)) {
             int salt = PasswordEncryption.getNextSalt();
             String hash = PasswordEncryption.hash(password, salt);
 
-            result = database.createLoginQuery(query, username, hash, email, salt);
+            result = database.createLoginQuery(query, username, hash, salt);
         }
 
      return result;
