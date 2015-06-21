@@ -15,6 +15,9 @@ public class LanguageOnlineDB extends OnlineDB {
         allArguments.add("language_name");
         allArguments.add("language_hex");
         allArguments.add("language_image_url");
+        allArguments.add("placeholder_tourist");
+        allArguments.add("placeholder_barbarian");
+        allArguments.add("placeholder_connoisseur");
     }
 
     public List<LanguageOnlineDBFormat> getAllLanguages() {
