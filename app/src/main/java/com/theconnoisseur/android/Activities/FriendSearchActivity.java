@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
@@ -12,9 +13,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 import com.theconnoisseur.R;
 import com.theconnoisseur.android.Activities.Interfaces.FriendListsInterface;
@@ -22,10 +25,21 @@ import com.theconnoisseur.android.Controller.FriendsController;
 import com.theconnoisseur.android.Model.FriendContent;
 import com.theconnoisseur.android.Model.GlobalPreferenceString;
 
+import Database.ConnoisseurDatabase;
+
 public class FriendSearchActivity extends ActionBarActivity implements FriendListsInterface {
     public static final String TAG = FriendSearchActivity.class.getSimpleName();
 
-    Adapter mAdapter;
+    Adapter mFriendsAdapter;
+    Adapter mPendingFriendsAdapter;
+    String mUsername;
+
+    ListView mFriends;
+    ListView mPendingFriends;
+
+    Typeface roboto_regular;
+    Typeface roboto_bold;
+    Typeface roboto_italic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,12 +47,23 @@ public class FriendSearchActivity extends ActionBarActivity implements FriendLis
         Log.d(TAG, "onCreate");
         setContentView(R.layout.activity_friend_search);
 
+        mUsername = PreferenceManager.getDefaultSharedPreferences(this).getString(GlobalPreferenceString.USERNAME_PREF, "");
+        mFriends = (ListView) findViewById(R.id.friends_list);
+        mPendingFriends = (ListView) findViewById(R.id.pending_friends_list);
+
         SearchView searchView = (SearchView) findViewById(R.id.friend_search);
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false);
 
         handleIntent(getIntent());
+
+        Typeface roboto_regular = Typeface.createFromAsset(getAssets(), "fonts/RobotoCondensed-Regular.ttf");
+        Typeface roboto_bold = Typeface.createFromAsset(getAssets(), "fonts/RobotoCondensed-Bold.ttf");
+        Typeface roboto_italic = Typeface.createFromAsset(getAssets(), "fonts/RobotoCondensed-Italic.ttf");
+
+        ((TextView)findViewById(R.id.heading1)).setTypeface(roboto_bold);
+        ((TextView)findViewById(R.id.heading2)).setTypeface(roboto_bold);
     }
 
     @Override
@@ -47,6 +72,8 @@ public class FriendSearchActivity extends ActionBarActivity implements FriendLis
 
         //Loads both cursors to populate friends and pending friends list
         new YourFriendsCursorPreparationTask(this).execute();
+        new PendingFriendsCursorPreparationTask(this).execute();
+        setListeners();
     }
 
     @Override
@@ -63,43 +90,168 @@ public class FriendSearchActivity extends ActionBarActivity implements FriendLis
             String query = intent.getStringExtra(SearchManager.QUERY);
             // Do work using string
             Log.d(TAG, "search activity (search): " + query);
+            addFriend(query);
 
         } else if (Intent.ACTION_VIEW.equals(intent.getAction())) {
             //Users selects suggestion
             Uri uri = intent.getData();
             Log.d(TAG, "ACTIONVIEW: uri - " + uri.toString());
+            addFriend(uri.toString());
         } else {
             Log.d(TAG, "other intent");
         }
     }
 
+    private void setListeners() {
+
+    }
+
+    /**
+     * Adds to user's friends: @param friend
+     * @param friend
+     */
+    private void addFriend(final String friend) {
+        final FriendSearchActivity activity = this;
+        if (mUsername != null) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    // adds new friends (preventing duplicated friendships)
+                    FriendsController.getsInstance().addFriend(mUsername, friend);
+                    //Reload cursor
+                    new YourFriendsCursorPreparationTask(activity).execute();
+                }
+            }).start();
+        }
+
+    }
+
+    /**
+     * Removes a friend from list of friends - UI update and online database change but item not immediately removed
+     * @param friend
+     */
+    private void removeFriend(final String friend) {
+        Log.d(TAG, "removing friend: " + friend);
+        final FriendSearchActivity activity = this;
+        if(friend != null) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    FriendsController.getsInstance().removeFriend(mUsername, friend);
+                    new YourFriendsCursorPreparationTask(activity).execute();
+                }
+            }).start();
+        }
+    }
+
+    /**
+     * Confirms a friend request - removes item from pending list and adds to friends)
+     * @param friend String username of friend
+     */
+    private void confirmFriend(final String friend) {
+        Log.d(TAG, "confirming friend: " + friend);
+        final FriendSearchActivity activity = this;
+        if(friend != null) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    FriendsController.getsInstance().confirmFriend(mUsername, friend);
+                    new PendingFriendsCursorPreparationTask(activity).execute();
+                    new YourFriendsCursorPreparationTask(activity).execute();
+                }
+            }).start();
+        }
+    }
+
+    /**
+     * Declines a friend request - removes it from the database
+     * @param friend
+     */
+    private void declineFriend(final String friend) {
+        Log.d(TAG, "declining friend: " +friend);
+        final FriendSearchActivity activity = this;
+        if(friend != null) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    FriendsController.getsInstance().declineFriend(mUsername, friend);
+                    new PendingFriendsCursorPreparationTask(activity).execute();
+                }
+            }).start();
+        }
+    }
+
+    //TODO: Refactoring here - same cursor callback methods, swap in different layout file
     @Override
     public void friendsLoaded(Cursor c) {
         ListView friendsList = (ListView) findViewById(R.id.friends_list);
 
         String[] from = new String[] {FriendContent.friend, FriendContent.confirmed};
-        int[] to = new int[] {R.id.friend, R.id.collection_list_item};
+        int[] to = new int[] {R.id.friend, R.id.friend_item};
 
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.your_friend_list_item, c, from, to, BIND_IMPORTANT);
 
         adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
             @Override
             public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
-                if (view.getId() == R.id.collection_list_item) {
-                    //TODO: set background based on whether friendship is pending
+                if (view.getId() == R.id.friend_item) {
+
+                    TextView friend_textView = (TextView)view.findViewById(R.id.friend);
+                    friend_textView.setTypeface(roboto_regular);
+                    final String friend = friend_textView.getText().toString();
+                    view.findViewById(R.id.delete_friend).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Log.d(TAG, "Selected friend: " + friend);
+                            removeFriend(friend);
+                        }
+                    });
                     return true;
                 }
                 return false;
             }
         });
 
-        mAdapter = adapter;
+        mFriendsAdapter = adapter;
         friendsList.setAdapter(adapter);
     }
 
     @Override
     public void pendingFriendsLoaded(Cursor c) {
+        ListView pendingList = (ListView) findViewById(R.id.pending_friends_list);
 
+        String[] from = new String[] {FriendContent.username, FriendContent.confirmed};
+        int[] to = new int[] {R.id.friend, R.id.pending_friend_item};
+
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.pending_friend_list_item, c, from, to, BIND_IMPORTANT);
+
+        adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
+            @Override
+            public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+                if (view.getId() == R.id.pending_friend_item) {
+                    TextView friend_textView = (TextView)view.findViewById(R.id.friend);
+                    final String friend = friend_textView.getText().toString();
+                    view.findViewById(R.id.confirm_friend).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            confirmFriend(friend);
+                        }
+                    });
+
+                    view.findViewById(R.id.decline_friend).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            declineFriend(friend);
+                        }
+                    });
+                    return true; //Other visuals?
+                }
+                return false;
+            }
+        });
+
+        mPendingFriendsAdapter = adapter;
+        pendingList.setAdapter(adapter);
     }
 
     private class YourFriendsCursorPreparationTask extends AsyncTask<Void, Void, Void> {
@@ -127,7 +279,32 @@ public class FriendSearchActivity extends ActionBarActivity implements FriendLis
             mCallback.friendsLoaded(mCursor);
             super.onPostExecute(result);
         }
+    }
 
+    private class PendingFriendsCursorPreparationTask extends AsyncTask<Void, Void, Void> {
+
+        FriendListsInterface mCallback;
+        Cursor mCursor;
+
+        public PendingFriendsCursorPreparationTask(FriendListsInterface callback) {
+            this.mCallback = callback;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            String username = PreferenceManager.getDefaultSharedPreferences(getApplication()).getString(GlobalPreferenceString.USERNAME_PREF, GlobalPreferenceString.GUEST);
+            Log.d(TAG, "getPendingFriends for: " + username);
+            mCursor = FriendsController.getsInstance().getPendingFriends(username);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            Log.d(TAG, "PendingFriendsCursorPreparationTask onPostExecute called");
+
+            mCallback.pendingFriendsLoaded(mCursor);
+            super.onPostExecute(result);
+        }
     }
 
 }

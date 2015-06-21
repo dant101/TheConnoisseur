@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.theconnoisseur.R;
 import com.theconnoisseur.android.Activities.Testing.VoiceRecogniserTestActivity;
+import com.theconnoisseur.android.Controller.FriendsController;
 import com.theconnoisseur.android.Model.GlobalPreferenceString;
 import com.theconnoisseur.android.Model.InternalDbContract;
 
@@ -83,6 +84,8 @@ public class MainMenuActivity extends ActionBarActivity {
         editor.putString(GlobalPreferenceString.PASSWORD_PREF, "");
         editor.putString(GlobalPreferenceString.USERNAME_PREF, "");
         editor.commit();
+
+        FriendsController.getsInstance().clearCache();
 
         startActivity(new Intent(MainMenuActivity.this, LoginActivity.class));
     }

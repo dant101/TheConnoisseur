@@ -23,6 +23,7 @@
 
         <EditText
             android:id="@+id/username"
+            android:inputType="textNoSuggestions"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -48,6 +49,7 @@
 
         <EditText
             android:id="@+id/password"
+            android:inputType="textNoSuggestions"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -73,6 +75,7 @@
 
         <EditText
             android:id="@+id/password_confirm"
+            android:inputType="textNoSuggestions"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
