@@ -56,8 +56,7 @@ public class LoginOnlineDB extends OnlineDB {
                 "VALUES (?, ?, ?, ?)";
 
         //check that username and email are not taken
-
-        if(isEmailUnique(email) && isEmailValid(email) && isUserNameUnique(username)) {
+        if(isUserNameUnique(username)) {
             int salt = PasswordEncryption.getNextSalt();
             String hash = PasswordEncryption.hash(password, salt);
 

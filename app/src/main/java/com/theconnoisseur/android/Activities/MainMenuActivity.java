@@ -86,7 +86,6 @@ public class MainMenuActivity extends ActionBarActivity {
         editor.putBoolean(GlobalPreferenceString.SIGNED_IN_PREF, false);
         editor.putString(GlobalPreferenceString.PASSWORD_PREF, "");
         editor.putString(GlobalPreferenceString.USERNAME_PREF, "");
-        editor.putString(GlobalPreferenceString.EMAIL_PREF, "");
         editor.commit();
 
         startActivity(new Intent(MainMenuActivity.this, LoginActivity.class));
