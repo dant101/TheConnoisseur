@@ -102,7 +102,7 @@
             android:value="@string/facebook_app_id" />
 
         <activity
-            android:name=".android.Activities.FriendSearch"
+            android:name=".android.Activities.FriendSearchActivity"
             android:label="@string/title_activity_friend_search"
             android:launchMode="singleTop">
 

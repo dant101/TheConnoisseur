@@ -3,15 +3,13 @@ package com.theconnoisseur.android.Activities;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.ListView;
@@ -19,17 +17,13 @@ import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
 
 import com.theconnoisseur.R;
-import com.theconnoisseur.android.Activities.Interfaces.CursorCallback;
 import com.theconnoisseur.android.Activities.Interfaces.FriendListsInterface;
 import com.theconnoisseur.android.Controller.FriendsController;
 import com.theconnoisseur.android.Model.FriendContent;
 import com.theconnoisseur.android.Model.GlobalPreferenceString;
-import com.theconnoisseur.android.Model.InternalDbContract;
 
-import Database.ConnoisseurDatabase;
-
-public class FriendSearch extends ActionBarActivity implements FriendListsInterface {
-    public static final String TAG = FriendSearch.class.getSimpleName();
+public class FriendSearchActivity extends ActionBarActivity implements FriendListsInterface {
+    public static final String TAG = FriendSearchActivity.class.getSimpleName();
 
     Adapter mAdapter;
 
@@ -70,6 +64,10 @@ public class FriendSearch extends ActionBarActivity implements FriendListsInterf
             // Do work using string
             Log.d(TAG, "search activity (search): " + query);
 
+        } else if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+            //Users selects suggestion
+            Uri uri = intent.getData();
+            Log.d(TAG, "ACTIONVIEW: uri - " + uri.toString());
         } else {
             Log.d(TAG, "other intent");
         }

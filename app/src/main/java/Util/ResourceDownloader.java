@@ -1,16 +1,21 @@
 package Util;
 
+import android.app.SearchManager;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.util.Log;
 
+import com.theconnoisseur.R;
 import com.theconnoisseur.android.Activities.ExerciseActivity;
 import com.theconnoisseur.android.Model.Comment;
 import com.theconnoisseur.android.Model.ExerciseContent;
 import com.theconnoisseur.android.Model.ExerciseScore;
+import com.theconnoisseur.android.Model.FriendContent;
 import com.theconnoisseur.android.Model.InternalDbContract;
 import com.theconnoisseur.android.Model.LanguageSelection;
+import com.theconnoisseur.android.Model.UsernamesContent;
 
 import java.util.Collections;
 import java.util.List;
@@ -18,7 +23,10 @@ import java.util.List;
 import Database.CommentOnlineDBFormat;
 import Database.ConnoisseurDatabase;
 import Database.ExerciseOnlineDBFormat;
+import Database.FriendsOnlineDB;
+import Database.FriendsOnlineDBFormat;
 import Database.LanguageOnlineDBFormat;
+import Database.LoginOnlineDBFormat;
 import Database.ScoreOnlineDBFormat;
 
 /**
@@ -104,5 +112,19 @@ public class ResourceDownloader {
                 context.getApplicationContext().getContentResolver().insert(InternalDbContract.insertExerciseScoreUri(), values);
             }
         }
+    }
+
+    public static Cursor getSuggestions(String query) {
+        List<LoginOnlineDBFormat> rows = ConnoisseurDatabase.getInstance().getLoginTable().getUser(query);
+
+        MatrixCursor matrixCursor = new MatrixCursor(UsernamesContent.COLUMNS);
+        for (LoginOnlineDBFormat row : rows) {
+            matrixCursor.addRow(new Object[] {
+                    row.getId(), row.getUsername(), row.getUsername()
+            });
+            Log.d(TAG, "Name: " + row.getUsername());
+        }
+
+        return matrixCursor;
     }
 }

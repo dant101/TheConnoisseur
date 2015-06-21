@@ -7,8 +7,6 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -16,8 +14,6 @@ import com.theconnoisseur.R;
 import com.theconnoisseur.android.Activities.Testing.VoiceRecogniserTestActivity;
 import com.theconnoisseur.android.Model.GlobalPreferenceString;
 import com.theconnoisseur.android.Model.InternalDbContract;
-
-import Voice.VoiceRecogniser;
 
 public class MainMenuActivity extends ActionBarActivity {
     public static final String TAG = MainMenuActivity.class.getSimpleName();
@@ -51,7 +47,7 @@ public class MainMenuActivity extends ActionBarActivity {
     }
 
     public void friendSearchActivity(View v) {
-        startActivity(new Intent(this, FriendSearch.class));
+        startActivity(new Intent(this, FriendSearchActivity.class));
     }
 
     public void voiceRecogniserTest(View v) {

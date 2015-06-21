@@ -2,7 +2,6 @@ package com.theconnoisseur.android.Controller;
 
 import android.database.MatrixCursor;
 
-import com.theconnoisseur.android.Activities.FriendSearch;
 import com.theconnoisseur.android.Model.FriendContent;
 
 import java.util.List;

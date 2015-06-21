@@ -20,6 +20,7 @@ import java.net.URI;
 import Database.ConnoisseurDatabase;
 import Util.CursorHelper;
 import Util.InternalDbHelper;
+import Util.ResourceDownloader;
 
 /**
  * Provides a public interface to enable interaction with internal database. Any database queries must go through this class.
@@ -136,7 +137,9 @@ public class InternalDbProvider extends ContentProvider {
 
             case FRIEND_SEARCH:
                 Log.d(TAG, "querying FRIENDS with user query");
-                //
+                String query2 = uri.getLastPathSegment();
+                cursor = ResourceDownloader.getSuggestions(query2);
+                break;
         }
 
         return cursor;
