@@ -31,7 +31,7 @@ public class LoginOnlineDB extends OnlineDB {
             String query = "SELECT * " +
                     "FROM login " +
                     "WHERE username = ?";
-            List<List<String>> queryResult = database.loginQuery(query, this.allArguments, username);
+            List<List<String>> queryResult = database.loginAndFriendQuery(query, this.allArguments, username);
             if(queryResult.size() == 1) {
                 LoginOnlineDBFormat formatLogin = format(queryResult,LoginOnlineDBFormat.class).get(0);
                 result = PasswordEncryption.isExpectedPassword(password, formatLogin.getSalt(), formatLogin.getPassword());
@@ -72,7 +72,7 @@ public class LoginOnlineDB extends OnlineDB {
         String queryUsername = "SELECT * " +
                 "FROM login " +
                 "WHERE email = ?";
-        List<List<String>> queryResultEmail = database.loginQuery(queryUsername, this.allArguments, email);
+        List<List<String>> queryResultEmail = database.loginAndFriendQuery(queryUsername, this.allArguments, email);
 
         return queryResultEmail.size() == 0;
     }
@@ -84,7 +84,7 @@ public class LoginOnlineDB extends OnlineDB {
         String queryUsername = "SELECT * " +
                 "FROM login " +
                 "WHERE username = ?";
-        List<List<String>> queryResultUsername = database.loginQuery(queryUsername, this.allArguments, username);
+        List<List<String>> queryResultUsername = database.loginAndFriendQuery(queryUsername, this.allArguments, username);
 
         return queryResultUsername.size() == 0;
     }
@@ -109,7 +109,16 @@ public class LoginOnlineDB extends OnlineDB {
                     "WHERE username LIKE ? " +
                     "ORDER BY username";
         username = username + "%";
-        List<List<String>> queryResult = database.loginQuery(query, this.allArguments, username);
+        List<List<String>> queryResult = database.loginAndFriendQuery(query, this.allArguments, username);
+        return format(queryResult,LoginOnlineDBFormat.class);
+    }
+
+    /*Returns a list of all users*/
+    public List<LoginOnlineDBFormat> getAllUsers() {
+        //using a different selectQuery format here to prevent SQLInjections
+        String query = "SELECT * " +
+                "FROM login";
+        List<List<String>> queryResult = database.selectQuery(query, allArguments);
         return format(queryResult,LoginOnlineDBFormat.class);
     }
 
