@@ -74,6 +74,31 @@ public class FriendsOnlineDB extends OnlineDB {
         return format(queryResult, FriendsOnlineDBFormat.class);
     }
 
+    /*Returns a list of all users who's username is or starts with the given string
+    * User has to be present in friends table*/
+    public List<FriendsOnlineDBFormat> getUserByUsername(String username) {
+        //using a different selectQuery format here to prevent SQLInjections
+        String query = "SELECT * " +
+                "FROM friends " +
+                "WHERE username LIKE ? " +
+                "ORDER BY username";
+        username = username + "%";
+        List<List<String>> queryResult = database.loginAndFriendQuery(query, this.allArguments, username);
+        return format(queryResult,FriendsOnlineDBFormat.class);
+    }
+
+    /*Returns a list of all users who's username is or starts with the given string
+     * User has to be present in friends table*/
+    public List<FriendsOnlineDBFormat> getUserByFriendUsername(String friend_username) {
+        //using a different selectQuery format here to prevent SQLInjections
+        String query = "SELECT * " +
+                "FROM friends " +
+                "WHERE friend_username LIKE ? " +
+                "ORDER BY friend_username";
+        friend_username = friend_username + "%";
+        List<List<String>> queryResult = database.loginAndFriendQuery(query, this.allArguments, friend_username);
+        return format(queryResult,FriendsOnlineDBFormat.class);
+    }
 
     @Override
     <FriendsOnlineDBFormat> List<FriendsOnlineDBFormat> format(

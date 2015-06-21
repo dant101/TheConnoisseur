@@ -137,8 +137,8 @@ public class Postgresql implements Database {
         }
     }
 
-    /*We need a special loginQuery to prevent user from doing SQLInjection*/
-    public List<List<String>> loginQuery(String sqlQuery, List<String> arguments, String value) {
+    /*We need a special query to prevent user from doing SQLInjection*/
+    public List<List<String>> loginAndFriendQuery(String sqlQuery, List<String> arguments, String value) {
         this.connect();
         List<List<String>> result = new ArrayList<>();
 
