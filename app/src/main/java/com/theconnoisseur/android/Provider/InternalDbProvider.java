@@ -103,7 +103,7 @@ public class InternalDbProvider extends ContentProvider {
             case LANGUAGES_ID:
                 String query = InternalDbContract.getLanguageId(uri);
                 String[] args = {query};
-                Log.d(TAG, "querying LANGUAGES with LANGUAGE_ID");
+                Log.d(TAG, "querying LANGUAGES with LANGUAGE_ID: " + query);
                 cursor = getDatabase(false).query(
                         TABLE_LANGUAGES, InternalDbContract.PROJECTION_LANGUAGES, LanguageSelection.LANGUAGE_ID + "=?", args, null, null, sortOrder);
                 break;
@@ -112,12 +112,15 @@ public class InternalDbProvider extends ContentProvider {
                 Log.d(TAG, "querying EXERCISES");
                 query = InternalDbContract.getId(uri);
                 String[] args2 = {query};
-
-                cursor = getDatabase(false).query(
-                        TABLE_EXERCISES, InternalDbContract.PROJECTION_EXERCISES, ExerciseContent.LANGUAGE_ID + "=?", args2, null, null, sortOrder);
+                if (query.equals("0")) {
+                    Log.d(TAG, "querying exercise with zero");
+                    cursor = getDatabase(false).query(TABLE_EXERCISES, InternalDbContract.PROJECTION_EXERCISES, null, null, null, null, "RANDOM()", "5");
+                } else {
+                    cursor = getDatabase(false).query(
+                            TABLE_EXERCISES, InternalDbContract.PROJECTION_EXERCISES, ExerciseContent.LANGUAGE_ID + "=?", args2, null, null, sortOrder);
+                }
 
                 Log.d(TAG, "query: "+ query + "(sort order: " + sortOrder + ")");
-                //CursorHelper.toString(cursor);
                 break;
 
             case EXERCISES_ALL:

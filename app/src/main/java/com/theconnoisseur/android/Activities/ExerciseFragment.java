@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.TransitionDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -66,7 +67,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
     private TextView mLanguage;
     private TextView mProgress;
     private ImageView mWordIllustration;
-    //private TextView mWord;
+    private TextView mWord;
     //private TextView mPhoneticSpelling;
     private TextView mWordDescription;
     private ScrollView mWordDescriptionView;
@@ -97,6 +98,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
     private boolean mClicked = false;
     private boolean firstAttempt = true;
     private boolean mBackgroundIsTransitioned= false;
+    private boolean mRandomSession = false;
 
     private int mCursorPosition = -1;
     private int mSessionWord = 0;
@@ -119,6 +121,9 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
     private String mLanguageString;
     private String mWordIllustrationUri;
     private String mLanguageFlagUri;
+    private String mLanguagePlaceholderConnoisseurUri;
+    private String mLanguagePlaceholderTouristUri;
+    private String mLanguagePlaceholderBarbarianUri;
     private String mLanguageHex;
     private String mSoundLocation;
     private int mLanguageId;
@@ -131,6 +136,8 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
 
     private OnFragmentInteractionListener mListener;
     private VoiceRecogniser mVoiceRecogniser;
+
+    Typeface plantin; Typeface roboto;
 
     public static ExerciseFragment newInstance() {
         ExerciseFragment fragment = new ExerciseFragment();
@@ -158,7 +165,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         mLanguage = (TextView) view.findViewById(R.id.language);
         mProgress = (TextView) view.findViewById(R.id.progess);
         mWordIllustration = (ImageView) view.findViewById(R.id.word_illustration);
-        //mWord = (TextView) view.findViewById(R.id.word);
+        mWord = (TextView) view.findViewById(R.id.word);
         //mPhoneticSpelling = (TextView) view.findViewById(R.id.phonetic_spelling);
         mWordDescription = (TextView) view.findViewById(R.id.word_description);
         mWordDescriptionView = (ScrollView) view.findViewById(R.id.word_description_view);
@@ -187,6 +194,9 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
 
         //Background is invisible until first exercise is ready - via callback
         mBackground.setVisibility(View.GONE);
+        plantin = Typeface.createFromAsset(getActivity().getAssets(), "fonts/PlantinMTStd_Semibold.ttf");
+        roboto = Typeface.createFromAsset(getActivity().getAssets(), "fonts/RobotoCondensed-Regular.ttf");
+        mWord.setTypeface(plantin); mWordDescription.setTypeface(roboto);
 
         setListeners();
         setInitialView();
@@ -282,16 +292,18 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
 
         mWordDescription.setText(c.getString(c.getColumnIndex(ExerciseContent.WORD_DESCRIPTION)));
 
-        //mWord.setText(c.getString(c.getColumnIndex(ExerciseContent.WORD)));
+        mWord.setText(c.getString(c.getColumnIndex(ExerciseContent.WORD)));
         mCurrentWord = c.getString(c.getColumnIndex(ExerciseContent.WORD));
         mCurrentWordId = c.getInt(c.getColumnIndex(ExerciseContent.WORD_ID));
         //mPhoneticSpelling.setText(c.getString(c.getColumnIndex(ExerciseContent.PHONETIC)));
 
         mWordIllustrationUri = c.getString(c.getColumnIndex(ExerciseContent.IMAGE_URL));
-        mLanguageId = c.getInt(c.getColumnIndex(ExerciseContent.LANGUAGE_ID));
-        mThreshold = c.getInt(c.getColumnIndex(ExerciseContent.THRESHOLD));
 
-        ContentDownloadHelper.loadImage(getActivity(), mWordIllustration, mWordIllustrationUri);
+        //Set language specific UI
+        mLanguageId = c.getInt(c.getColumnIndex(ExerciseContent.LANGUAGE_ID));
+        ((ExerciseActivity)getActivity()).prepareLanguageSpecifics(mLanguageId);
+
+        mThreshold = c.getInt(c.getColumnIndex(ExerciseContent.THRESHOLD));
         mSoundLocation = c.getString(c.getColumnIndex(ExerciseContent.SOUND_RECORDING));
 
         String word = c.getString(c.getColumnIndex(ExerciseContent.WORD));
@@ -304,15 +316,21 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
             mVoiceRecogniser.destroyVoiceRecogniser();
         }
         mVoiceRecogniser = new VoiceRecogniser(getActivity(),  word, locale, this);
+
+        loadWordIllustration();
     }
 
     /**
      * Change the text colour of the language to given hex value stored in db
      * @param hex hex value of language text colour
      */
-    public void setLanguageSpecifics(String hex, String image_path) {
+    public void setLanguageSpecifics(String hex, String image_path, String path_connoisseur, String path_tourist, String path_barbarian) {
         mLanguageFlagUri = image_path;
         mLanguageHex = hex;
+        mLanguagePlaceholderConnoisseurUri = path_connoisseur;
+        mLanguagePlaceholderTouristUri = path_tourist;
+        mLanguagePlaceholderBarbarianUri = path_barbarian;
+
         try {
             mLanguage.setTextColor(Color.parseColor(hex));
             mProgress.setTextColor(Color.parseColor(hex));
@@ -373,6 +391,19 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         });
 
         mListenAnim.startAnimation(grow);
+    }
+
+    public void setRandomSession() {
+        mRandomSession = true;
+    }
+
+    private void loadWordIllustration() {
+        Log.d(TAG, "loadWordIllustration - mWordIllustrationUri: "+ mWordIllustrationUri);
+        if (mWordIllustrationUri == null) {
+            ContentDownloadHelper.loadImage(getActivity(), mWordIllustration, mLanguagePlaceholderConnoisseurUri);
+        } else {
+            ContentDownloadHelper.loadImage(getActivity(), mWordIllustration, mWordIllustrationUri);
+        }
     }
 
     //UI change as a result of a successful recording attempt
@@ -473,9 +504,19 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
                 break;
         }
 
+        if (mWordIllustrationUri == null) {
+            switch(mAttemptsRemaining) {
+                case 2:
+                    ContentDownloadHelper.loadImage(getActivity(), mWordIllustration, mLanguagePlaceholderTouristUri);
+                    break;
+                case 1:
+                    ContentDownloadHelper.loadImage(getActivity(), mWordIllustration, mLanguagePlaceholderBarbarianUri);
+                    break;
+            }
+        }
+
         mAttempts += 1;
     }
-
 
     // House keeping as we move onto the next word in a session
     private void concludeWordAttempt() {
@@ -521,7 +562,8 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
     }
 
     private void concludeSession() {
-        int session_number = getSessionNumber();
+
+        int session_number = getSessionNumber(mLanguageString);
         mSessionWord -= 1; //Since we increment before we realise we have none left, correct here
         Intent intent = new Intent(getActivity(), SessionSummary.class);
 
@@ -536,10 +578,19 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         intent.putExtra(SessionSummaryContent.WORDS_PASSED, mSessionWordPasses);
         intent.putExtra(SessionSummaryContent.TOTAL_WORDS, mSessionWord);
         intent.putExtra(SessionSummaryContent.LANGUAGE, mLanguageString);
-        intent.putExtra(SessionSummaryContent.LANGUAGE_ID, mLanguageId);
         intent.putExtra(SessionSummaryContent.LANGUAGE_HEX, mLanguageHex);
-        intent.putExtra(SessionSummaryContent.SESSION_NUMBER, session_number);
         intent.putExtra(SessionSummaryContent.SESSION_ATTEMPTS, mSessionAttempts);
+
+
+        if (mRandomSession) {
+            intent.putExtra(SessionSummaryContent.SESSION_NUMBER, getSessionNumber("random"));
+            intent.putExtra(SessionSummaryContent.LANGUAGE_ID, ExerciseActivity.RANDOM_ID);
+            intent.putExtra(SessionSummaryContent.RANDOM_SESSION, true);
+        } else {
+            intent.putExtra(SessionSummaryContent.SESSION_NUMBER, session_number);
+            intent.putExtra(SessionSummaryContent.LANGUAGE_ID, mLanguageId);
+            intent.putExtra(SessionSummaryContent.RANDOM_SESSION, false);
+        }
 
         mVoiceRecogniser.destroyVoiceRecogniser();
 
@@ -624,11 +675,11 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
     /**
      * Gets the number of the sessions attempt
      */
-    private int getSessionNumber() {
-        int session_number = PreferenceManager.getDefaultSharedPreferences(getActivity()).getInt(mLanguageString + ATTEMPT, 0) + 1;
+    private int getSessionNumber(String language_string) {
+        int session_number = PreferenceManager.getDefaultSharedPreferences(getActivity()).getInt(language_string + ATTEMPT, 0) + 1;
 
         SharedPreferences.Editor e = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
-        e.putInt(mLanguageString + ATTEMPT, session_number);
+        e.putInt(language_string + ATTEMPT, session_number);
         e.commit();
 
         return session_number;

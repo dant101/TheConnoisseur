@@ -48,8 +48,12 @@ public class InternalDbHelper extends SQLiteOpenHelper {
     private static String LANGUAGE_HEX = LanguageSelection.LANGUAGE_HEX;
     private static String LANGUAGE_IMAGE_URL = LanguageSelection.LANGUAGE_IMAGE_URL;
 
+    private static String LANGUAGE_PLACEHOLDER_CONNOISSEUR = LanguageSelection.LANGUAGE_PLACEHOLDER_CONNOISSEUR;
+    private static String LANGUAGE_PLACEHOLDER_TOURIST = LanguageSelection.LANGUAGE_PLACEHOLDER_TOURIST;
+    private static String LANGUAGE_PLACEHOLDER_BARBARIAN = LanguageSelection.LANGUAGE_PLACEHOLDER_BARBARIAN;
+
     private static String LANGUAGES_TABLE_CREATE =
-              "CREATE TABLE LANGUAGES(_id INTEGER PRIMARY KEY AUTOINCREMENT, language_name TEXT, language_hex TEXT, language_image_url TEXT)";
+              "CREATE TABLE LANGUAGES(_id INTEGER PRIMARY KEY AUTOINCREMENT, language_name TEXT, language_hex TEXT, language_image_url TEXT, placeholder_connoisseur TEXT, placeholder_tourist TEXT, placeholder_barbarian TEXT)";
 
     private static String EXERCISE_SCORE_CREATE =
             "CREATE TABLE SCORES(_id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, word_id TEXT, percentage_score INTEGER, attempts_score INTEGER)";

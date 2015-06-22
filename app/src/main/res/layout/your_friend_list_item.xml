@@ -28,16 +28,10 @@
         <ImageView
             android:layout_width="@dimen/ring_width"
             android:layout_height="@dimen/ring_width"
-            android:src="@drawable/ring"
+            android:src="@drawable/friends_delete"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"/>
 
-        <ImageView
-            android:layout_width="@dimen/delete_friend_width"
-            android:layout_height="@dimen/delete_friend_width"
-            android:src="@drawable/cross_wrong"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"/>
 
     </RelativeLayout>
 

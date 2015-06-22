@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +45,7 @@ public class LoginActivity extends Activity {
     private ImageView mFeedbackUsername;
     private ImageView mFeedbackPassword;
     private ImageView mFeedbackPasswordConfirmation;
+    private ProgressBar mSpinner;
 
     private String mEmail;
     private String mUsername;
@@ -60,19 +62,13 @@ public class LoginActivity extends Activity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        automaticLogin();
 
         mEditPasswordConfirm = (EditText) findViewById(R.id.password_confirm);
         mEditUsername = (EditText) findViewById(R.id.username);
         mEditPassword = (EditText) findViewById(R.id.password);
         mEnterDetails = (Button) findViewById(R.id.enter_details);
         mLogin = (TextView) findViewById(R.id.login);
+        mSpinner = (ProgressBar) findViewById(R.id.loading_spinner);
 
         mFeedbackUsername = (ImageView) findViewById(R.id.feedback_username);
         mFeedbackPassword = (ImageView) findViewById(R.id.feedback_password);
@@ -82,6 +78,13 @@ public class LoginActivity extends Activity {
         mEditPasswordConfirm.setTypeface(Typeface.DEFAULT);
         mEditPassword.setTransformationMethod(new PasswordTransformationMethod());
         mEditPasswordConfirm.setTransformationMethod(new PasswordTransformationMethod());
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        automaticLogin();
 
         setListeners();
     }
@@ -189,15 +192,18 @@ public class LoginActivity extends Activity {
             mEmail = ""; //No emails for now
 
             if (mPassword.equals(mPasswordConfirm)) {
-                if(ConnoisseurDatabase.getInstance().getLoginTable().create(mUsername, mPassword, mEmail)) {
+                setLoading(true);
+                if(!mUsername.isEmpty() && !mPassword.isEmpty() &&ConnoisseurDatabase.getInstance().getLoginTable().create(mUsername, mPassword, mEmail)) {
                     //Successful new user account creation
                     setUserSessionDetails();
                     Log.d(TAG, "Created new user account: Username(" + mUsername + ") Email(" + mEmail + ")");
 
                     startMainMenuActivity();
                 } else {
+                    setLoading(false);
                     //Unable to create account
                     Log.d(TAG, "Failed to create new account");
+                    ToastHelper.toast(getApplicationContext(), "Couldn't create an account");
                 }
 
             } else {
@@ -205,6 +211,7 @@ public class LoginActivity extends Activity {
             }
         } else {
             //Logging in
+            setLoading(true);
             if(ConnoisseurDatabase.getInstance().getLoginTable().login(mUsername, mPassword)) {
                 //Successful user sign in
                 Log.d(TAG, "Successfully signed in user: Username(" + mUsername + ") Email(" + mEmail + ")");
@@ -214,6 +221,7 @@ public class LoginActivity extends Activity {
                 startMainMenuActivity();
             } else {
                 //Unable to login in user
+                setLoading(false);
                 Log.d(TAG, "Failed to sign in with user credentials");
                 mFeedbackPassword.setImageResource(R.drawable.cross_wrong);
                 ToastHelper.toast(getApplicationContext(), getString(R.string.wrong_password), Toast.LENGTH_LONG);
@@ -234,7 +242,9 @@ public class LoginActivity extends Activity {
     // Proceeds user to the main menu - offering user visual feedback (?)
     private void startMainMenuActivity() {
         //UI visual feedback?
+        setLoading(false);
         startActivity(new Intent(LoginActivity.this, MainMenuActivity.class));
+        finish();
     }
 
     private void syncUserInformation(String username) {
@@ -264,5 +274,11 @@ public class LoginActivity extends Activity {
         }
     }
 
-
+    private void setLoading(boolean shouldSpin) {
+        if(shouldSpin) {
+            mSpinner.setVisibility(View.VISIBLE);
+        } else {
+            mSpinner.setVisibility(View.INVISIBLE);
+        }
+    }
 }

@@ -24,12 +24,14 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
     private static final String TAG = ExerciseContent.class.getSimpleName();
     private static final String TAG_EXERCISE_FRAGMENT = "exercise_fragment";
     private static final String RESUMING = "resuming";
+    public static final int RANDOM_ID = 0;
 
     private int LANGUAGE_ID = 3; //ONLY FOR TESTING
     public static final int EXERCISES_PER_SESSION = 5;
 
     private Cursor mCursor;
     private boolean mResuming = false;
+    private int mCurrentLanguageId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,11 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
 
         Intent intent = getIntent();
         LANGUAGE_ID = intent.getIntExtra(ExerciseContent.LANGUAGE_ID, LANGUAGE_ID);
+    }
+
+    @Override
+    protected void onStart() {
+        Log.d(TAG, "ExerciseActivity onStart()");
 
         //Calls download task and leaves callback to setup cursor.
         // Otherwise, initiate cursor immediately (if data already downloaded)
@@ -54,12 +61,9 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
             // Loads the exercise cursor for specific set of exercises
             new ExerciseCursorPreparationTask(this).execute(LANGUAGE_ID);
         }
-    }
 
-    @Override
-    protected void onStart() {
-        Log.d(TAG, "ExerciseActivity onStart()");
         super.onStart();
+        setExtraLanguageInformation(LANGUAGE_ID);
     }
 
     @Override
@@ -124,6 +128,19 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
         }
     }
 
+    private void setExtraLanguageInformation(int language_id) {
+        Log.d(TAG, "setExtraLanguageInformation. language_id: " + String.valueOf(language_id));
+        Log.d(TAG, String.valueOf(language_id)+ " vs " + String.valueOf(RANDOM_ID));
+        if (language_id == RANDOM_ID) {
+            Log.d(TAG, "here");
+            Fragment fragment = getFragmentManager().findFragmentByTag(TAG_EXERCISE_FRAGMENT);
+            if (fragment instanceof ExerciseFragment) {
+                ((ExerciseFragment)fragment).setRandomSession();
+                Log.d(TAG, "setting Random session");
+            }
+        }
+    }
+
     /**
      * Actions taken once content cursor is ready
      * @param c returned cursor from db query
@@ -145,7 +162,11 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
     }
 
     // Loads the correct language image and colours for a specific set of exercises
-    private void prepareLanguageSpecifics(int language_id) {
+    public void prepareLanguageSpecifics(int language_id) {
+        Log.d(TAG, "preparing lang specs for : " + String.valueOf(language_id));
+        //Return if the same language_id as before
+        if (mCurrentLanguageId == language_id) { return; }
+
         Cursor c = getContentResolver().query(InternalDbContract.queryForLanguages(language_id), null, null, null, null);
 
         //Precaution
@@ -156,12 +177,16 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
 
         String hex = c.getString(c.getColumnIndex(LanguageSelection.LANGUAGE_HEX));
         String path = c.getString(c.getColumnIndex(LanguageSelection.LANGUAGE_IMAGE_URL));
+        String path_connoisseur = c.getString(c.getColumnIndex(LanguageSelection.LANGUAGE_PLACEHOLDER_CONNOISSEUR));
+        String path_tourist = c.getString(c.getColumnIndex(LanguageSelection.LANGUAGE_PLACEHOLDER_TOURIST));
+        String path_barbarian = c.getString(c.getColumnIndex(LanguageSelection.LANGUAGE_PLACEHOLDER_BARBARIAN));
 
         //Find fragment and apply colour and image
         Fragment fragment = getFragmentManager().findFragmentByTag(TAG_EXERCISE_FRAGMENT);
         if (fragment instanceof ExerciseFragment) {
-            ((ExerciseFragment)fragment).setLanguageSpecifics("#" + hex, path);
+            ((ExerciseFragment)fragment).setLanguageSpecifics("#" + hex, path, path_connoisseur, path_tourist, path_barbarian);
         }
+        mCurrentLanguageId = language_id;
     }
 
     /**

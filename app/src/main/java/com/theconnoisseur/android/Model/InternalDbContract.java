@@ -14,7 +14,10 @@ public class InternalDbContract {
             LanguageSelection.LANGUAGE_ID,
             LanguageSelection.LANGUAGE_NAME,
             LanguageSelection.LANGUAGE_HEX,
-            LanguageSelection.LANGUAGE_IMAGE_URL};
+            LanguageSelection.LANGUAGE_IMAGE_URL,
+            LanguageSelection.LANGUAGE_PLACEHOLDER_CONNOISSEUR,
+            LanguageSelection.LANGUAGE_PLACEHOLDER_TOURIST,
+            LanguageSelection.LANGUAGE_PLACEHOLDER_BARBARIAN};
 
     public static final String[] PROJECTION_EXERCISES = {
             ExerciseContent.WORD_ID,

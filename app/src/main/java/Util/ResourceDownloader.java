@@ -51,9 +51,16 @@ public class ResourceDownloader {
             values.put(LanguageSelection.LANGUAGE_HEX, row.getLanguage_hex());
             values.put(LanguageSelection.LANGUAGE_IMAGE_URL, row.getLanguage_image_url());
 
+            values.put(LanguageSelection.LANGUAGE_PLACEHOLDER_CONNOISSEUR, row.getPlaceholder_connoisseur());
+            values.put(LanguageSelection.LANGUAGE_PLACEHOLDER_TOURIST, row.getPlaceholder_tourist());
+            values.put(LanguageSelection.LANGUAGE_PLACEHOLDER_BARBARIAN, row.getPlaceholder_barbarian());
+
             context.getContentResolver().insert(InternalDbContract.insertLanguagesUri(), values);
 
             ContentDownloadHelper.getBitmapFromUrl(row.getLanguage_image_url(), context, true);
+            ContentDownloadHelper.getBitmapFromUrl(row.getPlaceholder_connoisseur(), context, true);
+            ContentDownloadHelper.getBitmapFromUrl(row.getPlaceholder_tourist(), context, true);
+            ContentDownloadHelper.getBitmapFromUrl(row.getPlaceholder_barbarian(), context, true);
         }
     }
 

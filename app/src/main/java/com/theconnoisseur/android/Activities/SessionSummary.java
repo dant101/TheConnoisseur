@@ -52,6 +52,7 @@ public class SessionSummary extends ActionBarActivity {
     private int mLanguageId;
     private String mLanguageHex;
     private String mTongueString;
+    private boolean mRandomSession;
 
     private ImageView mLanguageImage;
     private TextView mLanguage;
@@ -125,6 +126,7 @@ public class SessionSummary extends ActionBarActivity {
         mLanguageHex = i.getStringExtra(SessionSummaryContent.LANGUAGE_HEX);
         mSessionNumber = i.getIntExtra(SessionSummaryContent.SESSION_NUMBER, 1);
         mSessionAttempts = i.getIntExtra(SessionSummaryContent.SESSION_ATTEMPTS, 15);
+        mRandomSession = i.getBooleanExtra(SessionSummaryContent.RANDOM_SESSION, false);
 
         setBestWorstWords();
     }
@@ -146,6 +148,7 @@ public class SessionSummary extends ActionBarActivity {
         setTongueLevel();
         setTextColour();
         setupShareButton(mConnoisseurImage);
+        setRandomSessionVisuals(mRandomSession);
     }
 
     private void setTongueLevel() {
@@ -196,19 +199,28 @@ public class SessionSummary extends ActionBarActivity {
     }
 
     private void setTextColour() {
-        try {
-            mLanguage.setTextColor(Color.parseColor(mLanguageHex));
-            mSession.setTextColor(Color.parseColor(mLanguageHex));
-            mScore.setTextColor(Color.parseColor(mLanguageHex));
-            mBestWorstTextView.setTextColor(Color.parseColor(mLanguageHex));
-        } catch (IllegalArgumentException e) {
-            Log.d(TAG, "Illegal Hex was provided for language - check database value!");
-            e.printStackTrace();
+        if (!mRandomSession) {
+            try {
+                mLanguage.setTextColor(Color.parseColor(mLanguageHex));
+                mSession.setTextColor(Color.parseColor(mLanguageHex));
+                mScore.setTextColor(Color.parseColor(mLanguageHex));
+                mBestWorstTextView.setTextColor(Color.parseColor(mLanguageHex));
+            } catch (IllegalArgumentException e) {
+                Log.d(TAG, "Illegal Hex was provided for language - check database value!");
+                e.printStackTrace();
+            }
         }
         //Set custom font
         Typeface plantin = Typeface.createFromAsset(getAssets(), "fonts/Plantin_Light.ttf");
         mTongueType.setTypeface(plantin);
 
+    }
+
+    private void setRandomSessionVisuals(boolean random) {
+        if (random) {
+            mLanguageImage.setImageResource(R.drawable.flag_random_2);
+            mLanguage.setText("Random");
+        }
     }
 
     private void setBestWorstWords() {

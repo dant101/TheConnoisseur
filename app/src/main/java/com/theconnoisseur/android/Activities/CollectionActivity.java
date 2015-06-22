@@ -169,6 +169,7 @@ public class CollectionActivity extends ActionBarActivity implements CursorCallb
         if (mCursor == null) {return; }
 
         mMastered = new HashSet<Integer>();
+        int total = mCursor.getCount();
 
         //Cycles through exercises and puts into mMastered words which user has mastered (0 attempts required)
         if (mCursor.moveToFirst()) {
@@ -184,7 +185,7 @@ public class CollectionActivity extends ActionBarActivity implements CursorCallb
         }
         mCursor.moveToFirst();
 
-        mScore.setText("Mastered " + String.valueOf(mMastered.size()) + " words");
+        mScore.setText("Mastered " + String.valueOf(mMastered.size()) + "/" + String.valueOf(total) + " words");
     }
 
 

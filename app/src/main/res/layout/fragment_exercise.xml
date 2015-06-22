@@ -87,24 +87,45 @@
                 android:id="@+id/progess"
                 android:text="@string/progress_sample"/>
 
-            </LinearLayout>
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/word_illustration"
             android:layout_width="@dimen/illustration_width"
             android:layout_height="0dp"
             android:layout_weight="6"
-            android:layout_margin="10dp"
-            android:background="@android:color/transparent"
+            android:layout_margin="@dimen/normal_margin"
             android:src="@drawable/matryoshka"/>
 
-        <TextView
-            android:id="@+id/word"
-            android:layout_margin="@dimen/normal_margin"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:text="@string/word_sample"/>
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="@dimen/vsmall_padding"
+                android:src="@drawable/graphic_left"
+                android:layout_marginRight="@dimen/large_margin"/>
+
+            <TextView
+                android:id="@+id/word"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textSize="@dimen/text_medium"
+                android:text="Matryoshka"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="@dimen/vsmall_padding"
+                android:src="@drawable/graphic_right"
+                android:layout_marginLeft="@dimen/large_margin"/>
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/phonetic_spelling"

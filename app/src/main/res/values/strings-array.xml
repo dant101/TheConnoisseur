@@ -12,5 +12,11 @@
         <item>ja</item>
         <item>ar</item>
         <item>iw</item>
+        <item>nl</item>
+        <item>ru</item>
+        <item>da</item>
+        <item>fi</item>
+        <item>tr</item>
+        <item>pt</item>
     </string-array>
 </resources>
