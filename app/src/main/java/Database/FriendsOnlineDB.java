@@ -80,9 +80,7 @@ public class FriendsOnlineDB extends OnlineDB {
         //using a different selectQuery format here to prevent SQLInjections
         String query = "SELECT * " +
                 "FROM friends " +
-                "WHERE username LIKE ? " +
-                "ORDER BY username";
-        username = username + "%";
+                "WHERE username = ?";
         List<List<String>> queryResult = database.loginAndFriendQuery(query, this.allArguments, username);
         return format(queryResult,FriendsOnlineDBFormat.class);
     }
@@ -93,9 +91,7 @@ public class FriendsOnlineDB extends OnlineDB {
         //using a different selectQuery format here to prevent SQLInjections
         String query = "SELECT * " +
                 "FROM friends " +
-                "WHERE friend_username LIKE ? " +
-                "ORDER BY friend_username";
-        friend_username = friend_username + "%";
+                "WHERE friend_username = ?";
         List<List<String>> queryResult = database.loginAndFriendQuery(query, this.allArguments, friend_username);
         return format(queryResult,FriendsOnlineDBFormat.class);
     }
