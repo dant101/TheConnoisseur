@@ -139,28 +139,31 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:visibility="invisible"
+            android:visibility="gone"
             android:gravity="center">
 
             <ImageView
                 android:id="@+id/heart_small_1"
                 android:layout_width="@dimen/hearts_width_small"
                 android:layout_height="match_parent"
-                android:padding="@dimen/normal_padding"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
                 android:src="@drawable/heart_green_black"/>
 
             <ImageView
                 android:id="@+id/heart_small_2"
                 android:layout_width="@dimen/hearts_width_small"
                 android:layout_height="match_parent"
-                android:padding="@dimen/normal_padding"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
                 android:src="@drawable/heart_green_black"/>
 
             <ImageView
                 android:id="@+id/heart_small_3"
                 android:layout_width="@dimen/hearts_width_small"
                 android:layout_height="match_parent"
-                android:padding="@dimen/normal_padding"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
                 android:src="@drawable/heart_green_black"/>
 
         </LinearLayout>

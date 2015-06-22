@@ -446,7 +446,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
     //Initial UI settings (see story board)
     private void setInitialView() {
         mLivesBig.setVisibility(View.VISIBLE);
-        mLivesSmall.setVisibility(View.INVISIBLE);
+        mLivesSmall.setVisibility(View.GONE);
         mWordDescriptionView.setVisibility(View.GONE);
         mProceed.setVisibility(View.GONE);
         mListenLayout.setVisibility(View.VISIBLE);
