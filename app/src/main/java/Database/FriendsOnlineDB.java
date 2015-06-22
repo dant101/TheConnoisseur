@@ -35,8 +35,6 @@ public class FriendsOnlineDB extends OnlineDB {
             boolean confirmed = false;
             database.createFriendQuery(query, username, friend_username,
                     confirmed);
-            database.createFriendQuery(query, friend_username, username,
-                    confirmed);
         }
     }
 
@@ -51,7 +49,6 @@ public class FriendsOnlineDB extends OnlineDB {
                         " WHERE username = ? " +
                         " AND friend_username = ?";
         database.createFriendQuery(query, username, friend_username, null);
-        database.createFriendQuery(query, friend_username, username, null);
     }
 
     /*-Deletes a friend from the database
@@ -62,7 +59,6 @@ public class FriendsOnlineDB extends OnlineDB {
                 " WHERE username = ? " +
                 " AND friend_username = ?";
         database.createFriendQuery(query, username, friend_username, null);
-        database.createFriendQuery(query, friend_username, username, null);
     }
 
     /*Returns all the friends that a user has*/

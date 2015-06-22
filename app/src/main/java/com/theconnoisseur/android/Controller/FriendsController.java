@@ -83,12 +83,14 @@ public class FriendsController {
 
         MatrixCursor matrixCursor = new MatrixCursor(FriendContent.columns);
         for (FriendsOnlineDBFormat row : pendingFriends) {
-            matrixCursor.addRow(new Object[] {
-                    row.getId(),
-                    row.getUsername(),
-                    row.getFriend_username(),
-                    row.isConfirmed()
-            });
+            if (!row.isConfirmed()) {
+                matrixCursor.addRow(new Object[] {
+                        row.getId(),
+                        row.getUsername(),
+                        row.getFriend_username(),
+                        row.isConfirmed()
+                });
+            }
         }
 
         return matrixCursor;
@@ -104,6 +106,13 @@ public class FriendsController {
     }
 
     public void removeFriend(String username, String friend) {
+//        List<FriendsOnlineDBFormat> yourFriends = friendsCache.get(YOUR_FRIENDS_ID);
+//        for (Iterator<FriendsOnlineDBFormat> iter = yourFriends.iterator(); iter.hasNext();) {
+//            String friend_username = iter.next().getFriend_username();
+//            if (friend.equals(friend_username)) {
+//                iter.remove();
+//            }
+//        }
         ConnoisseurDatabase.getInstance().getFriendsTable().deleteFriend(username, friend);
     }
 
