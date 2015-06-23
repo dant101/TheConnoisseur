@@ -13,6 +13,7 @@ import java.util.Map;
 import Database.ConnoisseurDatabase;
 import Database.FriendsOnlineDB;
 import Database.FriendsOnlineDBFormat;
+import Database.FriendsOnlineDBInterface;
 import Util.ResourceCache;
 
 public class FriendsController {
@@ -96,16 +97,16 @@ public class FriendsController {
         return matrixCursor;
     }
 
-    public void confirmFriend(String username, String friend) {
-        ConnoisseurDatabase.getInstance().getFriendsTable().confirmFriendRequest(friend, username);
-        ConnoisseurDatabase.getInstance().getFriendsTable().createFriendRequest(username, friend);
+    public void confirmFriend(FriendsOnlineDBInterface i, String username, String friend) {
+        ConnoisseurDatabase.getInstance().getFriendsTable().confirmFriendRequest(friend, username, i);
+        ConnoisseurDatabase.getInstance().getFriendsTable().createFriendRequest(username, friend, i);
     }
 
-    public void declineFriend(String username, String friend) {
-        ConnoisseurDatabase.getInstance().getFriendsTable().deleteFriend(friend, username);
+    public void declineFriend(FriendsOnlineDBInterface i, String username, String friend) {
+        ConnoisseurDatabase.getInstance().getFriendsTable().deleteFriend(friend, username, i);
     }
 
-    public void removeFriend(String username, String friend) {
+    public void removeFriend(FriendsOnlineDBInterface i, String username, String friend) {
 //        List<FriendsOnlineDBFormat> yourFriends = friendsCache.get(YOUR_FRIENDS_ID);
 //        for (Iterator<FriendsOnlineDBFormat> iter = yourFriends.iterator(); iter.hasNext();) {
 //            String friend_username = iter.next().getFriend_username();
@@ -113,12 +114,12 @@ public class FriendsController {
 //                iter.remove();
 //            }
 //        }
-        ConnoisseurDatabase.getInstance().getFriendsTable().deleteFriend(username, friend);
+        ConnoisseurDatabase.getInstance().getFriendsTable().deleteFriend(username, friend, i);
     }
 
-    public void addFriend(String username, String friend) {
+    public void addFriend(FriendsOnlineDBInterface i, String username, String friend) {
         if (!alreadyFriendsWith(username, friend)) {
-            ConnoisseurDatabase.getInstance().getFriendsTable().createFriendRequest(username, friend);
+            ConnoisseurDatabase.getInstance().getFriendsTable().createFriendRequest(username, friend, i);
         }
     }
 

@@ -59,6 +59,7 @@
     <dimen name="text_margin">7dp</dimen>
     <dimen name="image_margin">10dp</dimen>
     <dimen name="icon_side">40dp</dimen>
+    <dimen name="add_friend_side">40dp</dimen>
 
     <!-- LanguageSelection Activity -->
     <dimen name="flag_width">30dp</dimen>

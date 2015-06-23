@@ -26,8 +26,9 @@ import com.theconnoisseur.android.Model.FriendContent;
 import com.theconnoisseur.android.Model.GlobalPreferenceString;
 
 import Database.ConnoisseurDatabase;
+import Database.FriendsOnlineDBInterface;
 
-public class FriendSearchActivity extends ActionBarActivity implements FriendListsInterface {
+public class FriendSearchActivity extends ActionBarActivity implements FriendListsInterface, FriendsOnlineDBInterface {
     public static final String TAG = FriendSearchActivity.class.getSimpleName();
 
     Adapter mFriendsAdapter;
@@ -71,8 +72,6 @@ public class FriendSearchActivity extends ActionBarActivity implements FriendLis
         super.onStart();
 
         //Loads both cursors to populate friends and pending friends list
-        new YourFriendsCursorPreparationTask(this).execute();
-        new PendingFriendsCursorPreparationTask(this).execute();
         setListeners();
     }
 
@@ -111,15 +110,13 @@ public class FriendSearchActivity extends ActionBarActivity implements FriendLis
      * @param friend
      */
     private void addFriend(final String friend) {
-        final FriendSearchActivity activity = this;
+        final FriendsOnlineDBInterface activity = this;
         if (mUsername != null) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     // adds new friends (preventing duplicated friendships)
-                    FriendsController.getsInstance().addFriend(mUsername, friend);
-                    //Reload cursor
-                    new YourFriendsCursorPreparationTask(activity).execute();
+                    FriendsController.getsInstance().addFriend(activity, mUsername, friend);
                 }
             }).start();
         }
@@ -132,13 +129,12 @@ public class FriendSearchActivity extends ActionBarActivity implements FriendLis
      */
     private void removeFriend(final String friend) {
         Log.d(TAG, "removing friend: " + friend);
-        final FriendSearchActivity activity = this;
+        final FriendsOnlineDBInterface activity = this;
         if(friend != null) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    FriendsController.getsInstance().removeFriend(mUsername, friend);
-                    new YourFriendsCursorPreparationTask(activity).execute();
+                    FriendsController.getsInstance().removeFriend(activity, mUsername, friend);
                 }
             }).start();
         }
@@ -150,14 +146,12 @@ public class FriendSearchActivity extends ActionBarActivity implements FriendLis
      */
     private void confirmFriend(final String friend) {
         Log.d(TAG, "confirming friend: " + friend);
-        final FriendSearchActivity activity = this;
+        final FriendsOnlineDBInterface activity = this;
         if(friend != null) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    FriendsController.getsInstance().confirmFriend(mUsername, friend);
-                    new PendingFriendsCursorPreparationTask(activity).execute();
-                    new YourFriendsCursorPreparationTask(activity).execute();
+                    FriendsController.getsInstance().confirmFriend(activity, mUsername, friend);
                 }
             }).start();
         }
@@ -169,13 +163,12 @@ public class FriendSearchActivity extends ActionBarActivity implements FriendLis
      */
     private void declineFriend(final String friend) {
         Log.d(TAG, "declining friend: " +friend);
-        final FriendSearchActivity activity = this;
+        final FriendsOnlineDBInterface activity = this;
         if(friend != null) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    FriendsController.getsInstance().declineFriend(mUsername, friend);
-                    new PendingFriendsCursorPreparationTask(activity).execute();
+                    FriendsController.getsInstance().declineFriend(activity, mUsername, friend);
                 }
             }).start();
         }
@@ -252,6 +245,16 @@ public class FriendSearchActivity extends ActionBarActivity implements FriendLis
 
         mPendingFriendsAdapter = adapter;
         pendingList.setAdapter(adapter);
+    }
+
+    @Override
+    public void onUpdatedFriends() {
+        new YourFriendsCursorPreparationTask(this).execute();
+    }
+
+    @Override
+    public void onUpdatedPendingFriends() {
+        new PendingFriendsCursorPreparationTask(this).execute();
     }
 
     private class YourFriendsCursorPreparationTask extends AsyncTask<Void, Void, Void> {

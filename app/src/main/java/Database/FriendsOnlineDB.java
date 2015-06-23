@@ -37,7 +37,7 @@ public class FriendsOnlineDB extends OnlineDB {
                     confirmed);
         }
 
-        f.onFriendCreateCompleted();
+        f.onUpdatedFriends();
     }
 
     /*Confirms a friend request between two people
@@ -50,18 +50,19 @@ public class FriendsOnlineDB extends OnlineDB {
                         " AND friend_username = ?";
         database.createFriendQuery(query, username, friend_username, null);
 
-        f.onFriendCreateCompleted();
-        f.onFriendConfirmCompleted();
+        f.onUpdatedFriends();
+        f.onUpdatedPendingFriends();
     }
 
     /*-Deletes a friend from the database
       -Cancels a friend request from the database
      */
-    public void deleteFriend(String username, String friend_username) {
+    public void deleteFriend(String username, String friend_username, FriendsOnlineDBInterface f) {
         String query = "DELETE FROM friends" +
                 " WHERE username = ? " +
                 " AND friend_username = ?";
         database.createFriendQuery(query, username, friend_username, null);
+        f.onUpdatedFriends();
     }
 
     /*Returns all the friends that a user has*/
