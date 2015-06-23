@@ -20,7 +20,7 @@ public class FriendsOnlineDB extends OnlineDB {
     username: user creating the request
     friend_username: friend to add
      */
-    public void createFriendRequest(String username, String friend_username) {
+    public void createFriendRequest(String username, String friend_username, FriendsOnlineDBInterface f) {
         String query = "SELECT * " +
                 "FROM friends " +
                 "WHERE username = ? " +
@@ -36,19 +36,22 @@ public class FriendsOnlineDB extends OnlineDB {
             database.createFriendQuery(query, username, friend_username,
                     confirmed);
         }
+
+        f.onFriendCreateCompleted();
     }
 
     /*Confirms a friend request between two people
     * Sets confirmed to true in the database
     */
-    public void confirmFriendRequest(String username, String friend_username) {
-        boolean confirm = true;
-
+    public void confirmFriendRequest(String username, String friend_username, FriendsOnlineDBInterface f) {
         String query = "UPDATE friends" +
                         " SET confirmed = true" +
                         " WHERE username = ? " +
                         " AND friend_username = ?";
         database.createFriendQuery(query, username, friend_username, null);
+
+        f.onFriendCreateCompleted();
+        f.onFriendConfirmCompleted();
     }
 
     /*-Deletes a friend from the database
@@ -110,4 +113,5 @@ public class FriendsOnlineDB extends OnlineDB {
         }
         return result;
     }
+
 }
