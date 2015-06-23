@@ -10,6 +10,7 @@ public class CursorHelper {
     public static final String TAG = CursorHelper.class.getSimpleName();
 
     public static void toString(Cursor c) {
+        if (c == null) { return; }
         int entries = c.getCount();
         int columns = c.getColumnCount();
 

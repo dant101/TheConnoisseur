@@ -40,6 +40,7 @@ public class FriendsScoresController {
 
         if(best_word_cursor.moveToFirst() && worst_word_cursor.moveToFirst()) {
             int best_word_id = best_word_cursor.getInt(best_word_cursor.getColumnIndex(ExerciseContent.WORD_ID));
+            int best_language_id = best_word_cursor.getInt(best_word_cursor.getColumnIndex(ExerciseContent.LANGUAGE_ID));
             int worst_word_id = best_word_cursor.getInt(worst_word_cursor.getColumnIndex(ExerciseContent.WORD_ID));
 
             Cursor friends = FriendsController.getsInstance().getYourFriends(username);
@@ -54,11 +55,15 @@ public class FriendsScoresController {
                 ScoreOnlineDBFormat friend_best = ConnoisseurDatabase.getInstance().getScoreTable().getScoreAndAttempts(friend, best_word_id);
                 ScoreOnlineDBFormat friend_worst = ConnoisseurDatabase.getInstance().getScoreTable().getScoreAndAttempts(friend, worst_word_id);
 
+                if(friend_best == null || friend_worst == null) { continue; }
+
                 int friend_best_attempts = friend_best.getAttempts_score();
                 int friend_worst_attempts = friend_worst.getAttempts_score();
 
+                Log.d(TAG, "best attempts: " + String.valueOf(friend_best_attempts) + ". worst attempts: " + String.valueOf(friend_worst_attempts));
+
                 scores.addRow(new Object[] {
-                        best_word, worst_word, friend_best_attempts, friend_worst_attempts
+                        best_language_id, 0, friend, best_word, worst_word, friend_best_attempts, friend_worst_attempts
                 });
 
             } while (friends.moveToNext());

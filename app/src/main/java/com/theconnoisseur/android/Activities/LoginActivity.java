@@ -1,6 +1,7 @@
 package com.theconnoisseur.android.Activities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
@@ -92,19 +93,25 @@ public class LoginActivity extends Activity {
     // Automatically logs in the user (based on previously saved logging credentials)
     // Alternatively, prompts the user to create an account/sign in or skip process altogether
     private void automaticLogin() {
-        if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(GlobalPreferenceString.SIGNED_IN_PREF, false)) {
-            mUsername = PreferenceManager.getDefaultSharedPreferences(this).getString(GlobalPreferenceString.USERNAME_PREF, "-- Username not found! --");
-            mEmail = PreferenceManager.getDefaultSharedPreferences(this).getString(GlobalPreferenceString.EMAIL_PREF, "-- Email not found! --");
-            mPassword = PreferenceManager.getDefaultSharedPreferences(this).getString(GlobalPreferenceString.PASSWORD_PREF, "-- Password not found --");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean(GlobalPreferenceString.SIGNED_IN_PREF, false)) {
+                    mUsername = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString(GlobalPreferenceString.USERNAME_PREF, "-- Username not found! --");
+                    mEmail = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString(GlobalPreferenceString.EMAIL_PREF, "-- Email not found! --");
+                    mPassword = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString(GlobalPreferenceString.PASSWORD_PREF, "-- Password not found --");
 
-            if (ConnoisseurDatabase.getInstance().getLoginTable().login(mUsername, mPassword)) {
-                Log.d(TAG, "User already logged in: Username(" + mUsername + ") Email(" + mEmail + ")");
-                startMainMenuActivity();
-            } else {
-                Log.d(TAG, "Couldn't log user in: Username(" + mUsername + ") Email(" + mEmail + ")");
-                ToastHelper.toast(this, "Sorry, we couldn't log you in at this time");
+                    if (ConnoisseurDatabase.getInstance().getLoginTable().login(mUsername, mPassword)) {
+                        Log.d(TAG, "User already logged in: Username(" + mUsername + ") Email(" + mEmail + ")");
+                        startMainMenuActivity();
+                    } else {
+                        Log.d(TAG, "Couldn't log user in: Username(" + mUsername + ") Email(" + mEmail + ")");
+                        ToastHelper.toast(getApplicationContext(), "Sorry, we couldn't log you in at this time");
+                    }
+                }
             }
-        }
+        }).start();
+
     }
 
     //Defines the specific screen element behaviours regarding touch events - in particular, email/username validation
@@ -113,26 +120,17 @@ public class LoginActivity extends Activity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(!hasFocus) {
-                    String input = ((EditText) v).getText().toString();
+                    final String input = ((EditText) v).getText().toString();
                     if(input.isEmpty()) { return; }
-                    boolean unique = ConnoisseurDatabase.getInstance().getLoginTable().isUserNameUnique(input);
 
-                    if(mCreatingNewAccount) {
-                        if(unique) {
-                            mFeedbackUsername.setImageResource(R.drawable.tick_correct);
-                        } else {
-                            mFeedbackUsername.setImageResource(R.drawable.cross_wrong);
-                            ToastHelper.toast(getApplicationContext(), getString(R.string.not_unique_username), Toast.LENGTH_LONG);
+                    new Thread (new Runnable() {
+                        @Override
+                        public void run() {
+                            boolean unique = ConnoisseurDatabase.getInstance().getLoginTable().isUserNameUnique(input);
+                            dynamicUsernameChecking(unique);
                         }
-                    } else { //If user is logging in
-                        if(unique) {
-                            mFeedbackUsername.setImageResource(R.drawable.cross_wrong);
-                            ToastHelper.toast(getApplicationContext(), getString(R.string.not_existing_username), Toast.LENGTH_LONG);
-                        } else {
-                            mFeedbackUsername.setImageResource(R.drawable.tick_correct);
-                        }
-                    }
-                    mFeedbackUsername.setVisibility(View.VISIBLE);
+                    }).start();
+
                 } else {
                     mFeedbackUsername.setVisibility(View.INVISIBLE);
                 }
@@ -251,6 +249,24 @@ public class LoginActivity extends Activity {
         new Thread(new ContentDownloadController.syncUserInformation(this, username)).start();
     }
 
+    private void dynamicUsernameChecking(boolean unique) {
+        if(mCreatingNewAccount) {
+            if(unique) {
+                mFeedbackUsername.setImageResource(R.drawable.tick_correct);
+            } else {
+                mFeedbackUsername.setImageResource(R.drawable.cross_wrong);
+                ToastHelper.toast(getApplicationContext(), getString(R.string.not_unique_username), Toast.LENGTH_LONG);
+            }
+        } else { //If user is logging in
+            if(unique) {
+                mFeedbackUsername.setImageResource(R.drawable.cross_wrong);
+                ToastHelper.toast(getApplicationContext(), getString(R.string.not_existing_username), Toast.LENGTH_LONG);
+            } else {
+                mFeedbackUsername.setImageResource(R.drawable.tick_correct);
+            }
+        }
+        mFeedbackUsername.setVisibility(View.VISIBLE);
+    }
 
     // User selects to login - changes views appropriately
     public void loginToggle(View v) {

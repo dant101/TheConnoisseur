@@ -19,6 +19,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import com.facebook.FacebookSdk;
@@ -29,6 +31,7 @@ import com.theconnoisseur.android.Activities.Interfaces.CursorCallback;
 import com.theconnoisseur.android.Controller.FriendsScoresController;
 import com.theconnoisseur.android.Model.ExerciseContent;
 import com.theconnoisseur.android.Model.ExerciseScore;
+import com.theconnoisseur.android.Model.FriendsScoresContent;
 import com.theconnoisseur.android.Model.GlobalPreferenceString;
 import com.theconnoisseur.android.Model.InternalDbContract;
 import com.theconnoisseur.android.Model.SessionSummaryContent;
@@ -282,10 +285,64 @@ public class SessionSummary extends ActionBarActivity implements CursorCallback 
 
     @Override
     public void CursorLoaded(Cursor c) {
-        Log.d(TAG, "SessionsSUmmary, cursor callback");
+        Log.d(TAG, "SessionsSummary, cursor callback");
+        if (c == null) { Log.d(TAG, "CursorLoaded (friends scores) is null!"); return; }
+
+        ListView friends_scores = (ListView) findViewById(R.id.friends_scores);
+        String[] from = new String[] {FriendsScoresContent.LANGUAGE_ID, FriendsScoresContent.FRIEND, FriendsScoresContent.BEST_WORD, FriendsScoresContent.WORST_WORD, FriendsScoresContent.BEST_WORD_ATTEMPTS, FriendsScoresContent.WORST_WORD_ATTEMPTS};
+        int[] to = new int[] {R.id.friend_score_item, R.id.friend_name, R.id.best_word, R.id.worst_word, R.id.best_word_lives, R.id.worst_word_lives};
+
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.friend_score_list_item, c, from, to, BIND_IMPORTANT);
+
+        //Hand written binder for lives
+        adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
+            @Override
+            public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+                if (view.getId() == R.id.friend_score_item) {
+
+                    if(!mRandomSession) {
+                        //Assume mFlagUri is the correct one
+                        ContentDownloadHelper.loadImage(getApplicationContext(), (ImageView)view.findViewById(R.id.best_word_language), mFlagUri);
+                        ContentDownloadHelper.loadImage(getApplicationContext(), (ImageView)view.findViewById(R.id.worst_word_language), mFlagUri);
+                    } else {
+                        view.findViewById(R.id.best_word_language).setBackgroundResource(R.drawable.flag_random_2);
+                        view.findViewById(R.id.best_word_language).setBackgroundResource(R.drawable.flag_random_2);
+                    }
+                    return true;
+                }
+
+                if (view.getId() == R.id.best_word_lives) {
+                    setLives(cursor.getInt(cursor.getColumnIndex(FriendsScoresContent.BEST_WORD_ATTEMPTS)), (ImageView)view.findViewById(R.id.heart_best_1), (ImageView)view.findViewById(R.id.heart_best_2), (ImageView)view.findViewById(R.id.heart_best_3));
+                    return true;
+                }
+
+                if (view.getId() == R.id.worst_word_lives) {
+                    setLives(cursor.getInt(cursor.getColumnIndex(FriendsScoresContent.WORST_WORD_ATTEMPTS)), (ImageView)view.findViewById(R.id.heart_worst_1), (ImageView)view.findViewById(R.id.heart_worst_2), (ImageView)view.findViewById(R.id.heart_worst_3));
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        friends_scores.setAdapter(adapter);
     }
 
-    private class FriendScoresCursorPreparationTask extends AsyncTask<Void, Void, Void> {
+    private void setLives(int lives, ImageView life1, ImageView life2, ImageView life3) {
+        life1.setImageResource(R.drawable.heart_green_large);
+        life2.setImageResource(R.drawable.heart_green_large);
+        life3.setImageResource(R.drawable.heart_green_large);
+
+        switch (lives) {
+            case 3:
+                life1.setImageResource(R.drawable.heart_black_large);
+            case 2:
+                life2.setImageResource(R.drawable.heart_black_large);
+            case 1:
+                life3.setImageResource(R.drawable.heart_black_large);
+        }
+    }
+
+    private class FriendScoresCursorPreparationTask extends AsyncTask<Void, Void, Cursor> {
 
         CursorCallback mCallback;
         Cursor mCursor;
@@ -301,15 +358,15 @@ public class SessionSummary extends ActionBarActivity implements CursorCallback 
         }
 
         @Override
-        protected Void doInBackground(Void... nothing) {
-            FriendsScoresController.getsInstance().getFriendsScores(getApplicationContext(), mUsername, mBestWord, mWorstWord);
-            return null;
+        protected Cursor doInBackground(Void... nothing) {
+            return FriendsScoresController.getsInstance().getFriendsScores(getApplicationContext(), mUsername, mBestWord, mWorstWord);
         }
 
         @Override
-        protected void onPostExecute(Void result) {
+        protected void onPostExecute(Cursor cursor) {
             Log.d(TAG, "FriendsScoresCursorPreparationTask onPostExecute called");
-            super.onPostExecute(result);
+            super.onPostExecute(cursor);
+            mCursor = cursor;
 
             CursorHelper.toString(mCursor);
 

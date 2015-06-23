@@ -657,6 +657,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
                 getActivity().getContentResolver().update(InternalDbContract.updateExerciseScore(mCurrentWordId), v, null, null);
 
                 //Initiates online database update
+                Log.d(TAG, "ExerciseFragment: updating scores for word_id = " + String.valueOf(mCurrentWordId));
                 new Thread(new ScoreUpdate(username, mCurrentWordId, mAttempts, mCurrentWordBestScore)).start();
             }
 
