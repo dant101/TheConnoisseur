@@ -12,7 +12,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="0dp"
+            android:layout_weight="2">
 
             <ImageView
                 android:layout_width="@dimen/title_width"
@@ -56,7 +57,8 @@
             android:id="@+id/language_selection"
             android:onClick="onSelection"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="3"
             android:padding="@dimen/large_padding"
             android:layout_marginTop="@dimen/large_margin"
             android:background="@color/orange"
@@ -101,7 +103,6 @@
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/text_vsmall"
                 android:layout_marginTop="@dimen/normal_margin"
-                android:layout_marginBottom="@dimen/large_margin"
                 android:text="@string/language_selection_desc"
                 android:textColor="@color/white"/>
 
@@ -112,7 +113,8 @@
             android:id="@+id/collection_selection"
             android:onClick="onSelection"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="3"
             android:padding="@dimen/large_padding"
             android:layout_marginTop="@dimen/large_margin"
             android:background="@color/green"
@@ -169,7 +171,8 @@
             android:orientation="horizontal"
             android:onClick="voiceRecogniserTest"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:padding="@dimen/normal_padding">
 
             <TextView
@@ -197,7 +200,8 @@
             android:orientation="horizontal"
             android:onClick="onSelection"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:padding="@dimen/normal_margin">
 
             <TextView
