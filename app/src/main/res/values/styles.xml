@@ -7,6 +7,7 @@
 
     <color name = "transparent">#00000000</color>
     <color name ="white">#FFFFFF</color>
+    <color name = "black">#000000</color>
     <color name = "app_background">#FFFFD6</color>
     <color name = "app_background_dark">#FFFF99</color>
     <color name = "app_background_light">#FFFFEA</color>

@@ -3,10 +3,13 @@ package com.theconnoisseur.android.Activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,8 +25,11 @@ import com.facebook.FacebookSdk;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.theconnoisseur.R;
+import com.theconnoisseur.android.Activities.Interfaces.CursorCallback;
+import com.theconnoisseur.android.Controller.FriendsScoresController;
 import com.theconnoisseur.android.Model.ExerciseContent;
 import com.theconnoisseur.android.Model.ExerciseScore;
+import com.theconnoisseur.android.Model.GlobalPreferenceString;
 import com.theconnoisseur.android.Model.InternalDbContract;
 import com.theconnoisseur.android.Model.SessionSummaryContent;
 
@@ -32,8 +38,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import Util.ContentDownloadHelper;
+import Util.CursorHelper;
 
-public class SessionSummary extends ActionBarActivity {
+public class SessionSummary extends ActionBarActivity implements CursorCallback {
     public static final String TAG = SessionSummary.class.getSimpleName();
 
     private int mAverageScore;
@@ -129,6 +136,9 @@ public class SessionSummary extends ActionBarActivity {
         mRandomSession = i.getBooleanExtra(SessionSummaryContent.RANDOM_SESSION, false);
 
         setBestWorstWords();
+
+        String username = PreferenceManager.getDefaultSharedPreferences(this).getString(GlobalPreferenceString.USERNAME_PREF, GlobalPreferenceString.GUEST);
+        new FriendScoresCursorPreparationTask(this, username, mBestWord, mWorstWord).execute();
     }
 
     @Override
@@ -270,6 +280,41 @@ public class SessionSummary extends ActionBarActivity {
         finish();
     }
 
+    @Override
+    public void CursorLoaded(Cursor c) {
+        Log.d(TAG, "SessionsSUmmary, cursor callback");
+    }
 
+    private class FriendScoresCursorPreparationTask extends AsyncTask<Void, Void, Void> {
+
+        CursorCallback mCallback;
+        Cursor mCursor;
+        String mUsername;
+        String mBestWord;
+        String mWorstWord;
+
+        public FriendScoresCursorPreparationTask(CursorCallback callback, String username, String best_word, String worst_word) {
+            this.mCallback = callback;
+            this.mUsername = username;
+            this.mBestWord = best_word;
+            this.mWorstWord = worst_word;
+        }
+
+        @Override
+        protected Void doInBackground(Void... nothing) {
+            FriendsScoresController.getsInstance().getFriendsScores(getApplicationContext(), mUsername, mBestWord, mWorstWord);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            Log.d(TAG, "FriendsScoresCursorPreparationTask onPostExecute called");
+            super.onPostExecute(result);
+
+            CursorHelper.toString(mCursor);
+
+            mCallback.CursorLoaded(mCursor);
+        }
+    }
 
 }

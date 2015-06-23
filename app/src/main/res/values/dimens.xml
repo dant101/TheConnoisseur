@@ -51,7 +51,7 @@
     <dimen name="comment_icon_width">50dp</dimen>
 
 
-    <dimen name="home_icon_width">50dp</dimen>
+    <dimen name="home_icon_width">45dp</dimen>
 
 
     <!-- Main_Menu Activity -->

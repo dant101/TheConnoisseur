@@ -38,6 +38,7 @@ public class InternalDbProvider extends ContentProvider {
     private static final int LANGUAGES_ID = 1;
     private static final int EXERCISES_ALL = 2;
     private static final int EXERCISES = 3;
+    private static final int EXERCISES_WORD = 8;
     private static final int SCORES = 4;
     private static final int SCORES_ID = 5;
     private static final int SCORES_DELETE = 6;
@@ -53,6 +54,7 @@ public class InternalDbProvider extends ContentProvider {
         URI_MATCHER.addURI(InternalDbContract.CONTENT_AUTHORITY, TABLE_LANGUAGES, LANGUAGES);
         URI_MATCHER.addURI(InternalDbContract.CONTENT_AUTHORITY, TABLE_LANGUAGES + "/*", LANGUAGES_ID);
         URI_MATCHER.addURI(InternalDbContract.CONTENT_AUTHORITY, TABLE_EXERCISES, EXERCISES_ALL);
+        URI_MATCHER.addURI(InternalDbContract.CONTENT_AUTHORITY, TABLE_EXERCISES + "/" + ExerciseContent.WORD + "/*", EXERCISES_WORD);
         URI_MATCHER.addURI(InternalDbContract.CONTENT_AUTHORITY, TABLE_EXERCISES + "/*", EXERCISES);
         URI_MATCHER.addURI(InternalDbContract.CONTENT_AUTHORITY, TABLE_SCORES, SCORES);
         URI_MATCHER.addURI(InternalDbContract.CONTENT_AUTHORITY, TABLE_SCORES + "/" + ExerciseScore.DELETE + "/*", SCORES_DELETE);
@@ -127,6 +129,13 @@ public class InternalDbProvider extends ContentProvider {
                 Log.d(TAG, "querying EXERCISES_ALL");
                 cursor = getDatabase(false).query(
                     TABLE_EXERCISES, InternalDbContract.PROJECTION_EXERCISES, selection, null, null, null, sortOrder);
+                break;
+
+            case EXERCISES_WORD:
+                Log.d(TAG, "querying EXERCISES for WORD_ID (from given word)");
+                String[] query4 = {uri.getLastPathSegment()};
+                cursor = getDatabase(false).query(
+                        TABLE_EXERCISES, InternalDbContract.PROJECTION_EXERCISES, ExerciseContent.WORD + "=?", query4, null, null, null);
                 break;
 
             case SCORES_ID:

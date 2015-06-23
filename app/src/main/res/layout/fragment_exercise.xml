@@ -91,11 +91,11 @@
 
         <ImageView
             android:id="@+id/word_illustration"
-            android:layout_width="@dimen/illustration_width"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="6"
             android:layout_margin="@dimen/normal_margin"
-            android:src="@drawable/matryoshka"/>
+            android:src="@drawable/piazza"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -116,6 +116,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:textSize="@dimen/text_medium"
+                android:textColor="@color/black"
                 android:text="Matryoshka"/>
 
             <ImageView

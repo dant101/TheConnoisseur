@@ -66,6 +66,10 @@ public class InternalDbContract {
         return CONTENT_URI.buildUpon().appendPath(ExerciseContent.EXERICISE_TABLE_NAME).appendPath(String.valueOf(id)).build();
     }
 
+    public static Uri queryForWordId(String word) {
+        return CONTENT_URI.buildUpon().appendPath(ExerciseContent.EXERICISE_TABLE_NAME).appendPath(ExerciseContent.WORD).appendPath(word).build();
+    }
+
     public static Uri queryForAllWords() {
         return CONTENT_URI.buildUpon().appendPath(ExerciseContent.EXERICISE_TABLE_NAME).build();
     }

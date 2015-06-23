@@ -129,10 +129,7 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
     }
 
     private void setExtraLanguageInformation(int language_id) {
-        Log.d(TAG, "setExtraLanguageInformation. language_id: " + String.valueOf(language_id));
-        Log.d(TAG, String.valueOf(language_id)+ " vs " + String.valueOf(RANDOM_ID));
         if (language_id == RANDOM_ID) {
-            Log.d(TAG, "here");
             Fragment fragment = getFragmentManager().findFragmentByTag(TAG_EXERCISE_FRAGMENT);
             if (fragment instanceof ExerciseFragment) {
                 ((ExerciseFragment)fragment).setRandomSession();
