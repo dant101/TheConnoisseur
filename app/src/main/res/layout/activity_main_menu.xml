@@ -103,6 +103,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/text_vsmall"
                 android:layout_marginTop="@dimen/normal_margin"
+                android:layout_marginBottom="@dimen/large_margin"
                 android:text="@string/language_selection_desc"
                 android:textColor="@color/white"/>
 

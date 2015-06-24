@@ -93,25 +93,19 @@ public class LoginActivity extends Activity {
     // Automatically logs in the user (based on previously saved logging credentials)
     // Alternatively, prompts the user to create an account/sign in or skip process altogether
     private void automaticLogin() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean(GlobalPreferenceString.SIGNED_IN_PREF, false)) {
-                    mUsername = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString(GlobalPreferenceString.USERNAME_PREF, "-- Username not found! --");
-                    mEmail = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString(GlobalPreferenceString.EMAIL_PREF, "-- Email not found! --");
-                    mPassword = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString(GlobalPreferenceString.PASSWORD_PREF, "-- Password not found --");
+        if(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean(GlobalPreferenceString.SIGNED_IN_PREF, false)) {
+            mUsername = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString(GlobalPreferenceString.USERNAME_PREF, "-- Username not found! --");
+            mEmail = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString(GlobalPreferenceString.EMAIL_PREF, "-- Email not found! --");
+            mPassword = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString(GlobalPreferenceString.PASSWORD_PREF, "-- Password not found --");
 
-                    if (ConnoisseurDatabase.getInstance().getLoginTable().login(mUsername, mPassword)) {
-                        Log.d(TAG, "User already logged in: Username(" + mUsername + ") Email(" + mEmail + ")");
-                        startMainMenuActivity();
-                    } else {
-                        Log.d(TAG, "Couldn't log user in: Username(" + mUsername + ") Email(" + mEmail + ")");
-                        ToastHelper.toast(getApplicationContext(), "Sorry, we couldn't log you in at this time");
-                    }
-                }
+            if (ConnoisseurDatabase.getInstance().getLoginTable().login(mUsername, mPassword)) {
+                Log.d(TAG, "User already logged in: Username(" + mUsername + ") Email(" + mEmail + ")");
+                startMainMenuActivity();
+            } else {
+                Log.d(TAG, "Couldn't log user in: Username(" + mUsername + ") Email(" + mEmail + ")");
+                ToastHelper.toast(getApplicationContext(), "Sorry, we couldn't log you in at this time");
             }
-        }).start();
-
+        }
     }
 
     //Defines the specific screen element behaviours regarding touch events - in particular, email/username validation
@@ -123,13 +117,16 @@ public class LoginActivity extends Activity {
                     final String input = ((EditText) v).getText().toString();
                     if(input.isEmpty()) { return; }
 
-                    new Thread (new Runnable() {
-                        @Override
-                        public void run() {
-                            boolean unique = ConnoisseurDatabase.getInstance().getLoginTable().isUserNameUnique(input);
-                            dynamicUsernameChecking(unique);
-                        }
-                    }).start();
+                    boolean unique = ConnoisseurDatabase.getInstance().getLoginTable().isUserNameUnique(input);
+                    dynamicUsernameChecking(unique);
+
+//                    new Thread (new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            boolean unique = ConnoisseurDatabase.getInstance().getLoginTable().isUserNameUnique(input);
+//                            dynamicUsernameChecking(unique);
+//                        }
+//                    }).start();
 
                 } else {
                     mFeedbackUsername.setVisibility(View.INVISIBLE);

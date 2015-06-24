@@ -37,6 +37,10 @@ public class FriendsScoresController {
         Cursor best_word_cursor = context.getContentResolver().query(InternalDbContract.queryForWordId(best_word), null, null, null, null);
         Cursor worst_word_cursor = context.getContentResolver().query(InternalDbContract.queryForWordId(worst_word), null, null, null, null);
 
+        if (best_word_cursor == null || worst_word_cursor == null) {
+            Log.d(TAG, "Initial querying for word_id cursors returned null!");
+            return null;
+        }
 
         if(best_word_cursor.moveToFirst() && worst_word_cursor.moveToFirst()) {
             int best_word_id = best_word_cursor.getInt(best_word_cursor.getColumnIndex(ExerciseContent.WORD_ID));
@@ -55,7 +59,7 @@ public class FriendsScoresController {
                 ScoreOnlineDBFormat friend_best = ConnoisseurDatabase.getInstance().getScoreTable().getScoreAndAttempts(friend, best_word_id);
                 ScoreOnlineDBFormat friend_worst = ConnoisseurDatabase.getInstance().getScoreTable().getScoreAndAttempts(friend, worst_word_id);
 
-                if(friend_best == null || friend_worst == null) { continue; }
+                if(friend_best == null || friend_worst == null) { Log.d(TAG, "Leaving early, not enough data for these words"); continue; }
 
                 int friend_best_attempts = friend_best.getAttempts_score();
                 int friend_worst_attempts = friend_worst.getAttempts_score();
