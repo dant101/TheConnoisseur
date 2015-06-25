@@ -114,12 +114,34 @@
         android:layout_height="@dimen/tutorial_visual"
         android:visibility="gone">
 
-        <ImageView
-            android:visibility="visible"
+        <FrameLayout
+            android:id="@+id/listen_layout_tut"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_gravity="center"
-            android:src="@drawable/ui_listen"/>
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ui_listen"/>
+
+            <!-- Margin must be 0.25 layout width
+                 Width must be 0.5 layout width -->
+            <ImageView
+                android:id="@+id/listen_icon_anim_tut"
+                android:layout_margin="25dp"
+                android:layout_width="50dp"
+                android:layout_height="fill_parent"
+                android:src="@drawable/ui_listen_anim"/>
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:src="@drawable/ui_listen_icon" />
+
+        </FrameLayout>
 
     </RelativeLayout>
 
@@ -129,12 +151,34 @@
         android:layout_height="@dimen/tutorial_visual"
         android:visibility="gone">
 
-        <ImageView
-            android:visibility="visible"
+        <FrameLayout
+            android:id="@+id/record_layout_tut"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_gravity="center"
-            android:src="@drawable/ui_record"/>
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ui_record"/>
+
+            <!-- Margin must be 0.25 layout width
+                 Width must be 0.5 layout width -->
+            <ImageView
+                android:id="@+id/record_icon_anim_tut"
+                android:layout_margin="25dp"
+                android:layout_width="50dp"
+                android:layout_height="fill_parent"
+                android:src="@drawable/ui_record_anim"/>
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:src="@drawable/ui_record_icon" />
+
+        </FrameLayout>
 
     </RelativeLayout>
 
