@@ -1,6 +1,9 @@
 package Database;
 
+import java.io.IOException;
 import java.lang.reflect.Array;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -43,8 +46,7 @@ public class Postgresql implements Database {
 
         try {
             connection = DriverManager.getConnection(
-                    "jdbc:postgresql://"+host+"?&ssl=true" +
-                    "&sslfactory=org.postgresql.ssl.NonValidatingFactory",
+                    "jdbc:postgresql://" + host + "?&ssl=true" + "&sslfactory=org.postgresql.ssl.NonValidatingFactory",
                     username,
                     password);
         } catch (SQLException e) {
@@ -58,8 +60,6 @@ public class Postgresql implements Database {
         } else {
             System.out.println("Failed to make connection!");
         }
-
-
     }
 
     /*Disconnect from the database*/
@@ -73,6 +73,21 @@ public class Postgresql implements Database {
         }
     }
 
+    public boolean isServerReachable() {
+        //maximum time in ms to fetch data
+        int time = 2;
+        boolean result = false;
+        try {
+            result = connection.isValid(time);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            return result;
+        }
+    }
+
     /*Execute an SQL selectQuery
     * Get the result back as a list of rows where each row is a list of objects (int, string, date...)
     * sqlQuery is an SQL selectQuery example: "SELECT name, surname FROM test"
@@ -82,19 +97,21 @@ public class Postgresql implements Database {
         List<List<String>> result = new ArrayList<>();
 
         try {
-            Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery(sqlQuery);
-            //Loop over all the rows
-            while (rs.next()) {
-                //For each row get the different values needed
-                List<String> row = new ArrayList<>();
-                for(String arg : arguments) {
-                    row.add(rs.getString(arg));
+            if(isServerReachable()) {
+                Statement stmt = connection.createStatement();
+                ResultSet rs = stmt.executeQuery(sqlQuery);
+                //Loop over all the rows
+                while (rs.next()) {
+                    //For each row get the different values needed
+                    List<String> row = new ArrayList<>();
+                    for (String arg : arguments) {
+                        row.add(rs.getString(arg));
+                    }
+                    result.add(row);
                 }
-                result.add(row);
+                rs.close();
+                stmt.close();
             }
-            rs.close();
-            stmt.close();
         } catch (Exception e){
             e.printStackTrace();
         } finally {
@@ -111,9 +128,11 @@ public class Postgresql implements Database {
     public void insertQuery(String sqlQuery) {
         this.connect();
         try {
-            Statement stmt = connection.createStatement();
-            stmt.executeUpdate(sqlQuery);
-            stmt.close();
+            if(isServerReachable()) {
+                Statement stmt = connection.createStatement();
+                stmt.executeUpdate(sqlQuery);
+                stmt.close();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -129,9 +148,11 @@ public class Postgresql implements Database {
      */
     public void insertQueryNoConnection(String sqlQuery) {
         try {
-            Statement stmt = connection.createStatement();
-            stmt.executeUpdate(sqlQuery);
-            stmt.close();
+            if(isServerReachable()) {
+                Statement stmt = connection.createStatement();
+                stmt.executeUpdate(sqlQuery);
+                stmt.close();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -143,20 +164,23 @@ public class Postgresql implements Database {
         List<List<String>> result = new ArrayList<>();
 
         try {
-            PreparedStatement stmt = connection.prepareStatement(sqlQuery);
-            stmt.setString(1, value);
-            ResultSet rs = stmt.executeQuery();
-            //Loop over all the rows
-            while (rs.next()) {
-                //For each row get the different values needed
-                List<String> row = new ArrayList<>();
-                for(String arg : arguments) {
-                    row.add(rs.getString(arg));
+            if(isServerReachable()) {
+                PreparedStatement stmt = connection.prepareStatement(sqlQuery);
+                stmt.setString(1, value);
+                ResultSet rs = stmt.executeQuery();
+                //Loop over all the rows
+                while (rs.next()) {
+                    //For each row get the different values needed
+                    List<String> row = new ArrayList<>();
+                    for (String arg : arguments) {
+                        row.add(rs.getString(arg));
+                    }
+                    result.add(row);
                 }
-                result.add(row);
+                rs.close();
+                stmt.close();
+
             }
-            rs.close();
-            stmt.close();
         } catch (Exception e){
             e.printStackTrace();
         } finally {
@@ -171,13 +195,15 @@ public class Postgresql implements Database {
         boolean result = false;
         this.connect();
         try {
-            PreparedStatement stmt = connection.prepareStatement(sqlQuery);
-            stmt.setString(1, username);
-            stmt.setString(2, password);
-            stmt.setInt(3, salt);
-            stmt.executeUpdate();
-            stmt.close();
-            result = true;
+            if(isServerReachable()) {
+                PreparedStatement stmt = connection.prepareStatement(sqlQuery);
+                stmt.setString(1, username);
+                stmt.setString(2, password);
+                stmt.setInt(3, salt);
+                stmt.executeUpdate();
+                stmt.close();
+                result = true;
+            }
         } catch (Exception e){
             e.printStackTrace();
         } finally {
@@ -192,19 +218,20 @@ public class Postgresql implements Database {
                                       String comment, Timestamp time,
                                       int score, String parent_path) {
         boolean result = false;
-
         this.connect();
         try {
-            PreparedStatement stmt = connection.prepareStatement(sqlQuery);
-            stmt.setInt(1, word_id);
-            stmt.setString(2, username);
-            stmt.setString(3, comment);
-            stmt.setInt(4, score);
-            stmt.setString(5, parent_path);
-            stmt.setTimestamp(6, time);
-            stmt.executeUpdate();
-            stmt.close();
-            result = true;
+            if(isServerReachable()) {
+                PreparedStatement stmt = connection.prepareStatement(sqlQuery);
+                stmt.setInt(1, word_id);
+                stmt.setString(2, username);
+                stmt.setString(3, comment);
+                stmt.setInt(4, score);
+                stmt.setString(5, parent_path);
+                stmt.setTimestamp(6, time);
+                stmt.executeUpdate();
+                stmt.close();
+                result = true;
+            }
         } catch (Exception e){
             e.printStackTrace();
         } finally {
@@ -219,16 +246,18 @@ public class Postgresql implements Database {
         boolean result = false;
         this.connect();
         try {
-            PreparedStatement stmt = connection.prepareStatement(sqlQuery);
-            stmt.setString(1, username);
-            if(word_id != null && percentage_score != null && attempts_score != null) {
-                stmt.setInt(2, word_id);
-                stmt.setInt(3, percentage_score);
-                stmt.setInt(4, attempts_score);
+            if(isServerReachable()) {
+                PreparedStatement stmt = connection.prepareStatement(sqlQuery);
+                stmt.setString(1, username);
+                if (word_id != null && percentage_score != null && attempts_score != null) {
+                    stmt.setInt(2, word_id);
+                    stmt.setInt(3, percentage_score);
+                    stmt.setInt(4, attempts_score);
+                }
+                stmt.executeUpdate();
+                stmt.close();
+                result = true;
             }
-            stmt.executeUpdate();
-            stmt.close();
-            result = true;
         } catch (Exception e){
             e.printStackTrace();
         } finally {
@@ -243,20 +272,22 @@ public class Postgresql implements Database {
         List<List<String>> result = new ArrayList<>();
 
         try {
-            PreparedStatement stmt = connection.prepareStatement(sqlQuery);
-            stmt.setString(1,value);
-            ResultSet rs = stmt.executeQuery();
-            //Loop over all the rows
-            while (rs.next()) {
-                //For each row get the different values needed
-                List<String> row = new ArrayList<>();
-                for(String arg : arguments) {
-                    row.add(rs.getString(arg));
+            if(isServerReachable()) {
+                PreparedStatement stmt = connection.prepareStatement(sqlQuery);
+                stmt.setString(1, value);
+                ResultSet rs = stmt.executeQuery();
+                //Loop over all the rows
+                while (rs.next()) {
+                    //For each row get the different values needed
+                    List<String> row = new ArrayList<>();
+                    for (String arg : arguments) {
+                        row.add(rs.getString(arg));
+                    }
+                    result.add(row);
                 }
-                result.add(row);
+                rs.close();
+                stmt.close();
             }
-            rs.close();
-            stmt.close();
         } catch (Exception e){
             e.printStackTrace();
         } finally {
@@ -270,15 +301,17 @@ public class Postgresql implements Database {
         boolean result = false;
         this.connect();
         try {
-            PreparedStatement stmt = connection.prepareStatement(sqlQuery);
-            stmt.setString(1, username);
-            stmt.setString(2, friend_username);
-            if(confirmed != null) {
-                stmt.setBoolean(3, confirmed);
+            if(isServerReachable()) {
+                PreparedStatement stmt = connection.prepareStatement(sqlQuery);
+                stmt.setString(1, username);
+                stmt.setString(2, friend_username);
+                if (confirmed != null) {
+                    stmt.setBoolean(3, confirmed);
+                }
+                stmt.executeUpdate();
+                stmt.close();
+                result = true;
             }
-            stmt.executeUpdate();
-            stmt.close();
-            result = true;
         } catch (Exception e){
             e.printStackTrace();
         } finally {
@@ -294,23 +327,25 @@ public class Postgresql implements Database {
         List<List<String>> result = new ArrayList<>();
 
         try {
-            PreparedStatement stmt = connection.prepareStatement(sqlQuery);
-            stmt.setString(1, username);
-            if(friend_username != null) {
-                stmt.setString(2, friend_username);
-            }
-            ResultSet rs = stmt.executeQuery();
-            //Loop over all the rows
-            while (rs.next()) {
-                //For each row get the different values needed
-                List<String> row = new ArrayList<>();
-                for(String arg : arguments) {
-                    row.add(rs.getString(arg));
+            if(isServerReachable()) {
+                PreparedStatement stmt = connection.prepareStatement(sqlQuery);
+                stmt.setString(1, username);
+                if (friend_username != null) {
+                    stmt.setString(2, friend_username);
                 }
-                result.add(row);
+                ResultSet rs = stmt.executeQuery();
+                //Loop over all the rows
+                while (rs.next()) {
+                    //For each row get the different values needed
+                    List<String> row = new ArrayList<>();
+                    for (String arg : arguments) {
+                        row.add(rs.getString(arg));
+                    }
+                    result.add(row);
+                }
+                rs.close();
+                stmt.close();
             }
-            rs.close();
-            stmt.close();
         } catch (Exception e){
             e.printStackTrace();
         } finally {
