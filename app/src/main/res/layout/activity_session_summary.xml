@@ -135,7 +135,7 @@
                         android:id="@+id/heart_best_1"
                         android:layout_width="@dimen/hearts_width_small"
                         android:layout_height="@dimen/hearts_height_small"
-                        android:src="@drawable/heart_green_black"/>
+                        android:src="@drawable/heart_black_large"/>
 
                     <ImageView
                         android:id="@+id/heart_best_2"
@@ -143,13 +143,13 @@
                         android:layout_height="@dimen/hearts_height_small"
                         android:layout_marginLeft="@dimen/small_margin"
                         android:layout_marginRight="@dimen/small_margin"
-                        android:src="@drawable/heart_green_black"/>
+                        android:src="@drawable/heart_black_large"/>
 
                     <ImageView
                         android:id="@+id/heart_best_3"
                         android:layout_width="@dimen/hearts_width_small"
                         android:layout_height="@dimen/hearts_height_small"
-                        android:src="@drawable/heart_green_black"/>
+                        android:src="@drawable/heart_black_large"/>
 
                 </LinearLayout>
 
@@ -190,7 +190,7 @@
                         android:id="@+id/heart_worst_1"
                         android:layout_width="@dimen/hearts_width_small"
                         android:layout_height="@dimen/hearts_height_small"
-                        android:src="@drawable/heart_green_black"/>
+                        android:src="@drawable/heart_black_large"/>
 
                     <ImageView
                         android:id="@+id/heart_worst_2"
@@ -198,13 +198,13 @@
                         android:layout_height="@dimen/hearts_height_small"
                         android:layout_marginLeft="@dimen/small_margin"
                         android:layout_marginRight="@dimen/small_margin"
-                        android:src="@drawable/heart_green_black"/>
+                        android:src="@drawable/heart_black_large"/>
 
                     <ImageView
                         android:id="@+id/heart_worst_3"
                         android:layout_width="@dimen/hearts_width_small"
                         android:layout_height="@dimen/hearts_height_small"
-                        android:src="@drawable/heart_green_black"/>
+                        android:src="@drawable/heart_black_large"/>
 
                 </LinearLayout>
 

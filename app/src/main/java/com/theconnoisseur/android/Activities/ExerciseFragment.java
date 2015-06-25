@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.TransitionDrawable;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.preference.PreferenceManager;
@@ -24,15 +23,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.facebook.CallbackManager;
-import com.facebook.FacebookActivity;
-import com.facebook.FacebookSdk;
-import com.facebook.share.model.ShareLinkContent;
-import com.facebook.share.widget.ShareButton;
-import com.facebook.share.widget.ShareDialog;
 import com.theconnoisseur.R;
 import com.theconnoisseur.android.Model.ExerciseContent;
 import com.theconnoisseur.android.Model.ExerciseScore;
@@ -71,6 +63,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
     //private TextView mPhoneticSpelling;
     private TextView mWordDescription;
     private ImageView mProceed;
+    private ImageView mProceedAdditional;
     private LinearLayout mLivesBig;
     private LinearLayout mLivesSmall;
     private FrameLayout mRecordLayout;
@@ -168,6 +161,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         //mPhoneticSpelling = (TextView) view.findViewById(R.id.phonetic_spelling);
         mWordDescription = (TextView) view.findViewById(R.id.word_description);
         mProceed = (ImageView) view.findViewById(R.id.proceed);
+        mProceedAdditional = (ImageView) view.findViewById(R.id.proceed_additional);
         mLivesBig = (LinearLayout) view.findViewById(R.id.lives_section);
         mLivesSmall = (LinearLayout) view.findViewById(R.id.lives_section_small);
 
@@ -206,6 +200,14 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         mProceed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                concludeWordAttempt();
+                mListener.nextExercise();
+            }
+        });
+        mProceedAdditional.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAttemptsRemaining = 0;
                 concludeWordAttempt();
                 mListener.nextExercise();
             }
@@ -308,7 +310,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         String locale = c.getString(c.getColumnIndex(ExerciseContent.LOCALE));
         locale = locale == null ? "en-GB" : locale;
 
-        Log.d(TAG, "Locale: " + locale);
+        Log.d(TAG, "Current word: " + mWord +  "Locale: " + locale);
 
         if (mVoiceRecogniser != null) {
             mVoiceRecogniser.destroyVoiceRecogniser();
@@ -414,6 +416,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         mRecordLayout.setVisibility(View.GONE);
         mListenLayout.setVisibility(View.GONE);
         mProceed.setVisibility(View.VISIBLE);
+        mProceedAdditional.setVisibility(View.GONE);
 
         setBackgroundResourceAndAnimate(R.drawable.transition_green);
     }
@@ -447,6 +450,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         mLivesSmall.setVisibility(View.GONE);
         mWordDescription.setVisibility(View.GONE);
         mProceed.setVisibility(View.GONE);
+        mProceedAdditional.setVisibility(View.GONE);
         mListenLayout.setVisibility(View.VISIBLE);
         //mRecord.setVisibility(View.VISIBLE);
         mRecordLayout.setVisibility(View.VISIBLE);
@@ -482,23 +486,25 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
 
         switch(mAttemptsRemaining) {
             case 2:
+                mProceedAdditional.setVisibility(View.VISIBLE);
                 mBigLife3b.setVisibility(View.VISIBLE);
                 mBigLife3g.startAnimation(anim);
-                mSmallLife3.setImageResource(R.drawable.heart_green_black);
+                mSmallLife3.setImageResource(R.drawable.heart_black_large);
                 break;
             case 1:
                 mBigLife2b.setVisibility(View.VISIBLE);
                 mBigLife2g.startAnimation(anim);
-                mSmallLife2.setImageResource(R.drawable.heart_green_black);
+                mSmallLife2.setImageResource(R.drawable.heart_black_large);
                 break;
             case 0:
                 mBigLife1b.setVisibility(View.VISIBLE);
                 mBigLife1g.startAnimation(anim);
-                mSmallLife1.setImageResource(R.drawable.heart_green_black);
+                mSmallLife1.setImageResource(R.drawable.heart_black_large);
 
                 mRecordLayout.setVisibility(View.GONE);
                 mListenLayout.setVisibility(View.GONE);
                 mProceed.setVisibility(View.VISIBLE);
+                mProceedAdditional.setVisibility(View.GONE);
                 break;
         }
 

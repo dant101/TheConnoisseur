@@ -8,37 +8,48 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.theconnoisseur.R;
 import com.theconnoisseur.android.Activities.Testing.VoiceRecogniserTestActivity;
 import com.theconnoisseur.android.Controller.FriendsController;
+import com.theconnoisseur.android.Model.AdministratorUsernames;
 import com.theconnoisseur.android.Model.GlobalPreferenceString;
 import com.theconnoisseur.android.Model.InternalDbContract;
 
 public class MainMenuActivity extends ActionBarActivity {
     public static final String TAG = MainMenuActivity.class.getSimpleName();
 
+    private Typeface roboto;
+    private Typeface roboto_bold;
+
+    private LinearLayout mVoiceTest;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+
+        mVoiceTest = (LinearLayout) findViewById(R.id.voice_recogniser_test);
     }
 
     @Override
     protected void onStart() {
-        final Typeface font_bold = Typeface.createFromAsset(this.getAssets(), "fonts/Roboto-Bold.ttf");
-        final Typeface font_normal = Typeface.createFromAsset(this.getAssets(), "fonts/Roboto-Medium.ttf");
+        roboto = Typeface.createFromAsset(this.getAssets(), "fonts/RobotoCondensed-Regular.ttf");
+        roboto_bold = Typeface.createFromAsset(this.getAssets(), "fonts/RobotoCondensed-Bold.ttf");
 
         TextView language_selection_title = (TextView) findViewById(R.id.language_selection_title);
         TextView language_selection_desc = (TextView) findViewById(R.id.language_selection_desc);
         TextView connoisseur_collection_title = (TextView) findViewById(R.id.connoisseur_collection_title);
         TextView connoisseur_collection_desc = (TextView) findViewById(R.id.connoisseur_collection_desc);
 
-        language_selection_title.setTypeface(font_bold);
-        //connoisseur_collection_title.setTypeface(font_bold);
-        language_selection_desc.setTypeface(font_normal);
-        //connoisseur_collection_desc.setTypeface(font_normal);
+        language_selection_title.setTypeface(roboto_bold);
+        connoisseur_collection_title.setTypeface(roboto_bold);
+        language_selection_desc.setTypeface(roboto);
+        connoisseur_collection_desc.setTypeface(roboto);
+
+        setAdministratorExtras();
 
         super.onStart();
     }
@@ -53,10 +64,6 @@ public class MainMenuActivity extends ActionBarActivity {
 
     public void voiceRecogniserTest(View v) {
         startActivity(new Intent(MainMenuActivity.this, VoiceRecogniserTestActivity.class));
-    }
-
-    public void tutorialExample(View v) {
-        startActivity(new Intent(this, TutorialActivity.class));
     }
 
     public void onSelection(View v) {
@@ -92,5 +99,15 @@ public class MainMenuActivity extends ActionBarActivity {
         FriendsController.getsInstance().clearCache();
 
         startActivity(new Intent(MainMenuActivity.this, LoginActivity.class));
+    }
+
+    private void setAdministratorExtras() {
+        String username = PreferenceManager.getDefaultSharedPreferences(this).getString(GlobalPreferenceString.USERNAME_PREF, "");
+        if (username.equals(AdministratorUsernames.ADMINISTRATOR_USERNAME)) {
+            mVoiceTest.setVisibility(View.VISIBLE);
+        } else {
+            Log.d(TAG, "username: " + username + ". admin: " + AdministratorUsernames.ADMINISTRATOR_USERNAME);
+        }
+
     }
 }

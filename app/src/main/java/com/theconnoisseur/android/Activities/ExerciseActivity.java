@@ -52,11 +52,6 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
 
         Intent intent = getIntent();
         LANGUAGE_ID = intent.getIntExtra(ExerciseContent.LANGUAGE_ID, LANGUAGE_ID);
-    }
-
-    @Override
-    protected void onStart() {
-        Log.d(TAG, "ExerciseActivity onStart()");
 
         //Calls download task and leaves callback to setup cursor.
         // Otherwise, initiate cursor immediately (if data already downloaded)
@@ -64,6 +59,11 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
             // Loads the exercise cursor for specific set of exercises
             new ExerciseCursorPreparationTask(this).execute(LANGUAGE_ID);
         }
+    }
+
+    @Override
+    protected void onStart() {
+        Log.d(TAG, "ExerciseActivity onStart()");
 
         super.onStart();
         setExtraLanguageInformation(LANGUAGE_ID);

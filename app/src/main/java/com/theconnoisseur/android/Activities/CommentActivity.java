@@ -182,10 +182,10 @@ public class CommentActivity extends Activity implements CursorCallback {
             ToastHelper.toast(this, "Sorry, we don't feel your comment was appropriate");
         } else {
             if(mReplying && mReplyingCommentId != 0) {
-                CommentController.getInstance().comment(1, mUsername, mReplyingParentPath + "." + mReplyingCommentId, comment);
+                CommentController.getInstance().comment(mWordId, mUsername, mReplyingParentPath + "." + mReplyingCommentId, comment);
             } else {
                 Log.d(TAG, "Posting a comment");
-                CommentController.getInstance().comment(1, mUsername, comment);
+                CommentController.getInstance().comment(mWordId, mUsername, comment);
             }
             new CursorPreparationTask(this).execute();
         }
@@ -299,7 +299,7 @@ public class CommentActivity extends Activity implements CursorCallback {
 
         @Override
         protected Void doInBackground(Void... params) {
-            mCursor = CommentController.getInstance().getComments(1); //Should be mWord_Id when ready for proper test
+            mCursor = CommentController.getInstance().getComments(mWordId); //Should be mWord_Id when ready for proper test
 
             return null;
         }
@@ -315,6 +315,5 @@ public class CommentActivity extends Activity implements CursorCallback {
             super.onPostExecute(result);
         }
     }
-
 
 }

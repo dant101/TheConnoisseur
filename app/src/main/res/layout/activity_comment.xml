@@ -17,7 +17,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:padding="@dimen/normal_padding"
-            android:src="@drawable/matryoshka"/>
+            android:src="@drawable/face_connoisseur"/>
 
 
     </LinearLayout>

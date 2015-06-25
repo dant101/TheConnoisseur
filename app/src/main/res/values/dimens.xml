@@ -83,6 +83,6 @@
     <dimen name="comment_nesting">15dp</dimen>
 
     <!-- Friends Activity -->
-    <dimen name="delete_friend_width">20dp</dimen>
+    <dimen name="delete_friend_width">30dp</dimen>
 
 </resources>

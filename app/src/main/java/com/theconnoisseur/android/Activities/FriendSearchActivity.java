@@ -35,8 +35,8 @@ public class FriendSearchActivity extends ActionBarActivity implements FriendLis
     Adapter mPendingFriendsAdapter;
     String mUsername;
 
-    ListView mFriends;
-    ListView mPendingFriends;
+    ListView mFriendsList;
+    ListView mPendingFriendsList;
 
     Typeface roboto_regular;
     Typeface roboto_bold;
@@ -49,8 +49,8 @@ public class FriendSearchActivity extends ActionBarActivity implements FriendLis
         setContentView(R.layout.activity_friend_search);
 
         mUsername = PreferenceManager.getDefaultSharedPreferences(this).getString(GlobalPreferenceString.USERNAME_PREF, "");
-        mFriends = (ListView) findViewById(R.id.friends_list);
-        mPendingFriends = (ListView) findViewById(R.id.pending_friends_list);
+        mFriendsList = (ListView) findViewById(R.id.friends_list);
+        mPendingFriendsList = (ListView) findViewById(R.id.pending_friends_list);
 
         SearchView searchView = (SearchView) findViewById(R.id.friend_search);
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -179,7 +179,7 @@ public class FriendSearchActivity extends ActionBarActivity implements FriendLis
     //TODO: Refactoring here - same cursor callback methods, swap in different layout file
     @Override
     public void friendsLoaded(Cursor c) {
-        ListView friendsList = (ListView) findViewById(R.id.friends_list);
+        mFriendsList = (ListView) findViewById(R.id.friends_list);
 
         String[] from = new String[] {FriendContent.friend, FriendContent.confirmed};
         int[] to = new int[] {R.id.friend, R.id.friend_item};
@@ -208,12 +208,12 @@ public class FriendSearchActivity extends ActionBarActivity implements FriendLis
         });
 
         mFriendsAdapter = adapter;
-        friendsList.setAdapter(adapter);
+        mFriendsList.setAdapter(adapter);
     }
 
     @Override
     public void pendingFriendsLoaded(Cursor c) {
-        ListView pendingList = (ListView) findViewById(R.id.pending_friends_list);
+        mPendingFriendsList = (ListView) findViewById(R.id.pending_friends_list);
 
         String[] from = new String[] {FriendContent.username, FriendContent.confirmed};
         int[] to = new int[] {R.id.friend, R.id.pending_friend_item};
@@ -246,7 +246,7 @@ public class FriendSearchActivity extends ActionBarActivity implements FriendLis
         });
 
         mPendingFriendsAdapter = adapter;
-        pendingList.setAdapter(adapter);
+        mPendingFriendsList.setAdapter(adapter);
     }
 
     @Override

@@ -10,5 +10,6 @@ public class GlobalPreferenceString {
     public static final String SEEN_TUTORIAL = "seen_tutorial_pref";
 
     public static final String GUEST = "Guest";
+
 }
 
