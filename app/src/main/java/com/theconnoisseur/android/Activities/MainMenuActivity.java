@@ -55,6 +55,10 @@ public class MainMenuActivity extends ActionBarActivity {
         startActivity(new Intent(MainMenuActivity.this, VoiceRecogniserTestActivity.class));
     }
 
+    public void tutorialExample(View v) {
+        startActivity(new Intent(this, TutorialActivity.class));
+    }
+
     public void onSelection(View v) {
         Log.d(TAG, "onSelection Button click registered");
         switch(v.getId()) {

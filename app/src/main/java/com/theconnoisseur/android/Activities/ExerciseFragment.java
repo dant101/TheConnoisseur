@@ -70,7 +70,6 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
     private TextView mWord;
     //private TextView mPhoneticSpelling;
     private TextView mWordDescription;
-    private ScrollView mWordDescriptionView;
     private ImageView mProceed;
     private LinearLayout mLivesBig;
     private LinearLayout mLivesSmall;
@@ -168,7 +167,6 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         mWord = (TextView) view.findViewById(R.id.word);
         //mPhoneticSpelling = (TextView) view.findViewById(R.id.phonetic_spelling);
         mWordDescription = (TextView) view.findViewById(R.id.word_description);
-        mWordDescriptionView = (ScrollView) view.findViewById(R.id.word_description_view);
         mProceed = (ImageView) view.findViewById(R.id.proceed);
         mLivesBig = (LinearLayout) view.findViewById(R.id.lives_section);
         mLivesSmall = (LinearLayout) view.findViewById(R.id.lives_section_small);
@@ -411,7 +409,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
         Log.d(TAG, "Exercise Fragment: onSuccessfulAttempt");
         mLivesBig.setVisibility(View.GONE);
         mLivesSmall.setVisibility(View.VISIBLE);
-        mWordDescriptionView.setVisibility(View.VISIBLE);
+        mWordDescription.setVisibility(View.VISIBLE);
         mLanguageImage.setImageResource(R.drawable.tick_correct);
         mRecordLayout.setVisibility(View.GONE);
         mListenLayout.setVisibility(View.GONE);
@@ -447,7 +445,7 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
     private void setInitialView() {
         mLivesBig.setVisibility(View.VISIBLE);
         mLivesSmall.setVisibility(View.GONE);
-        mWordDescriptionView.setVisibility(View.GONE);
+        mWordDescription.setVisibility(View.GONE);
         mProceed.setVisibility(View.GONE);
         mListenLayout.setVisibility(View.VISIBLE);
         //mRecord.setVisibility(View.VISIBLE);
@@ -713,6 +711,5 @@ public class ExerciseFragment extends Fragment implements VoiceRecogniser.VoiceC
             ConnoisseurDatabase.getInstance().getScoreTable().updateScoreAndAttempts(username, word_id, percentage, attempts);
         }
     }
-
 
 }

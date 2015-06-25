@@ -2,8 +2,10 @@ package com.theconnoisseur.android.Activities;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +15,7 @@ import com.theconnoisseur.android.Activities.Interfaces.CursorCallback;
 import com.theconnoisseur.android.Activities.Interfaces.ExerciseContentDownloadCallback;
 import com.theconnoisseur.android.Controller.ContentDownloadController;
 import com.theconnoisseur.android.Model.ExerciseContent;
+import com.theconnoisseur.android.Model.GlobalPreferenceString;
 import com.theconnoisseur.android.Model.InternalDbContract;
 import com.theconnoisseur.android.Model.LanguageSelection;
 import com.theconnoisseur.android.Model.SessionSummaryContent;
@@ -146,6 +149,11 @@ public class ExerciseActivity extends FragmentActivity implements ExerciseFragme
     public void CursorLoaded(Cursor c) {
         Log.d(TAG, "CursorLoaded callback");
         //CursorHelper.toString(c); //For testing
+
+        // Reveal game tutorial the first time the user enters an exercise
+        if (!PreferenceManager.getDefaultSharedPreferences(this).getBoolean(GlobalPreferenceString.SEEN_TUTORIAL, false)) {
+            startActivity(new Intent(this, TutorialActivity.class));
+        }
 
         if(c.getCount() == 0) { return; }
 

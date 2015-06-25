@@ -46,6 +46,12 @@
     <!-- Exercise -->
     <string name="you_have_the_tongue">You have the tongue of a...</string>
 
+    <!-- Tutorial screens text -->
+    <string name="tutorial_screen_1">The phrase you are attempting</string>
+    <string name="tutorial_screen_2">Hearts indicate the lives you have left</string>
+    <string name="tutorial_screen_3">Press to hear the pronunciation</string>
+    <string name="tutorial_screen_4">Press and hold to record yourself</string>
+
     <!-- Performance ranked low to high (1 worst, 3 best) -->
     <string name="performance_1">Barbarian</string>
     <string name="performance_2">Tourist</string>
@@ -85,5 +91,6 @@
     <string name="title_activity_friend_search">FriendSearch</string>
     <string name="your_friends">Your friends</string>
     <string name="pending_friends">People who have added you</string>
+    <string name="title_activity_tutorial">TutorialActivity</string>
 
 </resources>

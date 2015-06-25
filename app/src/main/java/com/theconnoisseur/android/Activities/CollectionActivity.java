@@ -112,8 +112,8 @@ public class CollectionActivity extends ActionBarActivity implements CursorCallb
 
         ListView word_list = (ListView) findViewById(R.id.word_list);
 
-        String[] from = new String[] {ExerciseContent.IMAGE_URL, ExerciseContent.WORD_DESCRIPTION, ExerciseContent.WORD_ID};
-        int[] to = new int[] {R.id.word_image, R.id.word_description, R.id.collection_list_item};
+        String[] from = new String[] {ExerciseContent.WORD, ExerciseContent.IMAGE_URL, ExerciseContent.WORD_DESCRIPTION, ExerciseContent.WORD_ID};
+        int[] to = new int[] {R.id.word, R.id.word_image, R.id.word_description, R.id.collection_list_item};
 
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.collection_list_item, c, from, to, BIND_IMPORTANT);
 
@@ -146,7 +146,11 @@ public class CollectionActivity extends ActionBarActivity implements CursorCallb
                 }
 
                 if(view.getId() == R.id.word_image) {
-                    ContentDownloadHelper.loadImage(getApplicationContext(), (ImageView) view, cursor.getString(columnIndex));
+                    String uri = cursor.getString(columnIndex);
+                    if (uri == null) {
+                        ((ImageView)view).setImageResource(R.drawable.face_connoisseur);
+                    }
+                    ContentDownloadHelper.loadImage(getApplicationContext(), (ImageView) view, uri);
                     return true;
                 }
 
@@ -232,6 +236,7 @@ public class CollectionActivity extends ActionBarActivity implements CursorCallb
 
         @Override
         public void onClick(View v) {
+            if (path == null) { return; }
             path = path.replace(File.separator, "");
 
             try {

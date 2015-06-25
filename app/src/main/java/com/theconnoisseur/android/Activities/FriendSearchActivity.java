@@ -72,6 +72,8 @@ public class FriendSearchActivity extends ActionBarActivity implements FriendLis
         super.onStart();
 
         //Loads both cursors to populate friends and pending friends list
+        new YourFriendsCursorPreparationTask(this).execute();
+        new PendingFriendsCursorPreparationTask(this).execute();
         setListeners();
     }
 

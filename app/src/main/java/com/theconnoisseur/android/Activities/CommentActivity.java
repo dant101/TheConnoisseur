@@ -223,7 +223,7 @@ public class CommentActivity extends Activity implements CursorCallback {
                 mReplying = true;
             }
 
-            ToastHelper.toast(getApplicationContext(), "Reply: " + mParentPath);
+            //ToastHelper.toast(getApplicationContext(), "Reply: " + mParentPath);
         }
     }
 

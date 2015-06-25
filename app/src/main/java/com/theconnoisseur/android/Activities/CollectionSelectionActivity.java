@@ -125,6 +125,7 @@ public class CollectionSelectionActivity extends ActionBarActivity implements Cu
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 int language_id = (int) mAdapter.getItemId(position);
+                if (language_id == 0) { return; } // no screen for random set
 
                 Log.d(TAG, "CollectionActivity: selected item with id " + String.valueOf(language_id));
 
@@ -135,7 +136,7 @@ public class CollectionSelectionActivity extends ActionBarActivity implements Cu
                 //Assumes the items in the listview are consistent with their language_id (to put image uri on intent)
                 //TODO: probably will not be the case later on...
                 //TODO: get score here too
-                mCursor.moveToPosition(language_id - 1); //DIRTY DIRTY
+                mCursor.moveToPosition(language_id); //DIRTY DIRTY
                 String path = mCursor.getString(mCursor.getColumnIndex(LanguageSelection.LANGUAGE_IMAGE_URL));
                 String language = mCursor.getString(mCursor.getColumnIndex(LanguageSelection.LANGUAGE_NAME));
 

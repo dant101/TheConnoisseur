@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tutorial_screen"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="@drawable/gradient_selector"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <LinearLayout
+        android:layout_marginBottom="@dimen/xlarge_padding"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tutorial_1"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:gravity="center"
+            android:textColor="@color/green"
+            android:layout_margin="@dimen/vsmall_margin"
+            android:text="1"/>
+
+        <TextView
+            android:id="@+id/tutorial_2"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:gravity="center"
+            android:textColor="@color/green"
+            android:layout_margin="@dimen/vsmall_margin"
+            android:text="2"/>
+
+        <TextView
+            android:id="@+id/tutorial_3"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:gravity="center"
+            android:textColor="@color/green"
+            android:layout_margin="@dimen/vsmall_margin"
+            android:text="3"/>
+
+        <TextView
+            android:id="@+id/tutorial_4"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:gravity="center"
+            android:textColor="@color/green"
+            android:layout_margin="@dimen/vsmall_margin"
+            android:text="4"/>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/tutorial_visual_1"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/tutorial_visual"
+        android:gravity="center"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="@dimen/vsmall_padding"
+                android:src="@drawable/graphic_left"/>
+
+            <TextView
+                android:id="@+id/example_word"
+                android:text="Cornetto"
+                android:textSize="@dimen/text_medium"
+                android:textColor="@color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_margin="@dimen/normal_margin"
+                android:src="@drawable/ui_record"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="@dimen/vsmall_padding"
+                android:src="@drawable/graphic_right"/>
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/tutorial_visual_2"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/tutorial_visual"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <ImageView
+            android:visibility="visible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/hearts_example"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/tutorial_visual_3"
+        android:layout_width="100dp"
+        android:layout_height="@dimen/tutorial_visual"
+        android:visibility="gone">
+
+        <ImageView
+            android:visibility="visible"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:src="@drawable/ui_listen"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/tutorial_visual_4"
+        android:layout_width="100dp"
+        android:layout_height="@dimen/tutorial_visual"
+        android:visibility="gone">
+
+        <ImageView
+            android:visibility="visible"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:src="@drawable/ui_record"/>
+
+    </RelativeLayout>
+
+    <ImageView
+        android:layout_margin="@dimen/normal_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tutorial_text"
+        android:layout_margin="@dimen/normal_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textSize="@dimen/text_medium"
+        android:text="@string/tutorial_screen_1"/>
+
+</LinearLayout>

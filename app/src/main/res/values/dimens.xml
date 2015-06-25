@@ -64,6 +64,7 @@
     <!-- LanguageSelection Activity -->
     <dimen name="flag_width">30dp</dimen>
     <dimen name="flag_height">20dp</dimen>
+    <dimen name="tutorial_visual">100dp</dimen>
 
     <!-- CollectionSelectionActivity -->
     <dimen name="star_width">20dp</dimen>
