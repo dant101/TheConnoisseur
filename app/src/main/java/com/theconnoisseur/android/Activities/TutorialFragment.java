@@ -8,6 +8,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -32,6 +35,10 @@ public class TutorialFragment extends Fragment {
     private RelativeLayout mTutorialScreen4;
     private TextView mExampleWord;
 
+    private ImageView mListenAnim;
+    private ImageView mRecordAnim;
+    private Animation animation;
+
     private Typeface plantin;
     private Typeface roboto;
 
@@ -53,6 +60,10 @@ public class TutorialFragment extends Fragment {
         mTutorialScreen2 = (RelativeLayout) rootView.findViewById(R.id.tutorial_visual_2);
         mTutorialScreen3 = (RelativeLayout) rootView.findViewById(R.id.tutorial_visual_3);
         mTutorialScreen4 = (RelativeLayout) rootView.findViewById(R.id.tutorial_visual_4);
+
+        mListenAnim = (ImageView) rootView.findViewById(R.id.listen_icon_anim_tut);
+        mRecordAnim = (ImageView) rootView.findViewById(R.id.record_icon_anim_tut);
+        animation = AnimationUtils.loadAnimation(getActivity() ,R.anim.grow_fade);
 
         mExampleWord = (TextView) rootView.findViewById(R.id.example_word);
         plantin = Typeface.createFromAsset(getActivity().getAssets(), "fonts/PlantinMTStd_Semibold.ttf");
@@ -85,11 +96,13 @@ public class TutorialFragment extends Fragment {
                 mNumber3.setBackgroundResource(R.drawable.ring); mNumber3.setTextColor(getResources().getColor(R.color.flag_blue));
                 mTutorialText.setText(getString(R.string.tutorial_screen_3));
                 mTutorialScreen3.setVisibility(View.VISIBLE);
+                mListenAnim.startAnimation(animation);
                 break;
             case 3: //Record
                 mNumber4.setBackgroundResource(R.drawable.ring); mNumber4.setTextColor(getResources().getColor(R.color.flag_blue));
                 mTutorialText.setText(getString(R.string.tutorial_screen_4));
                 mTutorialScreen4.setVisibility(View.VISIBLE);
+                mRecordAnim.startAnimation(animation);
                 break;
         }
         mTutorialText.setTypeface(roboto);
